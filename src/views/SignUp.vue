@@ -7,6 +7,8 @@ import UserServices from "../services/UserServices.js";
 const router = useRouter();
 const confirmPassword = ref('');
 const valid = ref(false);
+const userRole = ref(null);
+const verifyRoleCode = ref("");
 
 const snackbar = ref({
   value: false,
@@ -17,7 +19,23 @@ const account = ref({
   userName: "",
   email: "",
   password: "",
+  firstName: "",
+  lastName: "",
+  phoneNumber: ""
 });
+
+const allFilled = computed(() => {
+  console.log(allFilled);
+  console.log(account);
+  console.log(userRole.value);
+  console.log(verifyRoleCode.value);
+  return (
+    // account.userName.value !== null &&
+    (userRole.value === 'student' || 
+    (userRole.value !== 'student' && 
+    verifyRoleCode.value !== "")) 
+  )
+})
 
 //Password Rules
 const passwordRules = [
@@ -94,8 +112,23 @@ export default {
           </div>
 
           <div class="mb-3">
+            <label for="firstname">First Name: </label>
+            <v-text-field v-model="account.firstName" label="John" required></v-text-field>
+          </div>
+          <div class="mb-3">
+            <label for="lastname">Last Name: </label>
+            <v-text-field v-model="account.lastName" label="Doe" required></v-text-field>
+          </div>
+
+          <div class="mb-3">
             <label for="email">Email: </label>
             <v-text-field v-model="account.email" label="j.doe@gmail.com" required></v-text-field>
+          </div>
+
+          <div class="mb-3">
+            <label for="phonenumber">Phone Number: </label>
+            <v-text-field v-model="account.phoneNumber" label="(555)555-5555" required hint="Input Phone Number as Shown">
+            </v-text-field>
           </div>
 
           <div class="mb-3">
@@ -122,9 +155,24 @@ export default {
               :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :type="show1 ? 'text' : 'password'" label="Password"
               required @click:append="show1 = !show1"></v-text-field>
           </div>
+
+          <div class="mb-3">
+            <label for="userRole">Role: </label>
+            <v-radio-group inline v-model="userRole">
+            <v-radio label="Student" value="student"></v-radio>
+            <v-radio label="Career Service" value="careerservice"></v-radio>
+            <v-radio label="Admin" value="admin"></v-radio>
+          </v-radio-group>
+          </div>
           
+          <div class="mb-3" v-show="userRole !== 'student' && userRole !== null">
+            <label for="confirmRole">Enter Code: </label>
+            <v-text-field v-model="verifyRoleCode" label="Code"></v-text-field>
+          </div>
+
           <div align="center">
-            <v-btn variant="flat" color="primary" :disabled="!valid" @click="createAccount()">Sign Up</v-btn>
+            <!-- :disabled="!allFilled" -->
+            <v-btn variant="flat" color="primary" :disabled="!allFilled" @click="createAccount()">Sign Up</v-btn>
             <div class="mb-10">
               <v-spacer></v-spacer>
             </div>

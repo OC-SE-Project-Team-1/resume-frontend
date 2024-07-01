@@ -6,7 +6,6 @@ import template1 from "/Template1.png";
 import template2 from "/Template2.png";
 import template3 from "/Template3.png";
 import template4 from "/Template4.png";
-import test from "/Template1.pdf"
 
 const router = useRouter();
 const account = ref(null);
@@ -108,7 +107,7 @@ export default {
 <div align="center">
     <v-text-field label="Create title" variant="solo-filled" style="width: 25%;" ></v-text-field>
 
-    <v-btn variant="tonal">
+    <v-btn variant="tonal" :to="{ name: 'inputInfo' }">
   Next
 </v-btn>
 

@@ -53,6 +53,11 @@ const router = createRouter({
       path: "/createResume/selectTemplate",
       name: "selectTemplate",
       component: () => import("./views/SelectTemplate.vue"),
+    },
+    {
+      path: "/createResume/inputInfo",
+      name: "inputInfo",
+      component: () => import("./views/CreateResumeInputInfo.vue"),
     }
   ],
 });

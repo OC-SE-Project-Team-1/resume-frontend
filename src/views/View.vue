@@ -11,6 +11,7 @@ const content = ref(null);
 const title = ref(null);
 const storyId = ref(null);
 const isExport = ref(false);
+const isFeedback = ref(false);
 const snackbar = ref({
   value: false,
   color: "",
@@ -64,6 +65,10 @@ function openExport() {
   isExport.value = true;
 }
 
+function toggleFeedback() {
+  isFeedback.value = !isFeedback.value;
+}
+
 function closeExport() {
   isExport.value = false;
 }
@@ -78,18 +83,46 @@ function closeSnackBar() {
     <div id="body">
       <v-btn variant="flat" color="secondary" @click="navigateToEdit()">Edit</v-btn>
       <v-btn variant="flat" color="secondary" @click="openExport()">Export</v-btn>
+      <v-btn variant="flat" color="secondary" @click="toggleFeedback()">Toggle Feedback</v-btn>
       <v-card-title class="text-center headline mb-2">View</v-card-title>
 
+      <div v-show="!isFeedback">
       <v-card class="rounded-lg elevation-5 my-8">
         <v-card-title class="text-center headline mb-2">{{ title }}</v-card-title>
         <v-card-text>
           <v-textarea v-model="content" label="RESUME FILLER" auto-grow readonly></v-textarea>
         </v-card-text>
       </v-card>
+      </div>
+
+      <div v-show="isFeedback">
+      <v-row>
+        <v-col>
+      <v-card class="rounded-lg elevation-5 my-8">
+        <v-card-title class="text-center headline mb-2">Resume</v-card-title>
+        <v-card-text>
+          <v-textarea v-model="content" label="RESUME FILLER FOR NOW" auto-grow readonly></v-textarea>
+        </v-card-text>
+      </v-card>
+    </v-col>
+  <v-col>
+      <v-card class="rounded-lg elevation-5 my-8">
+        <v-card-title class="text-center headline mb-2">Feedback</v-card-title>
+        <v-card-text>
+          <v-textarea v-model="feedback" label="Input Feedback" auto-grow ></v-textarea>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn variant="flat" color="primary" @click="submitFeedback()">Submit</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-col>
+    </v-row>
+  </div>
 
       <v-dialog persistent v-model="isExport" width="800">
         <v-card class="rounded-lg elevation-5">
-          <v-card-title class="text-center headline mb-2">Export Story?</v-card-title>
+          <v-card-title class="text-center headline mb-2">Export Resume?</v-card-title>
 
           <v-card-actions>
             <v-btn variant="flat" color="primary" @click="exportStory()">Export PDF</v-btn>

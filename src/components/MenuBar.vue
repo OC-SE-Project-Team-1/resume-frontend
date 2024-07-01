@@ -97,7 +97,8 @@ function toggleTheme() {
       <v-btn class="mx-2" :to="{ name: 'home' }">
         Home
       </v-btn>
-      <v-btn v-if="account !== null" class="mx-2" :to="{ name: 'library' }">
+      <!-- v-if="account !== null" -->
+      <v-btn  class="mx-2" :to="{ name: 'library' }">
         Library
       </v-btn>
       <v-btn class="mx-2" :to="{ name: 'createstory' }">

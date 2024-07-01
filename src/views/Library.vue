@@ -10,7 +10,6 @@ const isExport = ref(false);
 const isDeleted = ref(false);
 const account = ref(null);
 const titles = ref();
-const storyId = ref();
 
 const snackbar = ref({
   value: false,
@@ -19,9 +18,8 @@ const snackbar = ref({
 });
 
 onMounted(async () => {
-  localStorage.removeItem("storyId");
   account.value = JSON.parse(localStorage.getItem("account"));
-  await getTitles();
+  // await getTitles();
 });
 
 //Grab all Characacter Names
@@ -60,7 +58,7 @@ async function deleteStory() {
 
 //Navigate to View Page
 function navigateToView(itemId) {
-  window.localStorage.setItem("storyId", JSON.stringify(itemId));
+  // window.localStorage.setItem("storyId", JSON.stringify(itemId));
   router.push({ name: "view" });
 }
 
@@ -129,25 +127,37 @@ export default {
         <thead>
           <tr>
             <th class="text-left">
-              Titles
+              Resumes
             </th>
-            <th class="text-left">
-              Date
-            </th>
-            <th class="text-right"><v-btn rounded variant="text" :to="{ name: 'createstory' }"> Create Story </v-btn>
-            </th>
+            <!-- <th class="text-right"><v-btn rounded variant="text" :to="{ name: 'createstory' }"> Create Story </v-btn>
+            </th> -->
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in titles" :key="item.id">
+          <tr>
+            <td class="text-left">Resume1</td>
+            <td class="text-right">
+              <v-btn rounded variant="text" @click="navigateToView()"> View </v-btn>
+              <v-btn rounded variant="text" @click="openExport()"> Export </v-btn>
+              <v-btn rounded variant="text" @click="openDelete()"> Delete </v-btn>
+            </td>
+          </tr>
+          <tr>
+            <td class="text-left">Resume2</td>
+            <td class="text-right">
+              <v-btn rounded variant="text" @click="navigateToView()"> View </v-btn>
+              <v-btn rounded variant="text" @click="openExport()"> Export </v-btn>
+              <v-btn rounded variant="text" @click="openDelete()"> Delete </v-btn>
+            </td>
+          </tr>
+          <!-- <tr v-for="item in titles" :key="item.id">
             <td class="text-left">{{ item.title }}</td>
-            <td class="text-left">{{ item.updatedAt.split('T')[0] }}</td>
             <td class="text-right">
               <v-btn rounded variant="text" @click="navigateToView(item.id)"> View </v-btn>
               <v-btn rounded variant="text" @click="openExport(item.id)"> Export </v-btn>
               <v-btn rounded variant="text" @click="openDelete(item.id)"> Delete </v-btn>
             </td>
-          </tr>
+          </tr> -->
         </tbody>
       </v-table>
 

@@ -64,6 +64,11 @@ const router = createRouter({
       name: "csresumeview",
       component: () => import("./views/CSResumeView.vue"),
     },
+    {
+      path: "/admin",
+      name: "admin",
+      component: () => import("./views/Admin.vue"),
+    },
   ],
 });
 

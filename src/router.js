@@ -48,7 +48,22 @@ const router = createRouter({
       path: "/library/view/extend",
       name: "extend",
       component: () => import("./views/ExtendStory.vue"),
-    }
+    },
+    {
+      path: "/careerserviceslibrary",
+      name: "cslibrary",
+      component: () => import("./views/CSLibrary.vue"),
+    },
+    {
+      path: "/careerserviceslibrary/studentresumeslist",
+      name: "studentresumeslist",
+      component: () => import("./views/StudentResumesList.vue"),
+    },
+    {
+      path: "/careerserviceslibrary/studentresumeslist/resumeview",
+      name: "csresumeview",
+      component: () => import("./views/CSResumeView.vue"),
+    },
   ],
 });
 

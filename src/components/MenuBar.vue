@@ -104,6 +104,9 @@ function toggleTheme() {
       <v-btn class="mx-2" :to="{ name: 'createstory' }">
         Create Story
       </v-btn>
+      <v-btn class="mx-2" :to="{ name: 'cslibrary' }">
+        Student Library
+      </v-btn>
       <v-spacer></v-spacer>
 
       <v-tooltip text="Toggle Light/Dark Mode">

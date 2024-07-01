@@ -59,7 +59,7 @@ async function deleteStory() {
 //Navigate to View Page
 function navigateToView(itemId) {
   // window.localStorage.setItem("storyId", JSON.stringify(itemId));
-  router.push({ name: "view" });
+  router.push({ name: "studentresumeslist" });
 }
 
 //Open/Close Pop Ups
@@ -127,7 +127,7 @@ export default {
         <thead>
           <tr>
             <th class="text-left">
-              Resumes
+              Students
             </th>
             <!-- <th class="text-right"><v-btn rounded variant="text" :to="{ name: 'createstory' }"> Create Story </v-btn>
             </th> -->
@@ -135,19 +135,15 @@ export default {
         </thead>
         <tbody>
           <tr>
-            <td class="text-left">Resume1</td>
+            <td class="text-left">Student 1</td>
             <td class="text-right">
-              <v-btn rounded variant="text" @click="navigateToView()"> View </v-btn>
-              <v-btn rounded variant="text" @click="openExport()"> Export </v-btn>
-              <v-btn rounded variant="text" @click="openDelete()"> Delete </v-btn>
+              <v-btn rounded variant="text" @click="navigateToView()"> View Resumes</v-btn>
             </td>
           </tr>
           <tr>
-            <td class="text-left">Resume2</td>
+            <td class="text-left">Student 2</td>
             <td class="text-right">
-              <v-btn rounded variant="text" @click="navigateToView()"> View </v-btn>
-              <v-btn rounded variant="text" @click="openExport()"> Export </v-btn>
-              <v-btn rounded variant="text" @click="openDelete()"> Delete </v-btn>
+              <v-btn rounded variant="text" @click="navigateToView()"> View Resumes</v-btn>
             </td>
           </tr>
           <!-- <tr v-for="item in titles" :key="item.id">

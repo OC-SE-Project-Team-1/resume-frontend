@@ -58,7 +58,27 @@ const router = createRouter({
       path: "/createResume/inputInfo",
       name: "inputInfo",
       component: () => import("./views/CreateResumeInputInfo.vue"),
-    }
+    },
+    {
+      path: "/careerserviceslibrary",
+      name: "cslibrary",
+      component: () => import("./views/CSLibrary.vue"),
+    },
+    {
+      path: "/careerserviceslibrary/studentresumeslist",
+      name: "studentresumeslist",
+      component: () => import("./views/StudentResumesList.vue"),
+    },
+    {
+      path: "/careerserviceslibrary/studentresumeslist/resumeview",
+      name: "csresumeview",
+      component: () => import("./views/CSResumeView.vue"),
+    },
+    {
+      path: "/admin",
+      name: "admin",
+      component: () => import("./views/Admin.vue"),
+    },
   ],
 });
 

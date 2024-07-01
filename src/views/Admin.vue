@@ -10,6 +10,7 @@ const account = ref(null);
 const content = ref(null);
 const title = ref(null);
 const storyId = ref(null);
+const isDeleted = ref(false);
 const isUserUpdate = ref(false);
 const userRole = ref(null);
 const snackbar = ref({
@@ -44,6 +45,26 @@ function navigateToView() {
 }
 
 //Delete Story
+async function deleteUser() {
+  // await CreateStoryServices.deleteUser(storyId.value, account.value.id)
+  //   .then(() => {
+  //     getTitles();
+  //     localStorage.removeItem("storyId");
+  //     isDeleted.value = false;
+  //     snackbar.value.value = true;
+  //     snackbar.value.color = "green";
+  //     snackbar.value.text = "Story Deleted!";
+  //     router.push({ name: "library" });
+  //   })
+  //   .catch((error) => {
+  //     console.log(error);
+  //     snackbar.value.value = true;
+  //     snackbar.value.color = "error";
+  //     snackbar.value.text = error.response.data.message;
+  //   });
+  isDeleted.value = false;
+}
+//Delete Story
 async function changeUserRole() {
   // await CreateStoryServices.deleteStory(storyId.value, account.value.id)
   //   .then(() => {
@@ -64,12 +85,21 @@ async function changeUserRole() {
   isUserUpdate.value = false;
 }
 
+function openDelete(itemId) {
+  // window.localStorage.setItem("storyId", JSON.stringify(itemId));
+  // storyId.value = JSON.parse(localStorage.getItem("storyId"));
+  isDeleted.value = true;
+}
+
 function openUserUpdate() {
   isUserUpdate.value = true;
 }
 
 function closeUserUpdate() {
   isUserUpdate.value = false;
+}
+function closeDelete() {
+  isDeleted.value = false;
 }
 
 function closeSnackBar() {
@@ -109,6 +139,7 @@ function closeSnackBar() {
             <td class="text-right">
               <v-btn rounded variant="text" @click="openUserUpdate()"> Change Role </v-btn>
               <v-btn rounded variant="text" @click="navigateToView()"> View Resumes </v-btn>
+              <v-btn rounded variant="text" @click="openDelete()"> Delete </v-btn>
             </td>
           </tr>
           <tr>
@@ -119,6 +150,7 @@ function closeSnackBar() {
             <td class="text-right">
               <v-btn rounded variant="text" @click="openUserUpdate()"> Change Role </v-btn>
               <v-btn rounded variant="text" @click="navigateToView()"> View Resumes </v-btn>
+              <v-btn rounded variant="text" @click="openDelete()"> Delete </v-btn>
             </td>
           </tr>
 
@@ -147,6 +179,19 @@ function closeSnackBar() {
             <v-btn variant="flat" color="primary" @click="changeUserRole()">Confirm</v-btn>
             <v-spacer></v-spacer>
             <v-btn variant="flat" color="secondary" @click="closeUserUpdate()">Close</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog persistent v-model="isDeleted" width="800">
+        <v-card class="rounded-lg elevation-5">
+          <v-card-title class="text-center headline mb-2">Delete User?</v-card-title>
+          <v-text align="center">This user and all of their content will be deleted!</v-text>
+
+          <v-card-actions>
+            <v-btn variant="flat" color="primary" @click="deleteUser()">Delete</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn variant="flat" color="secondary" @click="closeDelete()">Close</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>

@@ -42,9 +42,6 @@ async function getStory() {
 function navigateToEdit() {
   router.push({ name: "edit" });
 }
-function navigateToExtend() {
-  router.push({ name: "extend" });
-}
 
 //Export Story
 async function exportStory() {
@@ -80,14 +77,13 @@ function closeSnackBar() {
   <v-container>
     <div id="body">
       <v-btn variant="flat" color="secondary" @click="navigateToEdit()">Edit</v-btn>
-      <v-btn variant="flat" color="secondary" @click="navigateToExtend()">Extend</v-btn>
       <v-btn variant="flat" color="secondary" @click="openExport()">Export</v-btn>
       <v-card-title class="text-center headline mb-2">View</v-card-title>
 
       <v-card class="rounded-lg elevation-5 my-8">
         <v-card-title class="text-center headline mb-2">{{ title }}</v-card-title>
         <v-card-text>
-          <v-textarea v-model="content" label="Story Content" auto-grow readonly></v-textarea>
+          <v-textarea v-model="content" label="RESUME FILLER" auto-grow readonly></v-textarea>
         </v-card-text>
       </v-card>
 

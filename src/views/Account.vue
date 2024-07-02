@@ -514,6 +514,14 @@ export default {
               <v-text-field v-model="newEmail" :readonly="!isAccountEditable"></v-text-field>
             </v-col>
           </v-row>
+          <v-row>
+            <v-col cols="2">
+              <v-text for="character" class="headline mb-2">Phone Number: </v-text>
+            </v-col>
+            <v-col>
+              <v-text-field v-model="newEmail" :readonly="!isAccountEditable"></v-text-field>
+            </v-col>
+          </v-row>
         </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -522,12 +530,11 @@ export default {
       <v-spacer></v-spacer>
     </div>
 
-
     <v-expansion-panels style="width:50%;">
 
       <v-expansion-panel>
         <v-expansion-panel-title>
-          Default Values Settings
+          Database Settings
         </v-expansion-panel-title>
 
         <v-expansion-panel-text>
@@ -537,7 +544,7 @@ export default {
             <v-expansion-panel>
 
               <v-expansion-panel-title>
-                Character Name:
+                Experience:
               </v-expansion-panel-title>
 
 
@@ -589,7 +596,7 @@ export default {
             <v-expansion-panel>
 
               <v-expansion-panel-title>
-                Character Role:
+                Education:
               </v-expansion-panel-title>
 
 
@@ -642,7 +649,7 @@ export default {
             <v-expansion-panel>
 
               <v-expansion-panel-title>
-                Genre:
+                Skills:
               </v-expansion-panel-title>
 
 
@@ -689,7 +696,7 @@ export default {
         </v-expansion-panel-text>
 
 
-
+<!--
         <v-expansion-panel-text>
 
           <v-expansion-panels style="width: 75%;">
@@ -790,15 +797,43 @@ export default {
                   </v-col>
                 </v-row>
               </v-expansion-panel-text>
-
+            
 
             </v-expansion-panel>
           </v-expansion-panels>
         </v-expansion-panel-text>
-
+      -->
 
 
       </v-expansion-panel>
+    </v-expansion-panels>
+
+    <div class="mb-10">
+      <v-spacer></v-spacer>
+    </div>
+
+
+    <v-expansion-panels style="width: 50%;">
+      <v-expansion-panel>
+        <v-expansion-panel-title>
+          Personal Settings
+        </v-expansion-panel-title>
+        <v-expansion-panel-text>
+
+          <v-row>
+          <v-col>
+            <v-switch
+              color="primary"
+              label="Dark mode"
+              hide-details
+            ></v-switch>
+          </v-col>
+        </v-row>
+
+        </v-expansion-panel-text>
+       
+        
+        </v-expansion-panel>
     </v-expansion-panels>
 
   </div>

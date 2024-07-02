@@ -50,6 +50,11 @@ const router = createRouter({
       component: () => import("./views/ExtendStory.vue"),
     },
     {
+      path: "/createResume/selectTemplate",
+      name: "selectTemplate",
+      component: () => import("./views/SelectTemplate.vue"),
+    },
+    {
       path: "/careerserviceslibrary",
       name: "cslibrary",
       component: () => import("./views/CSLibrary.vue"),

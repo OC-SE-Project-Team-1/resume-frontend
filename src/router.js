@@ -55,6 +55,11 @@ const router = createRouter({
       component: () => import("./views/SelectTemplate.vue"),
     },
     {
+      path: "/createResume/inputInfo",
+      name: "inputInfo",
+      component: () => import("./views/CreateResumeInputInfo.vue"),
+    },
+    {
       path: "/careerserviceslibrary",
       name: "cslibrary",
       component: () => import("./views/CSLibrary.vue"),

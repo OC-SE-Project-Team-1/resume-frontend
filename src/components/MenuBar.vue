@@ -101,8 +101,8 @@ function toggleTheme() {
       <v-btn  class="mx-2" :to="{ name: 'library' }">
         Library
       </v-btn>
-      <v-btn class="mx-2" :to="{ name: 'createstory' }">
-        Create Story
+      <v-btn class="mx-2" :to="{ name: 'selectTemplate' }">
+        Create Resume
       </v-btn>
       <v-btn class="mx-2" :to="{ name: 'cslibrary' }">
         Student Library

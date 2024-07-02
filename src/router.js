@@ -42,7 +42,7 @@ const router = createRouter({
     {
       path: "/library/view/edit",
       name: "edit",
-      component: () => import("./views/EditStory.vue"),
+      component: () => import("./views/EditResume.vue"),
     },
     {
       path: "/library/view/extend",

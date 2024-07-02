@@ -9,8 +9,19 @@ import template4 from "/Template4.png";
 
 const router = useRouter();
 const account = ref(null);
+const resumeTitle = ref();
+const resumeTemplate = ref();
+
+async function newResumeInfo() {
+    window.localStorage.setItem("resumeTitle", JSON.stringify(resumeTitle.value));
+    window.localStorage.setItem("resumeTemplate", JSON.stringify(resumeTemplate.value));
+}
 
 onMounted(() => {
+    resumeTitle.value = null;
+    resumeTemplate.value = null;
+    window.localStorage.setItem("resumeTitle", JSON.stringify(resumeTitle.value));
+    window.localStorage.setItem("resumeTemplate", JSON.stringify(resumeTemplate.value));
 });
 </script>
 <script>
@@ -37,7 +48,7 @@ export default {
 
   <v-card class="mx-auto" max-width="1000">
     <v-container class="pa-1">
-        <v-item-group v-model="selection" >
+        <v-item-group v-model="resumeTemplate" >
             <v-row>
                 <v-col>
                     <v-item v-slot="{ isSelected, toggle }">
@@ -105,9 +116,9 @@ export default {
       <v-spacer></v-spacer>
     </div>
 <div align="center">
-    <v-text-field label="Create title" variant="solo-filled" style="width: 25%;" ></v-text-field>
+    <v-text-field label="Create title" v-model="resumeTitle" variant="solo-filled" style="width: 25%;" ></v-text-field>
 
-    <v-btn variant="tonal" :to="{ name: 'inputInfo' }">
+    <v-btn variant="tonal" :to="{ name: 'inputInfo' }" @click="newResumeInfo()">
   Next
 </v-btn>
 

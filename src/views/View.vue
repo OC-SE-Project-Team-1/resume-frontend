@@ -109,7 +109,7 @@ function closeSnackBar() {
       <v-card class="rounded-lg elevation-5 my-8">
         <v-card-title class="text-center headline mb-2">Feedback</v-card-title>
         <v-card-text>
-          <v-textarea v-model="feedback" label="Input Feedback" auto-grow ></v-textarea>
+          <v-textarea v-model="feedback" label="View Feedback" auto-grow readonly></v-textarea>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>

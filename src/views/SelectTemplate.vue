@@ -65,7 +65,7 @@ export default {
 <template>
     <v-container>
         <div id="body">
-            <div class="mb-3">
+             <div class="mb-3">
                 <v-card-title class="pl-0 text-h4 font-weight-bold">Create your Resume
                 </v-card-title>
             </div>
@@ -80,72 +80,58 @@ export default {
         <v-container class="pa-1">
             <v-item-group v-model="resumeTemplate">
                 <v-row>
-                    <v-hover v-slot="{ isHovering, props }">
-                        <v-col v-bind="props">
+                    
+
+                    <v-tooltip :text="resumeSections[0].join(', ')">
+                        <template v-slot:activator="{ props }">
+                            <v-col v-bind="props">
                             <v-item v-slot="{ isSelected, toggle }">
                                 <v-img :src=template1 height="500" @click="toggle">
                                     <v-btn :icon="isSelected ? 'mdi-heart' : 'mdi-heart-outline'"></v-btn>
-                                    <v-expand-transition>
-                                        <div v-if="isHovering"
-                                            class="d-flex transition-fast-in-fast-out bg-grey-darken-2 v-card--reveal text-h2"
-                                            style="height: 100%">
-                                            {{ resumeSections[0] }}
-                                        </div>
-                                    </v-expand-transition>
                                 </v-img>
                             </v-item>
                         </v-col>
-                    </v-hover>
-                    <v-hover v-slot="{ isHovering, props }">
-                        <v-col v-bind="props">
-                            <v-item v-slot="{ isSelected, toggle }">
-                                <v-img :src=template2 height="500" @click="toggle">
-                                    <v-btn :icon="isSelected ? 'mdi-heart' : 'mdi-heart-outline'"></v-btn>
-                                    <v-expand-transition>
-                                        <div v-if="isHovering"
-                                            class="d-flex transition-fast-in-fast-out bg-grey-darken-2 v-card--reveal text-h2"
-                                            style="height: 100%">
-                                            {{ resumeSections[1] }}
-                                        </div>
-                                    </v-expand-transition>
-                                </v-img>
-                            </v-item>
-                        </v-col>
-                    </v-hover>
+                        </template>
+                    </v-tooltip>
+
+                    <v-tooltip :text="resumeSections[1].join(', ')">
+                        <template v-slot:activator="{ props }">
+                             <v-col v-bind="props">
+                                <v-item v-slot="{ isSelected, toggle }">
+                                    <v-img :src=template2 height="500" @click="toggle">
+                                        <v-btn :icon="isSelected ? 'mdi-heart' : 'mdi-heart-outline'"></v-btn>
+                                    </v-img>
+                                </v-item>
+                            </v-col>
+                        </template>
+                    </v-tooltip>
                 </v-row>
+
                 <v-row>
-                    <v-hover v-slot="{ isHovering, props }">
-                        <v-col v-bind="props">
-                            <v-item v-slot="{ isSelected, toggle }">
-                                <v-img :src=template3 height="500" @click="toggle">
-                                    <v-btn :icon="isSelected ? 'mdi-heart' : 'mdi-heart-outline'"></v-btn>
-                                    <v-expand-transition>
-                                        <div v-if="isHovering"
-                                            class="d-flex transition-fast-in-fast-out bg-grey-darken-2 v-card--reveal text-h2"
-                                            style="height: 100%">
-                                            {{ resumeSections[2] }}
-                                        </div>
-                                    </v-expand-transition>
-                                </v-img>
-                            </v-item>
-                        </v-col>
-                    </v-hover>
-                    <v-hover v-slot="{ isHovering, props }">
-                        <v-col v-bind="props">
-                            <v-item v-slot="{ isSelected, toggle }">
-                                <v-img :src=template4 height="500" @click="toggle">
-                                    <v-btn :icon="isSelected ? 'mdi-heart' : 'mdi-heart-outline'"></v-btn>
-                                    <v-expand-transition>
-                                        <div v-if="isHovering"
-                                            class="d-flex transition-fast-in-fast-out bg-grey-darken-2 v-card--reveal text-h2"
-                                            style="height: 100%">
-                                            {{ resumeSections[3] }}
-                                        </div>
-                                    </v-expand-transition>
-                                </v-img>
-                            </v-item>
-                        </v-col>
-                    </v-hover>
+
+                    <v-tooltip :text="resumeSections[2].join(', ')">
+                        <template v-slot:activator="{ props }"> 
+                            <v-col v-bind="props">
+                                <v-item v-slot="{ isSelected, toggle }">
+                                    <v-img :src=template3 height="500" @click="toggle">
+                                        <v-btn :icon="isSelected ? 'mdi-heart' : 'mdi-heart-outline'"></v-btn>
+                                    </v-img>
+                                </v-item>
+                            </v-col>
+                        </template>
+                    </v-tooltip>
+
+                    <v-tooltip :text="resumeSections[3].join(', ')">
+                        <template v-slot:activator="{ props }">
+                            <v-col v-bind="props">
+                                <v-item v-slot="{ isSelected, toggle }">
+                                    <v-img :src=template4 height="500" @click="toggle">
+                                        <v-btn :icon="isSelected ? 'mdi-heart' : 'mdi-heart-outline'"></v-btn>
+                                    </v-img>
+                                </v-item>
+                            </v-col>
+                         </template>
+                    </v-tooltip>
                 </v-row>
             </v-item-group>
 

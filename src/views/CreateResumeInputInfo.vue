@@ -1,10 +1,45 @@
 <script setup>
-import { onMounted } from "vue";
+import { computed, onMounted } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
 const isNewLinkVisible = ref(false);
-const tab= ref("1");
+const tab= ref("0");
+const resumeTemplate= ref();
+const resumeSections = ref(
+    {
+        0: ["Personal Details",
+            "Professional Summary",
+            "Education",
+            "Experience",
+            "Skills"],
+        1: ["Personal Details",
+            "Professional Summary",
+            "Education",
+            "Experience"],
+        2: ["Personal Details",
+            "Professional Summary",
+            "Education",
+            "Experience",
+            "Skills"],
+        3: ["Personal Details",
+            "Professional Summary",
+            "Education",
+            "Experience",
+            "Skills",
+            "Other"]
+    }
+);
+
+const selectedSections = ref();
+
+
+onMounted(() => {
+    // account.value = JSON.parse(localStorage.getItem("account"));
+    // resumeSection.value = JSON.parse(localStorage.getItem("resumeSections"));
+    resumeTemplate.value = JSON.parse(localStorage.getItem("resumeTemplate"));
+    console.log(resumeTemplate.value);
+});
 
 async function setNewLinkVisible () {
     isNewLinkVisible.value = true;
@@ -52,6 +87,7 @@ async function resetNewInput() {
                     slider-color="#f78166"
                 >
                    
+                <v-tab value="0" @click="resetNewInput()">Sections</v-tab>
                 <v-tab value="1" @click="resetNewInput()">Personal Details</v-tab>
                 <v-tab value="2" @click="resetNewInput()">Professional Summary</v-tab>
                 <v-tab value="3" @click="resetNewInput()">Education</v-tab>
@@ -63,6 +99,49 @@ async function resetNewInput() {
 
                 <v-tabs-window v-model="tab">
 
+                    <v-tabs-window-item value="0"  style="padding: 50px">
+                        <v-row>
+                            <v-col>
+                                <v-label>Required Sections</v-label>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col>
+                                <v-list lines="one">
+                                    <v-list-item
+                                        v-model="selectedSections"
+                                        v-for="n in resumeSections[parseInt(resumeTemplate)]"
+                                        :key="n"
+                                        :title="n"
+                                    > 
+                                    <template v-slot:prepend="{ isActive }">
+                                        <v-list-item-action start>
+                                        <v-checkbox-btn :model-value="isActive"></v-checkbox-btn>
+                                        </v-list-item-action>
+                                        </template>
+                                    </v-list-item>
+                                    </v-list>
+                            </v-col>
+                        </v-row>
+
+
+                        <div class="mb-10">
+                            <v-spacer></v-spacer>
+                        </div>
+
+                        <v-divider></v-divider>
+
+                        <div class="mb-10">
+                          <v-spacer></v-spacer>
+                        </div>
+                   
+                        <div align="right">
+                            
+                        <v-btn variant="tonal" @click="nextTab()" >
+                            Next
+                        </v-btn>
+                        </div>
+                    </v-tabs-window-item>
                     <v-tabs-window-item value="1"  style="padding: 50px">
                         <v-row>
                             <v-col>

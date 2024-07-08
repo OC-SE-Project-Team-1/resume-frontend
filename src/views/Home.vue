@@ -31,7 +31,7 @@ function navigateToCreateResume() {
     <div>
       <v-row align="center">
         <v-col align="center">
-          <v-btn variant="flat" color="secondary" @click="navigateToCreateResume()">Create a Resume</v-btn>
+          <v-btn  v-if="account !== null" variant="flat" color="secondary" @click="navigateToCreateResume()">Create a Resume</v-btn>
           <div class="mb-10">
             <v-spacer></v-spacer>
           </div>

@@ -98,16 +98,16 @@ function toggleTheme() {
         Home
       </v-btn>
       <!-- v-if="account !== null" -->
-      <v-btn  class="mx-2" :to="{ name: 'library' }">
+      <v-btn v-if="account !== null" class="mx-2" :to="{ name: 'library' }">
         Library
       </v-btn>
-      <v-btn class="mx-2" :to="{ name: 'selectTemplate' }">
+      <v-btn v-if="account !== null" class="mx-2" :to="{ name: 'selectTemplate' }">
         Create Resume
       </v-btn>
-      <v-btn class="mx-2" :to="{ name: 'cslibrary' }">
+      <v-btn v-if="account !== null && account.roleId !== 3" class="mx-2" :to="{ name: 'cslibrary' }">
         Student Library
       </v-btn>
-      <v-btn class="mx-2" :to="{ name: 'admin' }">
+      <v-btn v-if="account !== null && account.roleId === 1" class="mx-2" :to="{ name: 'admin' }">
         Admin
       </v-btn>
       <v-spacer></v-spacer>

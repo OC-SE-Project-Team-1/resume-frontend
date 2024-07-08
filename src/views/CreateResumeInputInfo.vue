@@ -33,6 +33,12 @@ const resumeSections = ref(
 
 const selectedSections = ref();
 
+const isPersonalDetails = ref(false);
+const isProfSum = ref(false);
+const isEducation = ref(false);
+const isExperience = ref(false);
+const isSkills = ref(false);
+
 
 onMounted(() => {
     // account.value = JSON.parse(localStorage.getItem("account"));
@@ -65,6 +71,30 @@ async function resetNewInput() {
     isNewLinkVisible.value = false;
 }
 
+async function showTab(index) {
+if (index == "Personal Details") {
+    isPersonalDetails.value = !isPersonalDetails.value;
+    console.log("1");
+}
+else if (index == "Professional Summary") {
+    isProfSum.value = !isProfSum.value;
+    console.log("2");
+}
+else if (index == "Education") {
+    isEducation.value = !isEducation.value;
+    console.log("3");
+}
+else if (index == "Experience") {
+    isExperience.value = !isExperience.value;
+    console.log("4");
+}
+else if (index == "Skills") {
+    isSkills.value = !isSkills.value;
+    console.log("5");
+}
+}
+
+
 </script>
 
 <script>
@@ -87,13 +117,13 @@ async function resetNewInput() {
                     slider-color="#f78166"
                 >
                    
-                <v-tab value="0" @click="resetNewInput()">Sections</v-tab>
-                <v-tab value="1" @click="resetNewInput()">Personal Details</v-tab>
-                <v-tab value="2" @click="resetNewInput()">Professional Summary</v-tab>
-                <v-tab value="3" @click="resetNewInput()">Education</v-tab>
-                <v-tab value="4" @click="resetNewInput()">Experience</v-tab>
-                <v-tab value="5" @click="resetNewInput()">Skills</v-tab>
-                <v-tab value="6" @click="resetNewInput()">Others</v-tab>
+                <v-tab value="0" @click="resetNewInput()" >Sections</v-tab>
+                <v-tab value="1" @click="resetNewInput()" v-if="isPersonalDetails">Personal Details</v-tab>
+                <v-tab value="2" @click="resetNewInput()" v-if="isProfSum">Professional Summary</v-tab>
+                <v-tab value="3" @click="resetNewInput()" v-if="isEducation">Education</v-tab>
+                <v-tab value="4" @click="resetNewInput()" v-if="isExperience">Experience</v-tab>
+                <v-tab value="5" @click="resetNewInput()" v-if="isSkills">Skills</v-tab>
+                <v-tab value="6" @click="resetNewInput()" v-if="isOthers">Others</v-tab>
                 </v-tabs>
 
 
@@ -113,10 +143,14 @@ async function resetNewInput() {
                                         v-for="n in resumeSections[parseInt(resumeTemplate)]"
                                         :key="n"
                                         :title="n"
+                                        
                                     > 
                                     <template v-slot:prepend="{ isActive }">
                                         <v-list-item-action start>
-                                        <v-checkbox-btn :model-value="isActive"></v-checkbox-btn>
+                                        <v-checkbox-btn :model-value="isActive" 
+                                        @click="showTab(n)"
+                                        
+                                        ></v-checkbox-btn>
                                         </v-list-item-action>
                                         </template>
                                     </v-list-item>

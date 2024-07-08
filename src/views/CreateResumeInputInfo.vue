@@ -27,7 +27,7 @@ const resumeSections = ref(
             "Education",
             "Experience",
             "Skills",
-            "Other"]
+            "Others"]
     }
 );
 
@@ -38,6 +38,7 @@ const isProfSum = ref(false);
 const isEducation = ref(false);
 const isExperience = ref(false);
 const isSkills = ref(false);
+const isOthers = ref(false);
 
 
 onMounted(() => {
@@ -59,11 +60,82 @@ async function addNewLink() {
 
     closeNewLink();
 }
-async function nextTab() {
+async function nextTab(input) {
+    
+    //const temp = parseInt(tab.value) + 1;
+    const temp = input + 1;
 
-    const temp = parseInt(tab.value) + 1;
-    tab.value = temp.toString();
-    resetNewInput();
+    if (temp == 1) {
+
+        console.log("TESTED AND THIS IS FIRST TAB");
+        if (isPersonalDetails.value == false) {
+            console.log("First tab isn't visible");
+
+            console.log(temp);
+            nextTab(temp);
+            
+        }
+        else {
+            tab.value = temp.toString();
+            resetNewInput();
+        }
+    }
+    else if (temp == 2) {
+        console.log("TESTED AND THIS IS SECOND TAB");
+        if (isProfSum.value == false) {
+            nextTab(temp);
+        }else {
+            tab.value = temp.toString();
+            resetNewInput();
+        }
+    }
+    else if (temp == 3) {
+        console.log("TESTED AND THIS IS THIRD TAB");
+        if (isEducation.value == false) {
+            nextTab(temp);
+        }else {
+            tab.value = temp.toString();
+            resetNewInput();
+        }
+    }
+    else if (temp == 4) {
+        console.log("TESTED AND THIS IS FOURTH TAB");
+        if (isExperience.value == false) {
+            nextTab(temp);
+        }else {
+            tab.value = temp.toString();
+            resetNewInput();
+        }
+    }
+    else if (temp == 5) {
+        console.log("TESTED AND THIS IS FIFTH TAB");
+        if (isSkills.value == false) {
+            nextTab(temp);
+        }else {
+            tab.value = temp.toString();
+            resetNewInput();
+        }
+    }
+    else if (temp == 6) {
+        console.log("TESTED AND THIS IS SIXTH TAB");
+        if (isSkills.value == false) {
+            nextTab(temp);
+        }else {
+            tab.value = temp.toString();
+            resetNewInput();
+        }
+    }
+    else if (temp == 7) {
+        console.log("TESTED AND THIS IS SEVENTH TAB");
+        if (isSkills.value == false) {
+            nextTab(temp);
+        }else {
+            tab.value = temp.toString();
+            resetNewInput();
+        }
+    }
+
+    
 }
 
 async function resetNewInput() {
@@ -92,6 +164,11 @@ else if (index == "Skills") {
     isSkills.value = !isSkills.value;
     console.log("5");
 }
+else if (index == "Others") {
+    isOthers.value = !isOthers.value;
+    console.log("6");
+}
+
 }
 
 
@@ -124,6 +201,9 @@ else if (index == "Skills") {
                 <v-tab value="4" @click="resetNewInput()" v-if="isExperience">Experience</v-tab>
                 <v-tab value="5" @click="resetNewInput()" v-if="isSkills">Skills</v-tab>
                 <v-tab value="6" @click="resetNewInput()" v-if="isOthers">Others</v-tab>
+                <v-tab value="7" @click="resetNewInput()" >Preview Resume</v-tab>
+
+                
                 </v-tabs>
 
 
@@ -171,7 +251,7 @@ else if (index == "Skills") {
                    
                         <div align="right">
                             
-                        <v-btn variant="tonal" @click="nextTab()" >
+                        <v-btn variant="tonal" @click="nextTab(0)" >
                             Next
                         </v-btn>
                         </div>
@@ -242,7 +322,7 @@ else if (index == "Skills") {
                         
                         <div align="right">
                             
-                        <v-btn variant="tonal" @click="nextTab()" >
+                        <v-btn variant="tonal" @click="nextTab(1)" >
                             Next
                         </v-btn>
                         </div>
@@ -271,7 +351,7 @@ else if (index == "Skills") {
 
                         <div align="right">
                             
-                            <v-btn variant="tonal" @click="nextTab()" >
+                            <v-btn variant="tonal" @click="nextTab(2)" >
                                 Next
                             </v-btn>
                             </div>
@@ -384,7 +464,7 @@ else if (index == "Skills") {
                         
                         <div align="right">
                             
-                            <v-btn variant="tonal" @click="nextTab()" >
+                            <v-btn variant="tonal" @click="nextTab(3)" >
                                 Next
                             </v-btn>
                         </div>
@@ -816,7 +896,7 @@ else if (index == "Skills") {
 
                         <div align="right">
                             
-                            <v-btn variant="tonal" @click="nextTab()" >
+                            <v-btn variant="tonal" @click="nextTab(4)" >
                                 Next
                             </v-btn>
                             </div>
@@ -893,7 +973,7 @@ else if (index == "Skills") {
 
                         <div align="right">
                             
-                            <v-btn variant="tonal" @click="nextTab()" >
+                            <v-btn variant="tonal" @click="nextTab(5)" >
                                 Next
                             </v-btn>
                         </div>
@@ -1079,12 +1159,50 @@ else if (index == "Skills") {
 
                         <div align="right">
                             
-                            <v-btn color="secondary" variant="tonal" @click="" >
-                                Create Resume
+                            <v-btn variant="tonal" @click="nextTab(6)" >
+                                Next
                             </v-btn>
                         </div>
                     </v-tabs-window-item>
 
+                    <v-tabs-window-item value="7"  style="padding: 50px">
+                        
+                        <div>
+                            <p> Resume Preview will be here</p>
+                                    <v-container>
+                                    <v-skeleton-loader type="card"></v-skeleton-loader>
+                                    </v-container>
+                        </div>
+                        
+                        
+                        
+                        
+
+                        <div class="mb-10">
+                            <v-spacer></v-spacer>
+                        </div>
+
+                        <v-divider></v-divider>
+
+                        <div class="mb-10">
+                          <v-spacer></v-spacer>
+                        </div>
+                        
+
+                        <v-checkbox-btn :model-value="isActive" 
+                                        @click="showTab(n)"
+                                        
+                                        label=" Allow feedback"></v-checkbox-btn>
+
+                        
+                        
+                        <div align="right">
+                            
+                        <v-btn variant="tonal" @click="" >
+                            Generate resume
+                        </v-btn>
+                        </div>
+                    </v-tabs-window-item>
                     
 
 

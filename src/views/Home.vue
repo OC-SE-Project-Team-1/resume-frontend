@@ -10,8 +10,8 @@ onMounted(() => {
   account.value = JSON.parse(localStorage.getItem("account"));
 });
 
-function navigateToCreateStory() {
-  router.push({ name: "createstory" });
+function navigateToCreateResume() {
+  router.push({ name: "selectTemplate" });
 }
 </script>
 
@@ -31,7 +31,7 @@ function navigateToCreateStory() {
     <div>
       <v-row align="center">
         <v-col align="center">
-          <v-btn variant="flat" color="secondary" @click="navigateToCreateStory()">Create a Story</v-btn>
+          <v-btn variant="flat" color="secondary" @click="navigateToCreateResume()">Create a Resume</v-btn>
           <div class="mb-10">
             <v-spacer></v-spacer>
           </div>

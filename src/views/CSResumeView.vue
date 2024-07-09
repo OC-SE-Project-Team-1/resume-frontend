@@ -11,7 +11,8 @@ const content = ref(null);
 const title = ref(null);
 const storyId = ref(null);
 const isExport = ref(false);
-const isFeedback = ref(false);
+const feedback = ref(null);
+
 const snackbar = ref({
   value: false,
   color: "",
@@ -61,12 +62,25 @@ async function exportStory() {
     });
 }
 
-function openExport() {
-  isExport.value = true;
+//Submit Feedback
+async function submitFeedback() {
+  // await StoryExport.exportStory(storyId.value)
+  //   .then(() => {
+  //     closeExport();
+  //     snackbar.value.value = true;
+  //     snackbar.value.color = "green";
+  //     snackbar.value.text = "Story Exported!";
+  //   })
+  //   .catch((error) => {
+  //     console.log(error);
+  //     snackbar.value.value = true;
+  //     snackbar.value.color = "error";
+  //     snackbar.value.text = error.response.data.message;
+  //   });
 }
 
-function toggleFeedback() {
-  isFeedback.value = !isFeedback.value;
+function openExport() {
+  isExport.value = true;
 }
 
 function closeExport() {
@@ -81,21 +95,9 @@ function closeSnackBar() {
 <template>
   <v-container>
     <div id="body">
-      <v-btn variant="flat" color="secondary" @click="navigateToEdit()">Edit</v-btn>
       <v-btn variant="flat" color="secondary" @click="openExport()">Export</v-btn>
-      <v-btn variant="flat" color="secondary" @click="toggleFeedback()">Toggle Feedback</v-btn>
       <v-card-title class="text-center headline mb-2">View</v-card-title>
 
-      <div v-show="!isFeedback">
-      <v-card class="rounded-lg elevation-5 my-8">
-        <v-card-title class="text-center headline mb-2">{{ title }}</v-card-title>
-        <v-card-text>
-          <v-textarea v-model="content" label="RESUME FILLER" auto-grow readonly></v-textarea>
-        </v-card-text>
-      </v-card>
-      </div>
-
-      <div v-show="isFeedback">
       <v-row>
         <v-col>
       <v-card class="rounded-lg elevation-5 my-8">
@@ -109,7 +111,7 @@ function closeSnackBar() {
       <v-card class="rounded-lg elevation-5 my-8">
         <v-card-title class="text-center headline mb-2">Feedback</v-card-title>
         <v-card-text>
-          <v-textarea v-model="feedback" label="View Feedback" auto-grow readonly></v-textarea>
+          <v-textarea v-model="feedback" label="Input Feedback" auto-grow ></v-textarea>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -118,11 +120,10 @@ function closeSnackBar() {
       </v-card>
     </v-col>
     </v-row>
-  </div>
 
       <v-dialog persistent v-model="isExport" width="800">
         <v-card class="rounded-lg elevation-5">
-          <v-card-title class="text-center headline mb-2">Export Resume?</v-card-title>
+          <v-card-title class="text-center headline mb-2">Export Story?</v-card-title>
 
           <v-card-actions>
             <v-btn variant="flat" color="primary" @click="exportStory()">Export PDF</v-btn>
@@ -143,5 +144,7 @@ function closeSnackBar() {
         </template>
       </v-snackbar>
     </div>
+
   </v-container>
+  
 </template>

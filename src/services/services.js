@@ -2,9 +2,9 @@ import axios from "axios";
 
 var baseurl = "";
 if (process.env.NODE_ENV === "development") {
-  baseurl = "http://localhost:3201/fairytales/";
+  baseurl = "http://localhost:3201/resume/";
 } else {
-  baseurl = "/fairytales/";
+  baseurl = "/resume/";
 }
 
 const apiClient = axios.create({

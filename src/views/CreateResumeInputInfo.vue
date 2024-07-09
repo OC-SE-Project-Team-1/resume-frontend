@@ -374,7 +374,7 @@ export default {
                         :items="links" 
                         item-value="id" 
                         :headers="[{title: 'Description', value: 'type'}, 
-                                   {title: 'Link', value: 'url'}]" 
+                                   {title: 'URL', value: 'url'}]" 
                         show-select
                         hide-default-footer>
                         </v-data-table>

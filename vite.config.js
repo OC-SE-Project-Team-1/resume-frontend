@@ -7,7 +7,7 @@ import vuetify from "vite-plugin-vuetify";
 
 export default () => {
   const baseURL =
-    process.env.APP_ENV === "development" ? "/" : "/resume-frontend/";
+    process.env.APP_ENV === "development" ? "/" : "/resume/p2t1";
 
   return defineConfig({
     plugins: [vue(), vuetify({ autoImport: true })],

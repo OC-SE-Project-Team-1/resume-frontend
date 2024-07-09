@@ -21,7 +21,10 @@ const account = ref({
   password: "",
   firstName: "",
   lastName: "",
-  phoneNumber: ""
+  phoneNumber: "",
+  address: "",
+  roleId: userRole,
+  darkMode: "1" //TODO: Get Dark Mode working Properly
 });
 
 const allFilled = computed(() => {
@@ -30,10 +33,19 @@ const allFilled = computed(() => {
   console.log(userRole.value);
   console.log(verifyRoleCode.value);
   return (
-    // account.userName.value !== null &&
-    (userRole.value === 'student' || 
-    (userRole.value !== 'student' && 
-    verifyRoleCode.value !== "")) 
+    account.value.address !== "" &&
+    account.value.userName !== "" &&
+    account.value.email !== "" &&
+    account.value.password !== "" &&
+    account.value.firstName !== "" &&
+    account.value.lastName !== "" &&
+    account.value.phoneNumber !== "" &&
+    account.value.darkMode !== "" &&
+    (userRole.value === '3' || 
+    (userRole.value === '2' && 
+      verifyRoleCode.value === "services")|| 
+    (userRole.value === '1' && 
+      verifyRoleCode.value === "admin")) 
   )
 })
 
@@ -59,6 +71,7 @@ function navigateToLogin() {
 
 //Create Account
 async function createAccount() {
+  console.log(account.value);
   await UserServices.addUser(account.value)
     .then((data) => {
       window.localStorage.setItem("account", JSON.stringify(data.data));
@@ -127,7 +140,13 @@ export default {
 
           <div class="mb-3">
             <label for="phonenumber">Phone Number: </label>
-            <v-text-field v-model="account.phoneNumber" label="(555)555-5555" required hint="Input Phone Number as Shown">
+            <v-text-field v-model="account.phoneNumber" label="555-555-5555" required hint="Input Phone Number as Shown">
+            </v-text-field>
+          </div>
+
+          <div class="mb-3">
+            <label for="address">Address: </label>
+            <v-text-field v-model="account.address" label="555 W. Street, Oklahoma City, OK 55555" required hint="Input Address as Shown">
             </v-text-field>
           </div>
 
@@ -158,14 +177,14 @@ export default {
 
           <div class="mb-3">
             <label for="userRole">Role: </label>
-            <v-radio-group inline v-model="userRole">
-            <v-radio label="Student" value="student"></v-radio>
-            <v-radio label="Career Service" value="careerservice"></v-radio>
-            <v-radio label="Admin" value="admin"></v-radio>
+            <v-radio-group inline v-model="userRole" >
+            <v-radio label="Student" value="3"></v-radio>
+            <v-radio label="Career Service" value="2"></v-radio>
+            <v-radio label="Admin" value="1"></v-radio>
           </v-radio-group>
           </div>
           
-          <div class="mb-3" v-show="userRole !== 'student' && userRole !== null">
+          <div class="mb-3" v-if="userRole !== '3' && userRole !== null">
             <label for="confirmRole">Enter Code: </label>
             <v-text-field v-model="verifyRoleCode" label="Code"></v-text-field>
           </div>

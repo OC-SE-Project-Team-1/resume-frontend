@@ -92,7 +92,7 @@ async function closeNewLink() {
 }
 
 async function getLinks() {
-    await LinkServices.getLinks(account.value.id)
+    await LinkServices.getLinksForUser(account.value.id)
         .then((response) => {
             links.value = response.data;
         })

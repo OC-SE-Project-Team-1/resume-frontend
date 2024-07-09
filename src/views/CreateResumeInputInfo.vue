@@ -3,6 +3,7 @@ import { computed, onMounted } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import UserServices from "../services/UserServices.js";
+import LinkServices from "../services/LinkServices.js";
 
 const account = ref();
 //Snackbar to display errors
@@ -45,7 +46,18 @@ const lastName = ref();
 const address = ref();
 const phoneNumber = ref();
 const email = ref();
-const jobtitle = ref();
+const linkDescription = ref("");
+const link = ref("");
+const links = ref();
+const selectedLinks = ref();
+// const jobtitle = ref();
+
+const isLinked = computed(() => {
+    return (
+        link.value !== "" &&
+        linkDescription.value !== ""
+    )
+});
 
 const selectedSections = ref();
 
@@ -75,11 +87,40 @@ async function setNewLinkVisible() {
 
 async function closeNewLink() {
     isNewLinkVisible.value = false;
+    link.value = "";
+    linkDescription.value = "";
+}
+
+async function getLinks() {
+    await LinkServices.getLinks(account.value.id)
+        .then((response) => {
+            links.value = response.data;
+        })
+        .catch((error) => {
+            console.log(error);
+            snackbar.value.value = true;
+            snackbar.value.color = "error";
+            snackbar.value.text = error.response.data.message;
+        });
 }
 
 async function addNewLink() {
-    closeNewLink();
+    await LinkServices.addLink(link.value, linkDescription.value, parseInt(account.value.id))
+        .then(() => {
+            snackbar.value.value = true;
+            snackbar.value.color = "green";
+            snackbar.value.text = "Link Added!";
+            closeNewLink();
+            getLinks();
+        })
+        .catch((error) => {
+            console.log(error);
+            snackbar.value.value = true;
+            snackbar.value.color = "error";
+            snackbar.value.text = error.response.data.message;
+        });
 }
+
 async function nextTab(input) {
 
     //const temp = parseInt(tab.value) + 1;
@@ -193,7 +234,6 @@ async function showTab(index) {
 
 async function getPersonalInfo() {
     resetNewInput()
-    console.log("HEEEEEEEEELLLLLLLOOOOOO")
     await UserServices.getUser(parseInt(account.value.id))
         .then((response) => {
             personalInfo.value = response.data;
@@ -202,6 +242,7 @@ async function getPersonalInfo() {
             address.value = personalInfo.value.address;
             phoneNumber.value = personalInfo.value.phoneNumber;
             email.value = personalInfo.value.email;
+            getLinks();
         })
         .catch((error) => {
             console.log(error);
@@ -287,28 +328,28 @@ export default {
                     <v-tabs-window-item value="1" style="padding: 50px">
                         <v-row>
                             <v-col>
-                                <v-text-field v-model="firstName" label="First Name"></v-text-field>
+                                <v-text-field v-model="firstName" label="First Name" readonly></v-text-field>
                             </v-col>
                             <v-col>
-                                <v-text-field v-model="lastName" label="Last Name"></v-text-field>
+                                <v-text-field v-model="lastName" label="Last Name" readonly></v-text-field>
                             </v-col>
                         </v-row>
-                        <v-row>
+                        <!-- <v-row>
                             <v-col>
                                 <v-text-field v-model="jobtitle" label="Job Title"></v-text-field>
                             </v-col>
-                        </v-row>
+                        </v-row> -->
                         <v-row>
                             <v-col>
-                                <v-text-field v-model="address" label="Address"></v-text-field>
+                                <v-text-field v-model="address" label="Address" readonly></v-text-field>
                             </v-col>
                         </v-row>
                         <v-row>
                             <v-col>
-                                <v-text-field v-model="phoneNumber" label="Phone Number"></v-text-field>
+                                <v-text-field v-model="phoneNumber" label="Phone Number" readonly></v-text-field>
                             </v-col>
                             <v-col>
-                                <v-text-field v-model="email" label="Email Address"></v-text-field>
+                                <v-text-field v-model="email" label="Email Address" readonly></v-text-field>
                             </v-col>
                         </v-row>
 
@@ -322,6 +363,22 @@ export default {
                             <v-spacer></v-spacer>
                         </div>
 
+                        <v-row>
+                            <v-col>
+                                <v-card-title align="LEFT">Links</v-card-title>
+                            </v-col>
+                        </v-row>
+
+                        <v-data-table 
+                        v-model="selectedLinks" 
+                        :items="links" 
+                        item-value="id" 
+                        :headers="[{title: 'Description', value: 'type'}, 
+                                   {title: 'Link', value: 'url'}]" 
+                        show-select
+                        hide-default-footer>
+                        </v-data-table>
+
                         <v-btn variant="text" @click="setNewLinkVisible()">
                             + Add New link
                         </v-btn>
@@ -329,10 +386,10 @@ export default {
                         <v-container v-if="isNewLinkVisible">
                             <v-row>
                                 <v-col>
-                                    <v-text-field label="Description"></v-text-field>
+                                    <v-text-field v-model="linkDescription" label="Description"></v-text-field>
                                 </v-col>
                                 <v-col>
-                                    <v-text-field label="Link"></v-text-field>
+                                    <v-text-field v-model="link" label="Link"></v-text-field>
                                 </v-col>
                             </v-row>
                             <v-col>
@@ -342,7 +399,7 @@ export default {
                                 Cancel
                             </v-btn>
                             &nbsp;&nbsp;&nbsp;
-                            <v-btn variant="tonal" @click="addNewLink()">
+                            <v-btn variant="tonal" :disabled="!isLinked" @click="addNewLink()">
                                 Submit
                             </v-btn>
                         </v-container>
@@ -477,7 +534,7 @@ export default {
                                 Cancel
                             </v-btn>
                             &nbsp;&nbsp;&nbsp;
-                            <v-btn variant="tonal" @click="addNewLink()">
+                            <v-btn variant="tonal" @click="addNewEducation()">
                                 Submit
                             </v-btn>
                         </v-container>
@@ -579,7 +636,7 @@ export default {
                                 Cancel
                             </v-btn>
                             &nbsp;&nbsp;&nbsp;
-                            <v-btn variant="tonal" @click="addNewLink()">
+                            <v-btn variant="tonal" @click="addNewExperience()">
                                 Submit
                             </v-btn>
                         </v-container>
@@ -676,7 +733,7 @@ export default {
                                 Cancel
                             </v-btn>
                             &nbsp;&nbsp;&nbsp;
-                            <v-btn variant="tonal" @click="addNewLink()">
+                            <v-btn variant="tonal" @click="addNewExperience()">
                                 Submit
                             </v-btn>
                         </v-container>
@@ -773,7 +830,7 @@ export default {
                                 Cancel
                             </v-btn>
                             &nbsp;&nbsp;&nbsp;
-                            <v-btn variant="tonal" @click="addNewLink()">
+                            <v-btn variant="tonal" @click="addNewExperience()">
                                 Submit
                             </v-btn>
                         </v-container>
@@ -870,7 +927,7 @@ export default {
                                 Cancel
                             </v-btn>
                             &nbsp;&nbsp;&nbsp;
-                            <v-btn variant="tonal" @click="addNewLink()">
+                            <v-btn variant="tonal" @click="addNewExperience()">
                                 Submit
                             </v-btn>
                         </v-container>
@@ -943,7 +1000,7 @@ export default {
                                 Cancel
                             </v-btn>
                             &nbsp;&nbsp;&nbsp;
-                            <v-btn variant="tonal" @click="addNewLink()">
+                            <v-btn variant="tonal" @click="addNewSkill()">
                                 Submit
                             </v-btn>
                         </v-container>
@@ -1029,7 +1086,7 @@ export default {
                                 Cancel
                             </v-btn>
                             &nbsp;&nbsp;&nbsp;
-                            <v-btn variant="tonal" @click="addNewLink()">
+                            <v-btn variant="tonal" @click="addNewHonor()">
                                 Submit
                             </v-btn>
                         </v-container>
@@ -1111,7 +1168,7 @@ export default {
                                 Cancel
                             </v-btn>
                             &nbsp;&nbsp;&nbsp;
-                            <v-btn variant="tonal" @click="addNewLink()">
+                            <v-btn variant="tonal" @click="addNewAward()">
                                 Submit
                             </v-btn>
                         </v-container>

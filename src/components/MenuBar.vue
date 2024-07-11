@@ -101,7 +101,7 @@ function toggleTheme() {
       <v-btn v-if="account !== null" class="mx-2" :to="{ name: 'library' }">
         Library
       </v-btn>
-      <v-btn v-if="account !== null" class="mx-2" :to="{ name: 'selectTemplate' }">
+      <v-btn v-if="account !== null" class="mx-2" :to="{ name: 'createResume' }">
         Create Resume
       </v-btn>
       <v-btn v-if="account !== null && parseInt(account.roleId) !== 3" class="mx-2" :to="{ name: 'cslibrary' }">

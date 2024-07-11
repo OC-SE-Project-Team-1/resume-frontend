@@ -1003,7 +1003,7 @@ export default {
 </v-tabs-window-item>
 
 <v-tabs-window-item value="6" style="padding: 50px">
-     skills 
+     Other Resume Parts 
 
     <div align="left">
         <v-text class="headline mb-2">Select Honors: </v-text>
@@ -1170,9 +1170,6 @@ export default {
 
     <div align="right">
 
-        <v-btn variant="tonal" @click="nextTab(6)">
-            Next
-        </v-btn>
     </div>
 </v-tabs-window-item>
 
@@ -1292,8 +1289,16 @@ export default {
                 </div>
                             
             </v-card>
+            <div class="mb-7">
+                            <v-spacer></v-spacer>
+                        </div>
+        <div  align="center">
+            <v-btn>Generate Resume</v-btn>
+        </div>
         </v-col>
+        
     </v-row>
+    
 </v-container>
 
 <!--

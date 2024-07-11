@@ -2,7 +2,7 @@ import axios from "axios";
 
 var baseurl = "";
 if (process.env.NODE_ENV === "development") {
-  baseurl = "http://localhost:3036/resume/"; 
+  baseurl = "http://localhost:3036/resume-p2t1/"; 
 } else {
   baseurl = "/resume-p2t1";//p2t1
 }

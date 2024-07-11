@@ -31,6 +31,6 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY_2 }}
           ARGS: "-rltgoDzvO --delete"
           SOURCE: "dist/"
-          REMOTE_HOST: "ec2-18-117-255-50.us-east-2.compute.amazonaws.com" #Change to aws URL
+          REMOTE_HOST: "ec2-35-90-191-171.us-west-2.compute.amazonaws.com" #Change to aws URL
           REMOTE_USER: ubuntu
-          TARGET: "/var/www/html/fairytales-frontend"
+          TARGET: "/var/www/html/resume/p2t1"

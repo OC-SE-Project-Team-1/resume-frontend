@@ -327,11 +327,11 @@ export default {
             <v-text-field v-model="lastName" label="Last Name" readonly></v-text-field>
         </v-col>
     </v-row>
-     <v-row>
+     <!-- <v-row>
         <v-col>
             <v-text-field v-model="jobtitle" label="Job Title"></v-text-field>
         </v-col>
-    </v-row> 
+    </v-row>  -->
     <v-row>
         <v-col>
             <v-text-field v-model="address" label="Address" readonly></v-text-field>

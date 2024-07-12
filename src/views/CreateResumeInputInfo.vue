@@ -4,8 +4,8 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import UserServices from "../services/UserServices.js";
 import LinkServices from "../services/LinkServices.js";
-
 import EducationServices from "../services/EducationServices.js";
+import ExperienceServices from "../services/ExperienceServices.js";
 import template1 from "/Template1.png";
 import template2 from "/Template2.png";
 import template3 from "/Template3.png";
@@ -77,6 +77,9 @@ const degreeType = ref("");
 const minors = ref(null);
 const courses = ref(null);
 const attending = ref(false);
+
+const workExperienceInfo = ref();
+const selectedWorkExperience = ref();
 
 const isMinors = ref(false);
 const isCourses = ref(false);
@@ -166,84 +169,6 @@ async function navigateNextTab(value) {
     //const temp = parseInt(tab.value) + 1;
     const temp = value + 1;
     tab.value  = temp.toString();
-}
-
-async function nextTab(input) {
-
-    //const temp = parseInt(tab.value) + 1;
-    const temp = input + 1;
-
-    if (temp == 1) {
-
-        console.log("TESTED AND THIS IS FIRST TAB");
-        if (isPersonalDetails.value == false) {
-            console.log("First tab isn't visible");
-
-            console.log(temp);
-            nextTab(temp);
-
-        }
-        else {
-            tab.value = temp.toString();
-            resetNewInput();
-        }
-    }
-    else if (temp == 2) {
-        console.log("TESTED AND THIS IS SECOND TAB");
-        if (isProfSum.value == false) {
-            nextTab(temp);
-        } else {
-            tab.value = temp.toString();
-            resetNewInput();
-        }
-    }
-    else if (temp == 3) {
-        console.log("TESTED AND THIS IS THIRD TAB");
-        if (isEducation.value == false) {
-            nextTab(temp);
-        } else {
-            tab.value = temp.toString();
-            resetNewInput();
-        }
-    }
-    else if (temp == 4) {
-        console.log("TESTED AND THIS IS FOURTH TAB");
-        if (isExperience.value == false) {
-            nextTab(temp);
-        } else {
-            tab.value = temp.toString();
-            resetNewInput();
-        }
-    }
-    else if (temp == 5) {
-        console.log("TESTED AND THIS IS FIFTH TAB");
-        if (isSkills.value == false) {
-            nextTab(temp);
-        } else {
-            tab.value = temp.toString();
-            resetNewInput();
-        }
-    }
-    else if (temp == 6) {
-        console.log("TESTED AND THIS IS SIXTH TAB");
-        if (isSkills.value == false) {
-            nextTab(temp);
-        } else {
-            tab.value = temp.toString();
-            resetNewInput();
-        }
-    }
-    else if (temp == 7) {
-        console.log("TESTED AND THIS IS SEVENTH TAB");
-        if (isSkills.value == false) {
-            nextTab(temp);
-        } else {
-            tab.value = temp.toString();
-            resetNewInput();
-        }
-    }
-
-
 }
 
 async function resetNewInput() {
@@ -409,6 +334,20 @@ async function closeEducation() {
     degree.value = null;
     degreeTitle.value = "";
     degreeType.value = null;
+}
+
+async function getWorkEducationInfo() {
+    resetNewInput()
+    await ExperienceServices.getExperienceForUser(parseInt(account.value.id))
+        .then((response) => {
+            educationInfo.value = response.data;
+        })
+        .catch((error) => {
+            console.log(error);
+            snackbar.value.value = true;
+            snackbar.value.color = "error";
+            snackbar.value.text = error.response.data.message;
+        });
 }
 </script>
 

@@ -82,8 +82,25 @@ const experiences = ref();
 const search = ref();
 const selectedWorkExperience = ref();
 const selectedLeadershipExperience = ref();
+
 const isJobExperience = ref(false);
+const jobExperienceTitle = ref();
+const jobCompany = ref();
+const jobCity = ref();
+const jobState = ref();
+const jobStart = ref();
+const jobEnd = ref();
+const jobDescription = ref();
+
 const isLeadershipExperience = ref(false);
+const leadershipTitle = ref();
+const leadershipOrg = ref();
+const leadershipStart = ref();
+const leadershipEnd = ref();
+const leadershipDescription = ref();
+const LeadershipCity = ref();
+const leadershipState = ref();
+
 const isActivitiesExperience = ref(false);
 const isVolunteerExperience = ref(false);
 
@@ -92,7 +109,6 @@ const isCourses = ref(false);
 
 const isAttending = ref(false);
 
-// const jobtitle = ref();
 const templateSelected = ref();
 
 const isSelectTemplate = ref(true);
@@ -228,14 +244,6 @@ function toggleExperience(value) {
     else if (value == 4) {
         isVolunteerExperience.value = !isVolunteerExperience.value;
     }
-}
-
-function toggleJobExperience() {
-    isJobExperience.value = !isJobExperience.value;
-}
-
-function toggleLeadershipExperience() {
-    isLeadershipExperience.value = !isLeadershipExperience.value;
 }
 
 async function showTab(index) {
@@ -382,6 +390,72 @@ async function getExperiences() {
             snackbar.value.color = "error";
             snackbar.value.text = error.response.data.message;
         });
+}
+
+async function addNewExperience(value) {
+    const tempDescription = ref("Temp idk replace when able");
+    if (value == 1) {
+        await ExperienceServices.addExperience(jobExperienceTitle.value, jobDescription.value, jobStart.value, jobEnd.value, 
+                account.value.id, value, jobCity.value, jobState.value, jobCompany.value
+    )
+        .then(() => {
+            snackbar.value.value = true;
+            snackbar.value.color = "green";
+            snackbar.value.text = "Experience Added!";
+            getExperiences();
+            closeNewJobExperience();
+        })
+        .catch((error) => {
+            console.log(error);
+            snackbar.value.value = true;
+            snackbar.value.color = "error";
+            snackbar.value.text = error.response.data.message;
+        });
+    }
+    else if (value == 2) {
+        await ExperienceServices.addExperience(leadershipTitle.value, leadershipDescription.value, leadershipStart.value, leadershipEnd.value, 
+                account.value.id, value, LeadershipCity.value, leadershipState.value, leadershipOrg.value
+    )
+        .then(() => {
+            snackbar.value.value = true;
+            snackbar.value.color = "green";
+            snackbar.value.text = "Experience Added!";
+            getExperiences();
+            closeNewLeadershipExperience();
+        })
+        .catch((error) => {
+            console.log(error);
+            snackbar.value.value = true;
+            snackbar.value.color = "error";
+            snackbar.value.text = error.response.data.message;
+        });
+    }
+
+    
+
+}
+
+async function closeNewJobExperience() {
+    jobExperienceTitle.value = null;
+    jobCompany.value = null;
+    jobCity.value = null;
+    jobState.value = null;
+    jobStart.value = null;
+    jobEnd.value = null;
+    jobDescription.value = null;
+
+    isJobExperience.value = false;
+}
+
+async function closeNewLeadershipExperience() {
+    leadershipTitle.value = null;
+    leadershipOrg.value = null;
+    LeadershipCity.value = null;
+    leadershipState.value = null;
+    leadershipStart.value = null;
+    leadershipEnd.value = null;
+    leadershipDescription.value = null;
+    isLeadershipExperience.value = false;
 }
 
 </script>
@@ -735,31 +809,31 @@ export default {
     <v-container v-if="isJobExperience">
         <v-row>
             <v-col>
-                <v-text-field label="Position Title"></v-text-field>
+                <v-text-field v-model="jobExperienceTitle" label="Position Title"></v-text-field>
             </v-col>
             <v-col>
-                <v-text-field label="Company Name"></v-text-field>
-            </v-col>
-        </v-row>
-        <v-row>
-            <v-col>
-                <v-text-field label="City"></v-text-field>
-            </v-col>
-            <v-col>
-                <v-text-field label="State"></v-text-field>
+                <v-text-field v-model="jobCompany" label="Company Name"></v-text-field>
             </v-col>
         </v-row>
         <v-row>
             <v-col>
-                <v-text-field label="Start Date"></v-text-field>
+                <v-text-field v-mmodel="jobCity" label="City"></v-text-field>
             </v-col>
             <v-col>
-                <v-text-field label="End Date"></v-text-field>
+                <v-text-field v-model="jobState" label="State"></v-text-field>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col>
+                <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
+            </v-col>
+            <v-col>
+                <v-text-field v-model="jobEnd" label="End Date"></v-text-field>
                 <v-switch label="Present Job" color="primary"></v-switch>
             </v-col>
         </v-row>
         <v-row>
-            <v-textarea label="Work Summary">
+            <v-textarea v-model="jobDescription" label="Work Summary">
                 <template #append-inner>
                     <v-btn color="secondary" rounded="xl" value="Ai Assist">
                         AI Assist
@@ -775,7 +849,7 @@ export default {
             Cancel
         </v-btn>
         &nbsp;&nbsp;&nbsp;
-        <v-btn variant="tonal" @click="addNewExperience()">
+        <v-btn variant="tonal" @click="addNewExperience(1)">
             Submit
         </v-btn>
     </v-container>
@@ -799,7 +873,7 @@ export default {
                 v-model="selectedLeadershipExperience" 
                 :items="experiences" 
                 item-value="id" 
-                :search="4"
+                :search="2"
                 :headers="[ {title: 'Experience', value: 'experienceTypeId', align: ' d-none'}, {title: 'Organization', value: 'organization'}, {title: 'Title', value: 'title'},]" 
                 show-select
                 hide-default-footer>
@@ -827,24 +901,32 @@ export default {
     <v-container v-if="isLeadershipExperience">
         <v-row>
             <v-col>
-                <v-text-field label="Position"></v-text-field>
+                <v-text-field v-model="leadershipTitle" label="Position"></v-text-field>
             </v-col>
             <v-col>
-                <v-text-field label="Organization Name"></v-text-field>
+                <v-text-field v-model="leadershipOrg" label="Organization Name"></v-text-field>
             </v-col>
         </v-row>
-
         <v-row>
             <v-col>
-                <v-text-field label="Start Date"></v-text-field>
+                <v-text-field v-model="LeadershipCity" label="City"></v-text-field>
             </v-col>
             <v-col>
-                <v-text-field label="End Date"></v-text-field>
+                <v-text-field v-model="leadershipState" label="State"></v-text-field>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col>
+                <v-text-field v-model="leadershipStart" label="Start Date"></v-text-field>
+            </v-col>
+            <v-col>
+                <v-text-field v-model="leadershipEnd" label="End Date"></v-text-field>
                 <v-switch label="Present Role" color="primary"></v-switch>
             </v-col>
         </v-row>
+        
         <v-row>
-            <v-textarea label="Role Summary">
+            <v-textarea v-model="leadershipDescription" label="Role Summary">
                 <template #append-inner>
                     <v-btn color="secondary" rounded="xl" value="Ai Assist">
                         AI Assist
@@ -860,7 +942,7 @@ export default {
             Cancel
         </v-btn>
         &nbsp;&nbsp;&nbsp;
-        <v-btn variant="tonal" @click="addNewExperience()">
+        <v-btn variant="tonal" @click="addNewExperience(2)">
             Submit
         </v-btn>
     </v-container>
@@ -945,7 +1027,7 @@ export default {
             Cancel
         </v-btn>
         &nbsp;&nbsp;&nbsp;
-        <v-btn variant="tonal" @click="addNewExperience()">
+        <v-btn variant="tonal" @click="addNewExperience(3)">
             Submit
         </v-btn>
     </v-container>

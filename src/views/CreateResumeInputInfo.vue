@@ -81,6 +81,7 @@ const attending = ref(false);
 const experiences = ref();
 const search = ref();
 const selectedWorkExperience = ref();
+const selectedLeadershipExperience = ref();
 
 const isMinors = ref(false);
 const isCourses = ref(false);
@@ -762,27 +763,15 @@ export default {
         <v-text class="headline mb-2">Select Leadership Experience: </v-text>
 
         <v-container>
-            <v-list lines="two">
-                <v-list-item v-for="n in 3" :key="n">
-                    <v-row>
-                        <v-col cols="2">
-                            <v-checkbox></v-checkbox>
-                        </v-col>
-                        <v-col cols="10">
-                            <v-list-item-content>
-                                <v-list-item-title>{{ 'Title' }}</v-list-item-title>
-                                <v-list-item-subtitle>
-                                    Organization, Role
-                                </v-list-item-subtitle>
-                                <v-list-item-subtitle>
-                                    Description
-                                </v-list-item-subtitle>
-                            </v-list-item-content>
-                        </v-col>
-                    </v-row>
-
-                </v-list-item>
-            </v-list>
+            <v-data-table 
+                v-model="selectedLeadershipExperience" 
+                :items="experiences" 
+                item-value="id" 
+                :search="4"
+                :headers="[ {title: 'Experience', value: 'experienceTypeId', align: ' d-none'}, {title: 'Organization', value: 'organization'}, {title: 'Title', value: 'title'},]" 
+                show-select
+                hide-default-footer>
+            </v-data-table>
         </v-container>
 
     </div>

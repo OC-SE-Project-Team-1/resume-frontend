@@ -30,6 +30,10 @@ function navigateToView() {
   router.push({ name: "csresumeview" });
 }
 
+function navigateToCSLibrary() {
+  router.push({ name: "cslibrary" })
+}
+
 //Export Story
 async function exportStory() {
   await StoryExport.exportStory(storyId.value)
@@ -64,7 +68,9 @@ function closeSnackBar() {
   <v-container>
     <div id="body">
       <v-card-title class="text-center headline mb-2">{{ name }}</v-card-title>
-
+      <v-col class="text-right">
+              <v-btn color="secondary" @click="navigateToCSLibrary()"> Back </v-btn>
+      </v-col>
       <v-table fixed-header>
         <thead>
           <tr>

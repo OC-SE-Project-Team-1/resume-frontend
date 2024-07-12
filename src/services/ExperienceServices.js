@@ -8,7 +8,7 @@ export default {
         return apiClient.get("experience/" + id);
     },
     getExperiencesForUser(userID) {
-        return apiClient.get("axperience/user/" + userID);
+        return apiClient.get("/experience/user/" + userID);
     },
     addExperience(title, description, startDate, endDate, userID, 
         experienceTypeID, city, state, organization) {

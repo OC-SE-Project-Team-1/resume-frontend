@@ -78,7 +78,8 @@ const minors = ref(null);
 const courses = ref(null);
 const attending = ref(false);
 
-const workExperienceInfo = ref();
+const experiences = ref();
+const search = ref();
 const selectedWorkExperience = ref();
 
 const isMinors = ref(false);
@@ -336,11 +337,11 @@ async function closeEducation() {
     degreeType.value = null;
 }
 
-async function getWorkEducationInfo() {
-    resetNewInput()
-    await ExperienceServices.getExperienceForUser(parseInt(account.value.id))
+async function getExperiences() {
+    await ExperienceServices.getExperiencesForUser(account.value.id)
         .then((response) => {
-            educationInfo.value = response.data;
+            experiences.value = response.data;
+            console.log(experiences.value);
         })
         .catch((error) => {
             console.log(error);
@@ -349,6 +350,7 @@ async function getWorkEducationInfo() {
             snackbar.value.text = error.response.data.message;
         });
 }
+
 </script>
 
 <script>
@@ -370,7 +372,7 @@ export default {
                         <v-tab value="1" @click="getPersonalInfo()" >Personal Details</v-tab>
                         <v-tab value="2" @click="resetNewInput()" >Professional Summary</v-tab>
                         <v-tab value="3" @click="getEducationInfo()" >Education</v-tab>
-                        <v-tab value="4" @click="resetNewInput()" >Experience</v-tab>
+                        <v-tab value="4" @click="getExperiences()" >Experience</v-tab>
                         <v-tab value="5" @click="resetNewInput()">Skills</v-tab>
                         <v-tab value="6" @click="resetNewInput()" >Others</v-tab>
                     </v-tabs>
@@ -666,30 +668,17 @@ export default {
 
 <v-tabs-window-item value="4" style="padding: 50px">
     <div align="left">
-        <v-text class="headline mb-2">Select Job Experiences: </v-text>
-
+        <v-text class="headline mb-2">Select Work Experiences: </v-text>
         <v-container>
-            <v-list lines="two">
-                <v-list-item v-for="n in 3" :key="n">
-                    <v-row>
-                        <v-col cols="2">
-                            <v-checkbox></v-checkbox>
-                        </v-col>
-                        <v-col cols="10">
-                            <v-list-item-content>
-                                <v-list-item-title>{{ 'Job Title' }}</v-list-item-title>
-                                <v-list-item-subtitle>
-                                    Company, Location, etc
-                                </v-list-item-subtitle>
-                                <v-list-item-subtitle>
-                                    Job Description
-                                </v-list-item-subtitle>
-                            </v-list-item-content>
-                        </v-col>
-                    </v-row>
-
-                </v-list-item>
-            </v-list>
+            <v-data-table 
+                v-model="selectedWorkExperience" 
+                :items="experiences" 
+                item-value="id" 
+                :search="1"
+                :headers="[ {title: 'Experience', value: 'experienceTypeId', align: ' d-none'}, {title: 'Organization', value: 'organization'}, {title: 'Title', value: 'title'},]" 
+                show-select
+                hide-default-footer>
+            </v-data-table>
         </v-container>
 
     </div>

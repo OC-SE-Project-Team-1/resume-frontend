@@ -66,9 +66,21 @@ const schoolName = ref("");
 const schoolCity = ref("");
 const schoolState = ref("");
 const gpa = ref("");
+const maxGpa = ref("");
 const degree = ref("");
 const schoolStart = ref("");
 const schoolEnd = ref("");
+const schoolGrad = ref(null);
+const degreeTitle = ref("");
+const degreeType = ref("");
+const minors = ref(null);
+const courses = ref(null);
+const attending = ref(false);
+
+const isMinors = ref(false);
+const isCourses = ref(false);
+
+const isAttending = ref(false);
 
 // const jobtitle = ref();
 const templateSelected = ref();
@@ -255,6 +267,17 @@ async function clearTemplateSelecton() {
     toggleSelectPreview();
 }
 
+function toggleIsAttending() {
+    isAttending.value = !isAttending.value;
+
+    if (isAttending.value == false) {
+        schoolGrad.value = null;
+    }
+    else {
+        schoolEnd.value = schoolGrad.value;
+    }
+}
+
 async function showTab(index) {
     if (index == "Personal Details") {
         isPersonalDetails.value = !isPersonalDetails.value;
@@ -281,6 +304,22 @@ async function showTab(index) {
         console.log("6");
     }
 
+}
+
+function showMinors() {
+    isMinors.value = !isMinors.value;
+
+    if (isMinors.value == false) {
+        minors.value = null;
+    }
+}
+
+function showCourses() {
+    isCourses.value = !isCourses.value;
+
+    if (isCourses.value == false) {
+        courses.value = null;
+    }
 }
 
 async function getPersonalInfo() {
@@ -318,8 +357,6 @@ async function getEducationInfo() {
 }
 
 async function addNewEducation() {
-
-    
     
     const tempTitle = ref("");
     tempTitle.value = schoolState.value + " " + schoolStart.value;
@@ -499,8 +536,8 @@ export default {
                 v-model="selectedEducation" 
                 :items="educationInfo" 
                 item-value="id" 
-                :headers="[{title: 'Organization', value: 'organization'}, {title: 'City', value: 'city'}, {title: 'State', value: 'state'},
-                        {title: 'Degree', value: 'description'}]" 
+                :headers="[{title: 'Organization', value: 'organization'}, {title: 'Degree', value: 'description'}, 
+                        {title: 'Start Date', value: 'startDate'}, {title: 'Grad Date', value: 'gradDate'}  ]" 
                 show-select
                 hide-default-footer>
             </v-data-table>
@@ -523,6 +560,7 @@ export default {
     <v-btn variant="tonal" @click="setNewLinkVisible">
         Add New Education
     </v-btn>
+    
 
     <v-container v-if="isNewLinkVisible">
         <v-row>
@@ -544,18 +582,87 @@ export default {
                 <v-text-field v-model="gpa" label="GPA"></v-text-field>
             </v-col>
             <v-col>
+                <v-text-field v-model="maxGpa" label="Max GPA"></v-text-field>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col>
+                <v-combobox
+                v-model = "degreeTitle"
+                label="Title of Degree"
+                :items="['Bachelor', 'Masters', 'Associates', 'PhD', 'Certificate', 'High School Diploma']"
+                ></v-combobox>
+            </v-col>
+            <v-col>
+                <v-combobox
+                v-model = "degreeType"
+                label="Degree Type"
+                :items="['Science', 'Arts', 'Fine Arts', 'Architecture']"
+                ></v-combobox>
+            </v-col>
+            <v-col>
                 <v-text-field v-model="degree" label="Degree"></v-text-field>
             </v-col>
         </v-row>
 
         <v-row>
             <v-col>
-                <v-text-field v-model="schoolStart" label="Start Date"></v-text-field>
+                <v-text-field v-model="schoolStart" label="Start Date" hint="Ex: Aug 2024"></v-text-field>
             </v-col>
             <v-col>
-                <v-text-field v-model="schoolEnd" label="Grad Date"></v-text-field>
-                <v-switch label="Still Attending" color="primary"></v-switch>
+                <v-text-field v-model="schoolEnd" v-if="!isAttending" label="End Date" hint="Ex: Aug 2024"></v-text-field>
+                <v-text-field v-model="schoolGrad" v-if="isAttending" label="Grad Date" hint="Ex: Aug 2024"></v-text-field>
+                <v-switch v-model="attending" label="Still Attending" color="primary" @click="toggleIsAttending()"></v-switch>
             </v-col>
+        </v-row>
+
+        <v-row >
+            <v-container  align="center">
+                <v-btn variant="text" @click="showMinors">
+                    Add Minor
+                </v-btn>
+                <div class="mb-6">
+                    <v-spacer></v-spacer>
+                </div>
+
+                <div v-if="isMinors">
+                    
+                   
+                    <v-text-field
+                    label=" Minor(s)"
+                    v-model="minors"
+                      hint="If multiple, format as: Minor #1, Minor #2"
+                    >
+
+                    </v-text-field>
+
+                </div>
+
+                <v-btn variant="text" @click="showCourses">
+                    Add Courses
+                </v-btn>
+
+                <div class="mb-6">
+                    <v-spacer></v-spacer>
+                </div>
+                <div v-if="isCourses">
+                    
+                   
+                    <v-text-field
+                    label="Course(s)"
+                    v-model="courses"
+                      hint="If multiple, format as: Course name, Course name"
+                    >
+
+                    </v-text-field>
+
+                </div>
+
+            </v-container>
+            
+            
+
+
         </v-row>
 
         <v-col>
@@ -572,10 +679,15 @@ export default {
 
     <div align="right">
 
+        <div class="mb-10">
+        <v-spacer></v-spacer>
+    </div>
         <v-btn variant="tonal" @click="navigateNextTab(3)">
             Next
         </v-btn>
     </div>
+
+    
 </v-tabs-window-item>
 
 <v-tabs-window-item value="4" style="padding: 50px">

@@ -82,6 +82,10 @@ const experiences = ref();
 const search = ref();
 const selectedWorkExperience = ref();
 const selectedLeadershipExperience = ref();
+const isJobExperience = ref(false);
+const isLeadershipExperience = ref(false);
+const isActivitiesExperience = ref(false);
+const isVolunteerExperience = ref(false);
 
 const isMinors = ref(false);
 const isCourses = ref(false);
@@ -176,6 +180,10 @@ async function navigateNextTab(value) {
 async function resetNewInput() {
 
     isNewLinkVisible.value = false;
+    isJobExperience.value = false;
+    isLeadershipExperience.value = false;
+    isActivitiesExperience.value = false;
+    isVolunteerExperience.value = false;
 }
 
 async function selectedTemplate(value) {
@@ -204,6 +212,30 @@ function toggleIsAttending() {
     else {
         schoolEnd.value = schoolGrad.value;
     }
+}
+
+function toggleExperience(value) {
+    if (value == 1 ){
+        
+    isJobExperience.value = !isJobExperience.value;
+    }
+    else if (value == 2) {
+        isLeadershipExperience.value = !isLeadershipExperience.value;
+    }
+    else if (value == 3) {
+        isActivitiesExperience.value = !isActivitiesExperience.value;
+    }
+    else if (value == 4) {
+        isVolunteerExperience.value = !isVolunteerExperience.value;
+    }
+}
+
+function toggleJobExperience() {
+    isJobExperience.value = !isJobExperience.value;
+}
+
+function toggleLeadershipExperience() {
+    isLeadershipExperience.value = !isLeadershipExperience.value;
 }
 
 async function showTab(index) {
@@ -696,11 +728,11 @@ export default {
     </div>
 
 
-    <v-btn variant="tonal" @click="setNewLinkVisible">
+    <v-btn variant="tonal" @click="toggleExperience(1)">
         Add New Job Experience
     </v-btn>
 
-    <v-container v-if="isNewLinkVisible">
+    <v-container v-if="isJobExperience">
         <v-row>
             <v-col>
                 <v-text-field label="Position Title"></v-text-field>
@@ -739,7 +771,7 @@ export default {
         <v-col>
 
         </v-col>
-        <v-btn variant="tonal" @click="closeNewLink()">
+        <v-btn variant="tonal" @click="toggleExperience(1)">
             Cancel
         </v-btn>
         &nbsp;&nbsp;&nbsp;
@@ -788,11 +820,11 @@ export default {
     </div>
 
 
-    <v-btn variant="tonal" @click="setNewLinkVisible">
+    <v-btn variant="tonal" @click="toggleExperience(2)">
         Add New Leadership Experience
     </v-btn>
 
-    <v-container v-if="isNewLinkVisible">
+    <v-container v-if="isLeadershipExperience">
         <v-row>
             <v-col>
                 <v-text-field label="Position"></v-text-field>
@@ -824,7 +856,7 @@ export default {
         <v-col>
 
         </v-col>
-        <v-btn variant="tonal" @click="closeNewLink()">
+        <v-btn variant="tonal" @click="toggleExperience(2)">
             Cancel
         </v-btn>
         &nbsp;&nbsp;&nbsp;
@@ -848,27 +880,15 @@ export default {
         <v-text class="headline mb-2">Select Activities: </v-text>
 
         <v-container>
-            <v-list lines="two">
-                <v-list-item v-for="n in 3" :key="n">
-                    <v-row>
-                        <v-col cols="2">
-                            <v-checkbox></v-checkbox>
-                        </v-col>
-                        <v-col cols="10">
-                            <v-list-item-content>
-                                <v-list-item-title>{{ 'Title' }}</v-list-item-title>
-                                <v-list-item-subtitle>
-                                    Organization, Role
-                                </v-list-item-subtitle>
-                                <v-list-item-subtitle>
-                                    Description
-                                </v-list-item-subtitle>
-                            </v-list-item-content>
-                        </v-col>
-                    </v-row>
-
-                </v-list-item>
-            </v-list>
+            <v-data-table 
+                v-model="selectedLeadershipExperience" 
+                :items="experiences" 
+                item-value="id" 
+                :search="4"
+                :headers="[ {title: 'Experience', value: 'experienceTypeId', align: ' d-none'}, {title: 'Organization (UPDATE with activities)', value: 'organization'}, {title: 'Title', value: 'title'},]" 
+                show-select
+                hide-default-footer>
+            </v-data-table>
         </v-container>
 
     </div>
@@ -885,11 +905,11 @@ export default {
     </div>
 
 
-    <v-btn variant="tonal" @click="setNewLinkVisible">
+    <v-btn variant="tonal" @click="toggleExperience(3)">
         Add New Activities
     </v-btn>
 
-    <v-container v-if="isNewLinkVisible">
+    <v-container v-if="isActivitiesExperience">
         <v-row>
             <v-col>
                 <v-text-field label="Position"></v-text-field>
@@ -921,7 +941,7 @@ export default {
         <v-col>
 
         </v-col>
-        <v-btn variant="tonal" @click="closeNewLink()">
+        <v-btn variant="tonal" @click="toggleExperience(3)">
             Cancel
         </v-btn>
         &nbsp;&nbsp;&nbsp;
@@ -945,27 +965,15 @@ export default {
         <v-text class="headline mb-2">Select Volunteer Work: </v-text>
 
         <v-container>
-            <v-list lines="two">
-                <v-list-item v-for="n in 3" :key="n">
-                    <v-row>
-                        <v-col cols="2">
-                            <v-checkbox></v-checkbox>
-                        </v-col>
-                        <v-col cols="10">
-                            <v-list-item-content>
-                                <v-list-item-title>{{ 'Title' }}</v-list-item-title>
-                                <v-list-item-subtitle>
-                                    Organization, Role
-                                </v-list-item-subtitle>
-                                <v-list-item-subtitle>
-                                    Description
-                                </v-list-item-subtitle>
-                            </v-list-item-content>
-                        </v-col>
-                    </v-row>
-
-                </v-list-item>
-            </v-list>
+            <v-data-table 
+                v-model="selectedLeadershipExperience" 
+                :items="experiences" 
+                item-value="id" 
+                :search="4"
+                :headers="[ {title: 'Experience', value: 'experienceTypeId', align: ' d-none'}, {title: 'Organization (UPDATE with VOLUNTEER)', value: 'organization'}, {title: 'Title', value: 'title'},]" 
+                show-select
+                hide-default-footer>
+            </v-data-table>
         </v-container>
 
     </div>
@@ -982,11 +990,11 @@ export default {
     </div>
 
 
-    <v-btn variant="tonal" @click="setNewLinkVisible">
+    <v-btn variant="tonal" @click="toggleExperience(4)">
         Add New Volunteer
     </v-btn>
 
-    <v-container v-if="isNewLinkVisible">
+    <v-container v-if="isVolunteerExperience">
         <v-row>
             <v-col>
                 <v-text-field label="Position"></v-text-field>
@@ -1018,7 +1026,7 @@ export default {
         <v-col>
 
         </v-col>
-        <v-btn variant="tonal" @click="closeNewLink()">
+        <v-btn variant="tonal" @click="toggleExperience(4)">
             Cancel
         </v-btn>
         &nbsp;&nbsp;&nbsp;

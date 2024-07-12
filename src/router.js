@@ -50,13 +50,8 @@ const router = createRouter({
       component: () => import("./views/ExtendStory.vue"),
     },
     {
-      path: "/createResume/selectTemplate",
-      name: "selectTemplate",
-      component: () => import("./views/SelectTemplate.vue"),
-    },
-    {
-      path: "/createResume/inputInfo",
-      name: "inputInfo",
+      path: "/createResume",
+      name: "createResume",
       component: () => import("./views/CreateResumeInputInfo.vue"),
     },
     {

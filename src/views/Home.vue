@@ -11,7 +11,7 @@ onMounted(() => {
 });
 
 function navigateToCreateResume() {
-  router.push({ name: "selectTemplate" });
+  router.push({ name: "createResume" });
 }
 </script>
 

@@ -11,7 +11,7 @@ export default {
         return apiClient.get("education/user/" + userID);
     },
     addEducation(title, description, accountID, startDate, 
-        endDate, gradDate, gpa, organization, city, state) {
+        endDate, gradDate, gpa, organization, city, state, courses, minors, totalGPA) {
         return apiClient.post("/education/", {
             "title": String(title),
             "description": String(description),
@@ -23,9 +23,9 @@ export default {
             "organization": String(organization),
             "city": String(city),
             "state": String(state),
-            "courses": "N/A",
-            "minor": "N/A",
-            "totalGPA": "4.00"
+            "courses": String(courses),
+            "minor": String(minors),
+            "totalGPA": String(totalGPA)
         });
 
     },

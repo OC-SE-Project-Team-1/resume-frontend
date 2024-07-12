@@ -20,6 +20,7 @@ const snackbar = ref({
     text: "",
 });
 const isNewLinkVisible = ref(false);
+const isNewEduVisible = ref(false);
 const tab = ref("1");
 const resumeTemplate = ref();
 
@@ -357,20 +358,25 @@ async function getEducationInfo() {
 }
 
 async function addNewEducation() {
+    var tempTitle = schoolState.value + " " + schoolStart.value;
+    var tempDegree = degreeTitle.value + " of " + degreeType.value + " in " + degree.value;
+    console.log(tempTitle);
+    console.log(tempDegree);
     
-    const tempTitle = ref("");
-    tempTitle.value = schoolState.value + " " + schoolStart.value;
-    console.log(tempTitle.value);
-    const notApplicable = ref("N/A");
+    if (schoolGrad.value !== null) {
+        schoolEnd.value = schoolGrad.value;
+    } else {
+        schoolGrad.value = schoolEnd.value;
+    }
 
-    await EducationServices.addEducation(tempTitle.value, degree.value, account.value.id, 
-        schoolStart.value, schoolEnd.value, schoolEnd.value, gpa.value, schoolName.value, 
-        schoolCity.value, schoolState.value)
+    await EducationServices.addEducation(tempTitle, tempDegree, account.value.id, 
+        schoolStart.value, schoolEnd.value, schoolGrad.value, gpa.value, schoolName.value, 
+        schoolCity.value, schoolState.value, courses.value, minors.value, maxGpa.value)
         .then(() => {
             snackbar.value.value = true;
             snackbar.value.color = "green";
             snackbar.value.text = "Education Added!";
-            closeNewLink();
+            closeEducation();
             getEducationInfo();
         })
         .catch((error) => {
@@ -381,6 +387,27 @@ async function addNewEducation() {
         });
 }
 
+async function setNewEduVisible() {
+    isNewEduVisible.value = true;
+}
+
+async function closeEducation() {
+    isNewEduVisible.value = false;
+    isCourses.value = false;
+    isMinors.value = false;
+    schoolStart.value = null;
+    schoolEnd.value = null;
+    schoolEnd.value = null;
+    gpa.value = null;
+    schoolName.value = null;
+    schoolCity.value = null;
+    courses.value = null;
+    minors.value = null;
+    maxGpa.value = null;
+    degree.value = null;
+    degreeTitle.value = null;
+    degreeType.value = null;
+}
 </script>
 
 <script>
@@ -557,12 +584,12 @@ export default {
     </div>
 
 
-    <v-btn variant="tonal" @click="setNewLinkVisible">
+    <v-btn variant="tonal" @click="setNewEduVisible">
         Add New Education
     </v-btn>
     
 
-    <v-container v-if="isNewLinkVisible">
+    <v-container v-if="isNewEduVisible">
         <v-row>
             <v-col>
                 <v-text-field v-model="schoolName" label="School Name"></v-text-field>
@@ -603,6 +630,9 @@ export default {
             <v-col>
                 <v-text-field v-model="degree" label="Degree"></v-text-field>
             </v-col>
+        </v-row>
+        <v-row class="mb-6">
+            <v-card-subtitle align="center">Displayed as: {{ degreeTitle }} of {{ degreeType }} in {{ degree }}</v-card-subtitle>
         </v-row>
 
         <v-row>
@@ -668,7 +698,7 @@ export default {
         <v-col>
 
         </v-col>
-        <v-btn variant="tonal" @click="closeNewLink()">
+        <v-btn variant="tonal" @click="closeEducation()">
             Cancel
         </v-btn>
         &nbsp;&nbsp;&nbsp;

@@ -30,8 +30,13 @@ function navigateToView() {
   router.push({ name: "csresumeview" });
 }
 
-function navigateToCSLibrary() {
-  router.push({ name: "cslibrary" })
+function navigateBack() {
+  let previousPage = localStorage.getItem("previousPage");
+  if (previousPage === "admin") {
+    router.push({ name: previousPage })
+  } else {
+    router.push({ name: "cslibrary" });
+  }
 }
 
 //Export Story
@@ -69,7 +74,7 @@ function closeSnackBar() {
     <div id="body">
       <v-card-title class="text-center headline mb-2">{{ name }}</v-card-title>
       <v-col class="text-right">
-              <v-btn color="secondary" @click="navigateToCSLibrary()"> Back </v-btn>
+              <v-btn color="secondary" @click="navigateBack()"> Back </v-btn>
       </v-col>
       <v-table fixed-header>
         <thead>

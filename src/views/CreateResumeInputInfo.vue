@@ -4,6 +4,8 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import UserServices from "../services/UserServices.js";
 import LinkServices from "../services/LinkServices.js";
+
+import EducationServices from "../services/EducationServices.js";
 import template1 from "/Template1.png";
 import template2 from "/Template2.png";
 import template3 from "/Template3.png";
@@ -57,6 +59,17 @@ const linkDescription = ref("");
 const link = ref("");
 const links = ref();
 const selectedLinks = ref();
+
+const educationInfo = ref();
+const selectedEducation = ref();
+const schoolName = ref("");
+const schoolCity = ref("");
+const schoolState = ref("");
+const gpa = ref("");
+const degree = ref("");
+const schoolStart = ref("");
+const schoolEnd = ref("");
+
 // const jobtitle = ref();
 const templateSelected = ref();
 
@@ -290,6 +303,47 @@ async function getPersonalInfo() {
         });
 }
 
+async function getEducationInfo() {
+    resetNewInput()
+    await EducationServices.getEducationsForUser(parseInt(account.value.id))
+        .then((response) => {
+            educationInfo.value = response.data;
+        })
+        .catch((error) => {
+            console.log(error);
+            snackbar.value.value = true;
+            snackbar.value.color = "error";
+            snackbar.value.text = error.response.data.message;
+        });
+}
+
+async function addNewEducation() {
+
+    
+    
+    const tempTitle = ref("");
+    tempTitle.value = schoolState.value + " " + schoolStart.value;
+    console.log(tempTitle.value);
+    const notApplicable = ref("N/A");
+
+    await EducationServices.addEducation(tempTitle.value, degree.value, account.value.id, 
+        schoolStart.value, schoolEnd.value, schoolEnd.value, gpa.value, schoolName.value, 
+        schoolCity.value, schoolState.value)
+        .then(() => {
+            snackbar.value.value = true;
+            snackbar.value.color = "green";
+            snackbar.value.text = "Education Added!";
+            closeNewLink();
+            getEducationInfo();
+        })
+        .catch((error) => {
+            console.log(error);
+            snackbar.value.value = true;
+            snackbar.value.color = "error";
+            snackbar.value.text = error.response.data.message;
+        });
+}
+
 </script>
 
 <script>
@@ -310,7 +364,7 @@ export default {
                     <v-tabs v-model="tab" :items="tabs" align-tabs="center" height="60" slider-color="#f78166">
                         <v-tab value="1" @click="getPersonalInfo()" >Personal Details</v-tab>
                         <v-tab value="2" @click="resetNewInput()" >Professional Summary</v-tab>
-                        <v-tab value="3" @click="resetNewInput()" >Education</v-tab>
+                        <v-tab value="3" @click="getEducationInfo()" >Education</v-tab>
                         <v-tab value="4" @click="resetNewInput()" >Experience</v-tab>
                         <v-tab value="5" @click="resetNewInput()">Skills</v-tab>
                         <v-tab value="6" @click="resetNewInput()" >Others</v-tab>
@@ -441,31 +495,15 @@ export default {
         <v-text class="headline mb-2">Select Education: </v-text>
 
         <v-container>
-            <v-list lines="two">
-                <v-list-item v-for="n in 3" :key="n">
-                    <v-row>
-                        <v-col cols="2">
-                            <v-checkbox></v-checkbox>
-                        </v-col>
-                        <v-col cols="10">
-                            <v-list-item-content>
-                                <v-list-item-title>{{ 'School name' }}, {{ 'City' }}, {{ 'State'
-                                    }}</v-list-item-title>
-                                <v-list-item-subtitle>
-                                    Start date - End Date
-                                </v-list-item-subtitle>
-                                <v-list-item-subtitle>
-                                    Degree
-                                </v-list-item-subtitle>
-                                <v-list-item-subtitle>
-                                    GPA
-                                </v-list-item-subtitle>
-                            </v-list-item-content>
-                        </v-col>
-                    </v-row>
-
-                </v-list-item>
-            </v-list>
+            <v-data-table 
+                v-model="selectedEducation" 
+                :items="educationInfo" 
+                item-value="id" 
+                :headers="[{title: 'Organization', value: 'organization'}, {title: 'City', value: 'city'}, {title: 'State', value: 'state'},
+                        {title: 'Degree', value: 'description'}]" 
+                show-select
+                hide-default-footer>
+            </v-data-table>
         </v-container>
 
     </div>
@@ -489,33 +527,33 @@ export default {
     <v-container v-if="isNewLinkVisible">
         <v-row>
             <v-col>
-                <v-text-field label="School Name"></v-text-field>
+                <v-text-field v-model="schoolName" label="School Name"></v-text-field>
             </v-col>
 
         </v-row>
         <v-row>
             <v-col>
-                <v-text-field label="City"></v-text-field>
+                <v-text-field v-model="schoolCity" label="City"></v-text-field>
             </v-col>
             <v-col>
-                <v-text-field label="State"></v-text-field>
+                <v-text-field v-model="schoolState" label="State"></v-text-field>
             </v-col>
         </v-row>
         <v-row>
             <v-col>
-                <v-text-field label="GPA"></v-text-field>
+                <v-text-field v-model="gpa" label="GPA"></v-text-field>
             </v-col>
             <v-col>
-                <v-text-field label="Degree"></v-text-field>
+                <v-text-field v-model="degree" label="Degree"></v-text-field>
             </v-col>
         </v-row>
 
         <v-row>
             <v-col>
-                <v-text-field label="Start Date"></v-text-field>
+                <v-text-field v-model="schoolStart" label="Start Date"></v-text-field>
             </v-col>
             <v-col>
-                <v-text-field label="Grad Date"></v-text-field>
+                <v-text-field v-model="schoolEnd" label="Grad Date"></v-text-field>
                 <v-switch label="Still Attending" color="primary"></v-switch>
             </v-col>
         </v-row>

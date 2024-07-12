@@ -358,10 +358,12 @@ async function getEducationInfo() {
 }
 
 async function addNewEducation() {
-    var tempTitle = schoolState.value + " " + schoolStart.value;
+    var tempTitle = schoolState.value + " " + schoolStart.value + " " + gpa.value;
     var tempDegree = degreeTitle.value + " of " + degreeType.value + " in " + degree.value;
-    console.log(tempTitle);
-    console.log(tempDegree);
+    
+    if (degreeTitle.value == "High School Diploma") {
+        tempDegree = degreeTitle.value;
+    }
     
     if (schoolGrad.value !== null) {
         schoolEnd.value = schoolGrad.value;
@@ -405,7 +407,7 @@ async function closeEducation() {
     minors.value = null;
     maxGpa.value = null;
     degree.value = null;
-    degreeTitle.value = null;
+    degreeTitle.value = "";
     degreeType.value = null;
 }
 </script>
@@ -612,6 +614,10 @@ export default {
                 <v-text-field v-model="maxGpa" label="Max GPA"></v-text-field>
             </v-col>
         </v-row>
+        <v-row class="mb-1" v-if="degreeTitle != '' ">
+            
+            <v-card-subtitle align="center" v-if="degreeTitle  != 'High School Diploma'">Displayed as: {{ degreeTitle }} of {{ degreeType }} in {{ degree }}</v-card-subtitle>
+        </v-row>
         <v-row>
             <v-col>
                 <v-combobox
@@ -625,15 +631,14 @@ export default {
                 v-model = "degreeType"
                 label="Degree Type"
                 :items="['Science', 'Arts', 'Fine Arts', 'Architecture']"
+                :disabled="degreeTitle == 'High School Diploma'"
                 ></v-combobox>
             </v-col>
             <v-col>
-                <v-text-field v-model="degree" label="Degree"></v-text-field>
+                <v-text-field v-model="degree" label="Degree" :disabled="degreeTitle == 'High School Diploma'"></v-text-field>
             </v-col>
         </v-row>
-        <v-row class="mb-6">
-            <v-card-subtitle align="center">Displayed as: {{ degreeTitle }} of {{ degreeType }} in {{ degree }}</v-card-subtitle>
-        </v-row>
+        
 
         <v-row>
             <v-col>

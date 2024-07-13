@@ -4,6 +4,8 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import UserServices from "../services/UserServices.js";
 import LinkServices from "../services/LinkServices.js";
+
+import EducationServices from "../services/EducationServices.js";
 import template1 from "/Template1.png";
 import template2 from "/Template2.png";
 import template3 from "/Template3.png";
@@ -18,6 +20,7 @@ const snackbar = ref({
     text: "",
 });
 const isNewLinkVisible = ref(false);
+const isNewEduVisible = ref(false);
 const tab = ref("1");
 const resumeTemplate = ref();
 
@@ -57,6 +60,29 @@ const linkDescription = ref("");
 const link = ref("");
 const links = ref();
 const selectedLinks = ref();
+
+const educationInfo = ref();
+const selectedEducation = ref();
+const schoolName = ref("");
+const schoolCity = ref("");
+const schoolState = ref("");
+const gpa = ref("");
+const maxGpa = ref("");
+const degree = ref("");
+const schoolStart = ref("");
+const schoolEnd = ref("");
+const schoolGrad = ref(null);
+const degreeTitle = ref("");
+const degreeType = ref("");
+const minors = ref(null);
+const courses = ref(null);
+const attending = ref(false);
+
+const isMinors = ref(false);
+const isCourses = ref(false);
+
+const isAttending = ref(false);
+
 // const jobtitle = ref();
 const templateSelected = ref();
 
@@ -242,6 +268,17 @@ async function clearTemplateSelecton() {
     toggleSelectPreview();
 }
 
+function toggleIsAttending() {
+    isAttending.value = !isAttending.value;
+
+    if (isAttending.value == false) {
+        schoolGrad.value = null;
+    }
+    else {
+        schoolEnd.value = schoolGrad.value;
+    }
+}
+
 async function showTab(index) {
     if (index == "Personal Details") {
         isPersonalDetails.value = !isPersonalDetails.value;
@@ -270,6 +307,22 @@ async function showTab(index) {
 
 }
 
+function showMinors() {
+    isMinors.value = !isMinors.value;
+
+    if (isMinors.value == false) {
+        minors.value = null;
+    }
+}
+
+function showCourses() {
+    isCourses.value = !isCourses.value;
+
+    if (isCourses.value == false) {
+        courses.value = null;
+    }
+}
+
 async function getPersonalInfo() {
     resetNewInput()
     await UserServices.getUser(parseInt(account.value.id))
@@ -290,6 +343,73 @@ async function getPersonalInfo() {
         });
 }
 
+async function getEducationInfo() {
+    resetNewInput()
+    await EducationServices.getEducationsForUser(parseInt(account.value.id))
+        .then((response) => {
+            educationInfo.value = response.data;
+        })
+        .catch((error) => {
+            console.log(error);
+            snackbar.value.value = true;
+            snackbar.value.color = "error";
+            snackbar.value.text = error.response.data.message;
+        });
+}
+
+async function addNewEducation() {
+    var tempTitle = schoolState.value + " " + schoolStart.value + " " + gpa.value;
+    var tempDegree = degreeTitle.value + " of " + degreeType.value + " in " + degree.value;
+    
+    if (degreeTitle.value == "High School Diploma") {
+        tempDegree = degreeTitle.value;
+    }
+    
+    if (schoolGrad.value !== null) {
+        schoolEnd.value = schoolGrad.value;
+    } else {
+        schoolGrad.value = schoolEnd.value;
+    }
+
+    await EducationServices.addEducation(tempTitle, tempDegree, account.value.id, 
+        schoolStart.value, schoolEnd.value, schoolGrad.value, gpa.value, schoolName.value, 
+        schoolCity.value, schoolState.value, courses.value, minors.value, maxGpa.value)
+        .then(() => {
+            snackbar.value.value = true;
+            snackbar.value.color = "green";
+            snackbar.value.text = "Education Added!";
+            closeEducation();
+            getEducationInfo();
+        })
+        .catch((error) => {
+            console.log(error);
+            snackbar.value.value = true;
+            snackbar.value.color = "error";
+            snackbar.value.text = error.response.data.message;
+        });
+}
+
+async function setNewEduVisible() {
+    isNewEduVisible.value = true;
+}
+
+async function closeEducation() {
+    isNewEduVisible.value = false;
+    isCourses.value = false;
+    isMinors.value = false;
+    schoolStart.value = null;
+    schoolEnd.value = null;
+    schoolEnd.value = null;
+    gpa.value = null;
+    schoolName.value = null;
+    schoolCity.value = null;
+    courses.value = null;
+    minors.value = null;
+    maxGpa.value = null;
+    degree.value = null;
+    degreeTitle.value = "";
+    degreeType.value = null;
+}
 </script>
 
 <script>
@@ -310,7 +430,7 @@ export default {
                     <v-tabs v-model="tab" :items="tabs" align-tabs="center" height="60" slider-color="#f78166">
                         <v-tab value="1" @click="getPersonalInfo()" >Personal Details</v-tab>
                         <v-tab value="2" @click="resetNewInput()" >Professional Summary</v-tab>
-                        <v-tab value="3" @click="resetNewInput()" >Education</v-tab>
+                        <v-tab value="3" @click="getEducationInfo()" >Education</v-tab>
                         <v-tab value="4" @click="resetNewInput()" >Experience</v-tab>
                         <v-tab value="5" @click="resetNewInput()">Skills</v-tab>
                         <v-tab value="6" @click="resetNewInput()" >Others</v-tab>
@@ -441,31 +561,15 @@ export default {
         <v-text class="headline mb-2">Select Education: </v-text>
 
         <v-container>
-            <v-list lines="two">
-                <v-list-item v-for="n in 3" :key="n">
-                    <v-row>
-                        <v-col cols="2">
-                            <v-checkbox></v-checkbox>
-                        </v-col>
-                        <v-col cols="10">
-                            <v-list-item-content>
-                                <v-list-item-title>{{ 'School name' }}, {{ 'City' }}, {{ 'State'
-                                    }}</v-list-item-title>
-                                <v-list-item-subtitle>
-                                    Start date - End Date
-                                </v-list-item-subtitle>
-                                <v-list-item-subtitle>
-                                    Degree
-                                </v-list-item-subtitle>
-                                <v-list-item-subtitle>
-                                    GPA
-                                </v-list-item-subtitle>
-                            </v-list-item-content>
-                        </v-col>
-                    </v-row>
-
-                </v-list-item>
-            </v-list>
+            <v-data-table 
+                v-model="selectedEducation" 
+                :items="educationInfo" 
+                item-value="id" 
+                :headers="[{title: 'Organization', value: 'organization'}, {title: 'Degree', value: 'description'}, 
+                        {title: 'Start Date', value: 'startDate'}, {title: 'Grad Date', value: 'gradDate'}  ]" 
+                show-select
+                hide-default-footer>
+            </v-data-table>
         </v-container>
 
     </div>
@@ -482,48 +586,124 @@ export default {
     </div>
 
 
-    <v-btn variant="tonal" @click="setNewLinkVisible">
+    <v-btn variant="tonal" @click="setNewEduVisible">
         Add New Education
     </v-btn>
+    
 
-    <v-container v-if="isNewLinkVisible">
+    <v-container v-if="isNewEduVisible">
         <v-row>
             <v-col>
-                <v-text-field label="School Name"></v-text-field>
+                <v-text-field v-model="schoolName" label="School Name"></v-text-field>
             </v-col>
 
         </v-row>
         <v-row>
             <v-col>
-                <v-text-field label="City"></v-text-field>
+                <v-text-field v-model="schoolCity" label="City"></v-text-field>
             </v-col>
             <v-col>
-                <v-text-field label="State"></v-text-field>
+                <v-text-field v-model="schoolState" label="State"></v-text-field>
             </v-col>
         </v-row>
         <v-row>
             <v-col>
-                <v-text-field label="GPA"></v-text-field>
+                <v-text-field v-model="gpa" label="GPA"></v-text-field>
             </v-col>
             <v-col>
-                <v-text-field label="Degree"></v-text-field>
+                <v-text-field v-model="maxGpa" label="Max GPA"></v-text-field>
             </v-col>
         </v-row>
+        <v-row class="mb-1" v-if="degreeTitle != '' ">
+            
+            <v-card-subtitle align="center" v-if="degreeTitle  != 'High School Diploma'">Displayed as: {{ degreeTitle }} of {{ degreeType }} in {{ degree }}</v-card-subtitle>
+        </v-row>
+        <v-row>
+            <v-col>
+                <v-combobox
+                v-model = "degreeTitle"
+                label="Title of Degree"
+                :items="['Bachelor', 'Masters', 'Associates', 'PhD', 'Certificate', 'High School Diploma']"
+                ></v-combobox>
+            </v-col>
+            <v-col>
+                <v-combobox
+                v-model = "degreeType"
+                label="Degree Type"
+                :items="['Science', 'Arts', 'Fine Arts', 'Architecture']"
+                :disabled="degreeTitle == 'High School Diploma'"
+                ></v-combobox>
+            </v-col>
+            <v-col>
+                <v-text-field v-model="degree" label="Degree" :disabled="degreeTitle == 'High School Diploma'"></v-text-field>
+            </v-col>
+        </v-row>
+        
 
         <v-row>
             <v-col>
-                <v-text-field label="Start Date"></v-text-field>
+                <v-text-field v-model="schoolStart" label="Start Date" hint="Ex: Aug 2024"></v-text-field>
             </v-col>
             <v-col>
-                <v-text-field label="Grad Date"></v-text-field>
-                <v-switch label="Still Attending" color="primary"></v-switch>
+                <v-text-field v-model="schoolEnd" v-if="!isAttending" label="End Date" hint="Ex: Aug 2024"></v-text-field>
+                <v-text-field v-model="schoolGrad" v-if="isAttending" label="Grad Date" hint="Ex: Aug 2024"></v-text-field>
+                <v-switch v-model="attending" label="Still Attending" color="primary" @click="toggleIsAttending()"></v-switch>
             </v-col>
+        </v-row>
+
+        <v-row >
+            <v-container  align="center">
+                <v-btn variant="text" @click="showMinors">
+                    Add Minor
+                </v-btn>
+                <div class="mb-6">
+                    <v-spacer></v-spacer>
+                </div>
+
+                <div v-if="isMinors">
+                    
+                   
+                    <v-text-field
+                    label=" Minor(s)"
+                    v-model="minors"
+                      hint="If multiple, format as: Minor #1, Minor #2"
+                    >
+
+                    </v-text-field>
+
+                </div>
+
+                <v-btn variant="text" @click="showCourses">
+                    Add Courses
+                </v-btn>
+
+                <div class="mb-6">
+                    <v-spacer></v-spacer>
+                </div>
+                <div v-if="isCourses">
+                    
+                   
+                    <v-text-field
+                    label="Course(s)"
+                    v-model="courses"
+                      hint="If multiple, format as: Course name, Course name"
+                    >
+
+                    </v-text-field>
+
+                </div>
+
+            </v-container>
+            
+            
+
+
         </v-row>
 
         <v-col>
 
         </v-col>
-        <v-btn variant="tonal" @click="closeNewLink()">
+        <v-btn variant="tonal" @click="closeEducation()">
             Cancel
         </v-btn>
         &nbsp;&nbsp;&nbsp;
@@ -534,10 +714,15 @@ export default {
 
     <div align="right">
 
+        <div class="mb-10">
+        <v-spacer></v-spacer>
+    </div>
         <v-btn variant="tonal" @click="navigateNextTab(3)">
             Next
         </v-btn>
     </div>
+
+    
 </v-tabs-window-item>
 
 <v-tabs-window-item value="4" style="padding: 50px">

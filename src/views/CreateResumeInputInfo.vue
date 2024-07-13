@@ -599,6 +599,7 @@ async function closeNewVolunteerExperience() {
 async function setNewskillVisible() {
     isNewSkillVisible.value = true;
 }
+
 async function closeNewSkill() {
     isNewSkillVisible.value = false;
     skillTitle.value = "";
@@ -658,7 +659,7 @@ export default {
                             <v-tab value="2" @click="getGoals()">Professional Summary</v-tab>
                             <v-tab value="3" @click="getEducationInfo()">Education</v-tab>
                             <v-tab value="4" @click="getExperiences()">Experience</v-tab>
-                            <v-tab value="5" @click="resetNewInput()">Skills</v-tab>
+                            <v-tab value="5" @click="getSkills()">Skills</v-tab>
                             <v-tab value="6" @click="resetNewInput()">Others</v-tab>
                         </v-tabs>
 

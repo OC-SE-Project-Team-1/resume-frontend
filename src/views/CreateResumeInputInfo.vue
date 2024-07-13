@@ -5,6 +5,7 @@ import { useRouter } from "vue-router";
 import UserServices from "../services/UserServices.js";
 import LinkServices from "../services/LinkServices.js";
 import GoalServices from "../services/GoalServices.js";
+import SkillServices from "../services/SkillServices.js";
 import EducationServices from "../services/EducationServices.js";
 import ExperienceServices from "../services/ExperienceServices.js";
 import template1 from "/Template1.png";
@@ -113,6 +114,12 @@ const isLeadershipExperience = ref(false);
 const isActivitiesExperience = ref(false);
 const isVolunteerExperience = ref(false);
 
+const skillTitle = ref("");
+const skillDescription = ref("");
+const skills = ref();
+const selectedSkills = ref();
+const isNewSkillVisible = ref(false);
+
 const isMinors = ref(false);
 const isCourses = ref(false);
 
@@ -133,6 +140,12 @@ const isGoals = computed(() => {
     return (
         goalTitle.value !== "" &&
         goalDescription.value !== ""
+    )
+});
+const isSkilled = computed(() => {
+    return (
+        skillTitle.value !== "" &&
+        skillDescription.value !== ""
     )
 });
 
@@ -226,6 +239,7 @@ async function resetNewInput() {
     closeNewLeadershipExperience();
     closeNewActivitiesExperience();
     closeNewVolunteerExperience();
+    closeNewSkill();
 }
 
 async function selectedTemplate(value) {
@@ -580,6 +594,46 @@ async function closeNewActivitiesExperience() {
 }
 async function closeNewVolunteerExperience() {
     isVolunteerExperience.value = false;
+}
+
+async function setNewskillVisible() {
+    isNewSkillVisible.value = true;
+}
+async function closeNewSkill() {
+    isNewSkillVisible.value = false;
+    skillTitle.value = "";
+    skillDescription.value = "";
+}
+
+async function getSkills() {
+    resetNewInput()
+    await SkillServices.getSkillsForUser(parseInt(account.value.id))
+        .then((response) => {
+            skills.value = response.data;
+        })
+        .catch((error) => {
+            console.log(error);
+            snackbar.value.value = true;
+            snackbar.value.color = "error";
+            snackbar.value.text = error.response.data.message;
+        });
+}
+
+async function addNewSkill() {
+    await SkillServices.addSkill(skillTitle.value, skillDescription.value, parseInt(account.value.id))
+        .then(() => {
+            snackbar.value.value = true;
+            snackbar.value.color = "green";
+            snackbar.value.text = "Goal Added!";
+            closeNewSkill();
+            getSkills();
+        })
+        .catch((error) => {
+            console.log(error);
+            snackbar.value.value = true;
+            snackbar.value.color = "error";
+            snackbar.value.text = error.response.data.message;
+        });
 }
 
 </script>
@@ -1260,28 +1314,15 @@ export default {
         </v-tabs-window-item>
 
         <v-tabs-window-item value="5" style="padding: 50px">
-            skills
             <div align="left">
                 <v-text class="headline mb-2">Select Skill(s): </v-text>
-
                 <v-container>
-                    <v-list lines="two">
-                        <v-list-item v-for="n in 3" :key="n">
-                            <v-row>
-                                <v-col cols="2">
-                                    <v-checkbox></v-checkbox>
-                                </v-col>
-                                <v-col cols="10">
-                                    <v-list-item-content>
-                                        <v-list-item-title>{{ 'Skills' }}</v-list-item-title>
-                                    </v-list-item-content>
-                                </v-col>
-                            </v-row>
-
-                        </v-list-item>
-                    </v-list>
+                    <v-data-table v-model="selectedSkills" :items="skills"
+                        item-value="id"
+                        :headers="[{ title: 'Title', value: 'title'}, { title: 'Description', value: 'description' },]"
+                        show-select hide-default-footer>
+                    </v-data-table>
                 </v-container>
-
             </div>
 
 
@@ -1296,27 +1337,29 @@ export default {
             </div>
 
 
-            <v-btn variant="tonal" @click="setNewLinkVisible">
-                Add New Skills
+            <v-btn variant="text" @click="setNewskillVisible()">
+                + Add New Skill
             </v-btn>
 
-            <v-container v-if="isNewLinkVisible">
+            <v-container v-if="isNewSkillVisible">
                 <v-row>
                     <v-col>
-                        <v-text-field label="Skill"></v-text-field>
+                        <v-text-field v-model="skillTitle" label="Skill"></v-text-field>
                     </v-col>
                 </v-row>
-
-
-
+                <v-row>
+                    <v-col>
+                        <v-text-field v-model="skillDescription" label="Brief Description/Proficientcy Level"></v-text-field>
+                    </v-col>
+                </v-row>
                 <v-col>
 
                 </v-col>
-                <v-btn variant="tonal" @click="closeNewLink()">
+                <v-btn variant="tonal" @click="closeNewSkill()">
                     Cancel
                 </v-btn>
                 &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" @click="addNewSkill()">
+                <v-btn variant="tonal" :disabled="!isSkilled" @click="addNewSkill()">
                     Submit
                 </v-btn>
             </v-container>

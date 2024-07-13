@@ -4,7 +4,7 @@ export default {
   getLinks() {
     return apiClient.get("link");
   },
-  getlink(id) {
+  getLink(id) {
     return apiClient.get("link/" + id);
   },
   getLinksForUser(userID){

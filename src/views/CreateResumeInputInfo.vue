@@ -4,6 +4,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import UserServices from "../services/UserServices.js";
 import LinkServices from "../services/LinkServices.js";
+import GoalServices from "../services/GoalServices.js";
 import EducationServices from "../services/EducationServices.js";
 import ExperienceServices from "../services/ExperienceServices.js";
 import template1 from "/Template1.png";
@@ -60,6 +61,12 @@ const linkDescription = ref("");
 const link = ref("");
 const links = ref();
 const selectedLinks = ref();
+
+const goalTitle = ref("");
+const goalDescription = ref("");
+const goals = ref();
+const selectedGoals = ref();
+const isNewGoalVisible = ref(false);
 
 const educationInfo = ref();
 const selectedEducation = ref();
@@ -122,6 +129,12 @@ const isLinked = computed(() => {
         linkDescription.value !== ""
     )
 });
+const isGoals = computed(() => {
+    return (
+        goalTitle.value !== "" &&
+        goalDescription.value !== ""
+    )
+});
 
 const selectedSections = ref();
 
@@ -155,6 +168,15 @@ async function closeNewLink() {
     isNewLinkVisible.value = false;
     link.value = "";
     linkDescription.value = "";
+}
+
+async function setNewGoalVisible() {
+    isNewGoalVisible.value = true;
+}
+async function closeNewGoal() {
+    isNewGoalVisible.value = false;
+    goalTitle.value = "";
+    goalDescription.value = "";
 }
 
 async function getLinks() {
@@ -338,6 +360,39 @@ async function getPersonalInfo() {
             phoneNumber.value = personalInfo.value.phoneNumber;
             email.value = personalInfo.value.email;
             getLinks();
+        })
+        .catch((error) => {
+            console.log(error);
+            snackbar.value.value = true;
+            snackbar.value.color = "error";
+            snackbar.value.text = error.response.data.message;
+        });
+}
+
+async function getGoals() {
+    resetNewInput()
+    await GoalServices.getGoalsForUser(parseInt(account.value.id))
+        .then((response) => {
+            goals.value = response.data;
+        })
+        .catch((error) => {
+            console.log(error);
+            snackbar.value.value = true;
+            snackbar.value.color = "error";
+            snackbar.value.text = error.response.data.message;
+        });
+}
+
+async function addNewGoal() {
+    console.log(goalTitle.value);
+    console.log(goalDescription.value);
+    await GoalServices.addGoal(goalTitle.value, goalDescription.value, parseInt(account.value.id))
+        .then(() => {
+            snackbar.value.value = true;
+            snackbar.value.color = "green";
+            snackbar.value.text = "Goal Added!";
+            closeNewGoal();
+            getGoals();
         })
         .catch((error) => {
             console.log(error);
@@ -544,7 +599,7 @@ export default {
                     <v-sheet elevation="3" rounded="lg" align="center">
                         <v-tabs v-model="tab" :items="tabs" align-tabs="center" height="60" slider-color="#f78166">
                             <v-tab value="1" @click="getPersonalInfo()">Personal Details</v-tab>
-                            <v-tab value="2" @click="resetNewInput()">Professional Summary</v-tab>
+                            <v-tab value="2" @click="getGoals()">Professional Summary</v-tab>
                             <v-tab value="3" @click="getEducationInfo()">Education</v-tab>
                             <v-tab value="4" @click="getExperiences()">Experience</v-tab>
                             <v-tab value="5" @click="resetNewInput()">Skills</v-tab>
@@ -639,12 +694,28 @@ export default {
         <v-tabs-window-item value="2" style="padding: 50px">
 
             <div align="left">
-                <v-text class="headline mb-2">Create Job Summary: </v-text>
+                <v-text class="headline mb-2">Select Summary: </v-text>
+                <v-data-table v-model="selectedGoals" :items="goals" item-value="id" :headers="[{ title: 'Title', value: 'title' },
+                { title: 'Summary', value: 'description' }]" show-select hide-default-footer select-strategy="single">
+                </v-data-table>
+
                 <div class="mb-10">
                     <v-spacer></v-spacer>
                 </div>
+
+                <div align="center" >
+                    <v-btn variant="text" @click="setNewGoalVisible()">
+                        + Add New Summary
+                    </v-btn>
+                </div>
+                <v-container v-if="isNewGoalVisible">
                 <v-row>
-                    <v-textarea label="Work Summary">
+                <v-col>
+                    <v-text-field v-model="goalTitle" label="Title"></v-text-field>
+                </v-col>
+            </v-row>
+                <v-row>
+                    <v-textarea v-model="goalDescription" label="A brief overview of your skills and experiences">
                         <template #append-inner>
                             <v-btn color="secondary" rounded="xl" value="Ai Assist">
                                 AI Assist
@@ -652,7 +723,14 @@ export default {
                         </template>
                     </v-textarea>
                 </v-row>
-
+                <v-btn variant="tonal" @click="closeNewGoal()">
+                    Cancel
+                </v-btn>
+                &nbsp;&nbsp;&nbsp;
+                <v-btn variant="tonal" :disabled="!isGoals" @click="addNewGoal()">
+                    Submit
+                </v-btn>
+            </v-container>
                 <div align="right">
 
                     <v-btn variant="tonal" @click="navigateNextTab(2)">
@@ -1527,6 +1605,15 @@ export default {
 
         </v-row>
 
+        <v-snackbar v-model="snackbar.value" rounded="pill">
+        {{ snackbar.text }}
+
+        <template v-slot:actions>
+          <v-btn :color="snackbar.color" variant="text" @click="closeSnackBar()">
+            Close
+          </v-btn>
+        </template>
+      </v-snackbar>
     </v-container>
 
 

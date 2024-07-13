@@ -4,6 +4,9 @@ export default {
   getUser(accountID) {
     return apiClient.get("account/" + accountID);
   },
+  getUsers() {
+    return apiClient.get("account/");
+  },
   addUser(account) {
     return apiClient.post("account", account);
   },
@@ -40,6 +43,17 @@ export default {
       "userName": String(username),
       "email": String(email),
       "userId": parseInt(accountID)
+    });
+  },
+  updateAccountRole(accountID, userId, role) {
+    return apiClient.put("account/" + userId, {
+      "roleId": parseInt(role),
+      "userId": parseInt(userId)
+    });
+  },
+  deleteAccount(userId, accountID) {
+    return apiClient.delete("account/" + userId, {
+      data: {"userId": parseInt(accountID)}
     });
   },
 };

@@ -553,34 +553,33 @@ export default {
 
                         <v-tabs-window v-model="tab">
 
-                            <v-tabs-window-item value="1" style="padding: 50px">
-                                <v-row>
-                                    <v-col>
-                                        <v-text-field v-model="firstName" label="First Name" readonly></v-text-field>
-                                    </v-col>
-                                    <v-col>
-                                        <v-text-field v-model="lastName" label="Last Name" readonly></v-text-field>
-                                    </v-col>
-                                </v-row>
-                                <v-row>
-                                    <v-col>
-                                        <v-text-field v-model="jobtitle" label="Job Title"></v-text-field>
-                                    </v-col>
-                                </v-row>
-                                <v-row>
-                                    <v-col>
-                                        <v-text-field v-model="address" label="Address" readonly></v-text-field>
-                                    </v-col>
-                                </v-row>
-                                <v-row>
-                                    <v-col>
-                                        <v-text-field v-model="phoneNumber" label="Phone Number"
-                                            readonly></v-text-field>
-                                    </v-col>
-                                    <v-col>
-                                        <v-text-field v-model="email" label="Email Address" readonly></v-text-field>
-                                    </v-col>
-                                </v-row>
+<v-tabs-window-item value="1" style="padding: 50px">
+    <v-row>
+        <v-col>
+            <v-text-field v-model="firstName" label="First Name" readonly></v-text-field>
+        </v-col>
+        <v-col>
+            <v-text-field v-model="lastName" label="Last Name" readonly></v-text-field>
+        </v-col>
+    </v-row>
+     <!-- <v-row>
+        <v-col>
+            <v-text-field v-model="jobtitle" label="Job Title"></v-text-field>
+        </v-col>
+    </v-row>  -->
+    <v-row>
+        <v-col>
+            <v-text-field v-model="address" label="Address" readonly></v-text-field>
+        </v-col>
+    </v-row>
+    <v-row>
+        <v-col>
+            <v-text-field v-model="phoneNumber" label="Phone Number" readonly></v-text-field>
+        </v-col>
+        <v-col>
+            <v-text-field v-model="email" label="Email Address" readonly></v-text-field>
+        </v-col>
+    </v-row>
 
                                 <div class="mb-10">
                                     <v-spacer></v-spacer>

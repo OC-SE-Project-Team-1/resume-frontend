@@ -16,12 +16,12 @@ export default {
             "title": String(title),
             "description": String(description),
             "startDate": String(startDate),
-            "endDate": String(endDate),
+            "endDate": endDate,
             "userId": userID,
             "experienceTypeId" : experienceTypeID,
-            "city": String(city),
-            "state": String(state),
-            "organization": String(organization)
+            "city": city,
+            "state": state,
+            "organization": organization
         })
     },
     updateExperience() {

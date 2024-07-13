@@ -661,7 +661,7 @@ async function addNewSkill() {
         .then(() => {
             snackbar.value.value = true;
             snackbar.value.color = "green";
-            snackbar.value.text = "Goal Added!";
+            snackbar.value.text = "Skill Added!";
             closeNewSkill();
             getSkills();
         })

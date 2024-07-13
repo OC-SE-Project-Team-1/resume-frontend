@@ -232,8 +232,7 @@ function toggleIsAttending() {
 
 function toggleExperience(value) {
     if (value == 1 ){
-        
-    isJobExperience.value = !isJobExperience.value;
+        isJobExperience.value = !isJobExperience.value;
     }
     else if (value == 2) {
         isLeadershipExperience.value = !isLeadershipExperience.value;
@@ -966,7 +965,7 @@ export default {
                 v-model="selectedLeadershipExperience" 
                 :items="experiences" 
                 item-value="id" 
-                :search="4"
+                :search="3"
                 :headers="[ {title: 'Experience', value: 'experienceTypeId', align: ' d-none'}, {title: 'Organization (UPDATE with activities)', value: 'organization'}, {title: 'Title', value: 'title'},]" 
                 show-select
                 hide-default-footer>

@@ -218,12 +218,14 @@ async function navigateNextTab(value) {
 }
 
 async function resetNewInput() {
-
-    isNewLinkVisible.value = false;
-    isJobExperience.value = false;
-    isLeadershipExperience.value = false;
-    isActivitiesExperience.value = false;
-    isVolunteerExperience.value = false;
+    closeNewLink();
+    closeNewGoal();
+    closeEducation();
+    clearExperienceData();
+    closeNewJobExperience();
+    closeNewLeadershipExperience();
+    closeNewActivitiesExperience();
+    closeNewVolunteerExperience();
 }
 
 async function selectedTemplate(value) {

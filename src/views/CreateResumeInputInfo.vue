@@ -82,6 +82,8 @@ const experiences = ref();
 const search = ref();
 const selectedWorkExperience = ref();
 const selectedLeadershipExperience = ref();
+const selectedActivitiesExperience = ref();
+const selectedVolunteerExperience = ref();
 
 const isJobExperience = ref(false);
 const jobExperienceTitle = ref();
@@ -93,13 +95,13 @@ const jobEnd = ref();
 const jobDescription = ref();
 
 const isLeadershipExperience = ref(false);
-const leadershipTitle = ref();
-const leadershipOrg = ref();
-const leadershipStart = ref();
-const leadershipEnd = ref();
-const leadershipDescription = ref();
-const LeadershipCity = ref();
-const leadershipState = ref();
+// const leadershipTitle = ref();
+// const leadershipOrg = ref();
+// const leadershipStart = ref();
+// const leadershipEnd = ref();
+// const leadershipDescription = ref();
+// const LeadershipCity = ref();
+// const leadershipState = ref();
 
 const isActivitiesExperience = ref(false);
 const isVolunteerExperience = ref(false);
@@ -233,15 +235,27 @@ function toggleIsAttending() {
 function toggleExperience(value) {
     if (value == 1 ){
         isJobExperience.value = !isJobExperience.value;
+        if (isJobExperience.value == false) {
+            closeNewJobExperience();
+        }
     }
     else if (value == 2) {
         isLeadershipExperience.value = !isLeadershipExperience.value;
+        if (isLeadershipExperience.value == false) {
+            closeNewJobExperience();
+        }
     }
     else if (value == 3) {
         isActivitiesExperience.value = !isActivitiesExperience.value;
+        if (isActivitiesExperience.value == false) {
+            closeNewJobExperience();
+        }
     }
     else if (value == 4) {
         isVolunteerExperience.value = !isVolunteerExperience.value;
+        if (isVolunteerExperience.value == false) {
+            closeNewJobExperience();
+        }
     }
 }
 
@@ -391,36 +405,59 @@ async function getExperiences() {
         });
 }
 
-async function addNewExperience(value) {
-    const tempDescription = ref("Temp idk replace when able");
-    if (value == 1) {
-        await ExperienceServices.addExperience(jobExperienceTitle.value, jobDescription.value, jobStart.value, jobEnd.value, 
-                account.value.id, value, jobCity.value, jobState.value, jobCompany.value
-    )
+// async function addNewExperience(value) {
+//     const tempDescription = ref("Temp idk replace when able");
+//     if (value == 1) {
+//         await ExperienceServices.addExperience(jobExperienceTitle.value, jobDescription.value, jobStart.value, jobEnd.value, 
+//                 account.value.id, value, jobCity.value, jobState.value, jobCompany.value
+//     )
+//         .then(() => {
+//             snackbar.value.value = true;
+//             snackbar.value.color = "green";
+//             snackbar.value.text = "Experience Added!";
+//             getExperiences();
+//             closeNewJobExperience();
+//         })
+//         .catch((error) => {
+//             console.log(error);
+//             snackbar.value.value = true;
+//             snackbar.value.color = "error";
+//             snackbar.value.text = error.response.data.message;
+//         });
+//     }
+//     else if (value == 2) {
+//         await ExperienceServices.addExperience(leadershipTitle.value, leadershipDescription.value, leadershipStart.value, leadershipEnd.value, 
+//                 account.value.id, value, LeadershipCity.value, leadershipState.value, leadershipOrg.value
+//     )
+//         .then(() => {
+//             snackbar.value.value = true;
+//             snackbar.value.color = "green";
+//             snackbar.value.text = "Experience Added!";
+//             getExperiences();
+//             closeNewLeadershipExperience();
+//             closeNewJobExperience();
+//         })
+//         .catch((error) => {
+//             console.log(error);
+//             snackbar.value.value = true;
+//             snackbar.value.color = "error";
+//             snackbar.value.text = error.response.data.message;
+//         });
+//     }
+// }
+
+async function addNewExperience(type) {
+    await ExperienceServices.addExperience(jobExperienceTitle.value, jobDescription.value, jobStart.value, jobEnd.value, 
+                account.value.id, type, jobCity.value, jobState.value, jobCompany.value)
         .then(() => {
             snackbar.value.value = true;
             snackbar.value.color = "green";
             snackbar.value.text = "Experience Added!";
             getExperiences();
             closeNewJobExperience();
-        })
-        .catch((error) => {
-            console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
-        });
-    }
-    else if (value == 2) {
-        await ExperienceServices.addExperience(leadershipTitle.value, leadershipDescription.value, leadershipStart.value, leadershipEnd.value, 
-                account.value.id, value, LeadershipCity.value, leadershipState.value, leadershipOrg.value
-    )
-        .then(() => {
-            snackbar.value.value = true;
-            snackbar.value.color = "green";
-            snackbar.value.text = "Experience Added!";
-            getExperiences();
             closeNewLeadershipExperience();
+            closeNewActivitiesExperience();
+            closeNewVolunteerExperience();
         })
         .catch((error) => {
             console.log(error);
@@ -428,10 +465,6 @@ async function addNewExperience(value) {
             snackbar.value.color = "error";
             snackbar.value.text = error.response.data.message;
         });
-    }
-
-    
-
 }
 
 async function closeNewJobExperience() {
@@ -447,14 +480,21 @@ async function closeNewJobExperience() {
 }
 
 async function closeNewLeadershipExperience() {
-    leadershipTitle.value = null;
-    leadershipOrg.value = null;
-    LeadershipCity.value = null;
-    leadershipState.value = null;
-    leadershipStart.value = null;
-    leadershipEnd.value = null;
-    leadershipDescription.value = null;
+    // leadershipTitle.value = null;
+    // leadershipOrg.value = null;
+    // LeadershipCity.value = null;
+    // leadershipState.value = null;
+    // leadershipStart.value = null;
+    // leadershipEnd.value = null;
+    // leadershipDescription.value = null;
     isLeadershipExperience.value = false;
+}
+
+async function closeNewActivitiesExperience() {
+    isActivitiesExperience.value = false;
+}
+async function closeNewVolunteerExperience() {
+    isVolunteerExperience.value = false;
 }
 
 </script>
@@ -900,32 +940,32 @@ export default {
     <v-container v-if="isLeadershipExperience">
         <v-row>
             <v-col>
-                <v-text-field v-model="leadershipTitle" label="Position"></v-text-field>
+                <v-text-field v-model="jobExperienceTitle" label="Position"></v-text-field>
             </v-col>
             <v-col>
-                <v-text-field v-model="leadershipOrg" label="Organization Name"></v-text-field>
-            </v-col>
-        </v-row>
-        <v-row>
-            <v-col>
-                <v-text-field v-model="LeadershipCity" label="City"></v-text-field>
-            </v-col>
-            <v-col>
-                <v-text-field v-model="leadershipState" label="State"></v-text-field>
+                <v-text-field v-model="jobCompany" label="Organization Name"></v-text-field>
             </v-col>
         </v-row>
         <v-row>
             <v-col>
-                <v-text-field v-model="leadershipStart" label="Start Date"></v-text-field>
+                <v-text-field v-model="jobCity" label="City"></v-text-field>
             </v-col>
             <v-col>
-                <v-text-field v-model="leadershipEnd" label="End Date"></v-text-field>
+                <v-text-field v-model="jobState" label="State"></v-text-field>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col>
+                <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
+            </v-col>
+            <v-col>
+                <v-text-field v-model="jobEnd" label="End Date"></v-text-field>
                 <v-switch label="Present Role" color="primary"></v-switch>
             </v-col>
         </v-row>
         
         <v-row>
-            <v-textarea v-model="leadershipDescription" label="Role Summary">
+            <v-textarea v-model="jobDescription" label="Role Summary">
                 <template #append-inner>
                     <v-btn color="secondary" rounded="xl" value="Ai Assist">
                         AI Assist
@@ -962,11 +1002,11 @@ export default {
 
         <v-container>
             <v-data-table 
-                v-model="selectedLeadershipExperience" 
+                v-model="selectedActivitiesExperience" 
                 :items="experiences" 
                 item-value="id" 
                 :search="3"
-                :headers="[ {title: 'Experience', value: 'experienceTypeId', align: ' d-none'}, {title: 'Organization (UPDATE with activities)', value: 'organization'}, {title: 'Title', value: 'title'},]" 
+                :headers="[ {title: 'Experience', value: 'experienceTypeId', align: ' d-none'}, {title: 'Organization', value: 'organization'}, {title: 'Title', value: 'title'},]" 
                 show-select
                 hide-default-footer>
             </v-data-table>
@@ -993,24 +1033,31 @@ export default {
     <v-container v-if="isActivitiesExperience">
         <v-row>
             <v-col>
-                <v-text-field label="Position"></v-text-field>
+                <v-text-field v-model="jobExperienceTitle" label="Position"></v-text-field>
             </v-col>
             <v-col>
-                <v-text-field label="Organization Name"></v-text-field>
+                <v-text-field v-model="jobCompany" label="Organization Name"></v-text-field>
             </v-col>
         </v-row>
-
         <v-row>
             <v-col>
-                <v-text-field label="Start Date"></v-text-field>
+                <v-text-field v-model="jobCity" label="City"></v-text-field>
             </v-col>
             <v-col>
-                <v-text-field label="End Date"></v-text-field>
+                <v-text-field v-model="jobState" label="State"></v-text-field>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col>
+                <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
+            </v-col>
+            <v-col>
+                <v-text-field v-model="jobEnd" label="End Date"></v-text-field>
                 <v-switch label="Present Role" color="primary"></v-switch>
             </v-col>
         </v-row>
         <v-row>
-            <v-textarea label="Role Summary">
+            <v-textarea v-model="jobDescription" label="Role Summary">
                 <template #append-inner>
                     <v-btn color="secondary" rounded="xl" value="Ai Assist">
                         AI Assist
@@ -1047,11 +1094,11 @@ export default {
 
         <v-container>
             <v-data-table 
-                v-model="selectedLeadershipExperience" 
+                v-model="selectedVolunteerExperience" 
                 :items="experiences" 
                 item-value="id" 
                 :search="4"
-                :headers="[ {title: 'Experience', value: 'experienceTypeId', align: ' d-none'}, {title: 'Organization (UPDATE with VOLUNTEER)', value: 'organization'}, {title: 'Title', value: 'title'},]" 
+                :headers="[ {title: 'Experience', value: 'experienceTypeId', align: ' d-none'}, {title: 'Organization', value: 'organization'}, {title: 'Title', value: 'title'},]" 
                 show-select
                 hide-default-footer>
             </v-data-table>
@@ -1078,19 +1125,26 @@ export default {
     <v-container v-if="isVolunteerExperience">
         <v-row>
             <v-col>
-                <v-text-field label="Position"></v-text-field>
+                <v-text-field v-model="jobExperienceTitle" label="Position"></v-text-field>
             </v-col>
             <v-col>
-                <v-text-field label="Organization Name"></v-text-field>
+                <v-text-field v-model="jobCompany" label="Organization Name"></v-text-field>
             </v-col>
         </v-row>
-
         <v-row>
             <v-col>
-                <v-text-field label="Start Date"></v-text-field>
+                <v-text-field v-model="jobCity" label="City"></v-text-field>
             </v-col>
             <v-col>
-                <v-text-field label="End Date"></v-text-field>
+                <v-text-field v-model="jobState" label="State"></v-text-field>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col>
+                <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
+            </v-col>
+            <v-col>
+                <v-text-field v-model="jobEnd" label="End Date"></v-text-field>
                 <v-switch label="Present Role" color="primary"></v-switch>
             </v-col>
         </v-row>
@@ -1111,7 +1165,7 @@ export default {
             Cancel
         </v-btn>
         &nbsp;&nbsp;&nbsp;
-        <v-btn variant="tonal" @click="addNewExperience()">
+        <v-btn variant="tonal" @click="addNewExperience(4)">
             Submit
         </v-btn>
     </v-container>

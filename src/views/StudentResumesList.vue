@@ -2,14 +2,14 @@
 import { onMounted } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import CreateStoryServices from "../services/CreateStoryServices";
-import StoryExport from "../reports/StoryExport";
+import UserServices from "../services/UserServices";
+// import StoryExport from "../reports/StoryExport";
 
 const router = useRouter();
 const account = ref(null);
 const content = ref(null);
 const title = ref(null);
-const storyId = ref(null);
+const selectedUser = ref(null);
 const isExport = ref(false);
 const snackbar = ref({
   value: false,
@@ -17,26 +17,13 @@ const snackbar = ref({
   text: "",
 });
 
+const name = ref("");
 
 onMounted(async () => {
   account.value = JSON.parse(localStorage.getItem("account"));
-  storyId.value = JSON.parse(localStorage.getItem("storyId"));
-  await getStory();
+  selectedUser.value = JSON.parse(localStorage.getItem("selectedUser"));
+  name.value = selectedUser.value.firstName + " " + selectedUser.value.lastName + " " + "Resumes";
 });
-
-async function getStory() {
-  await CreateStoryServices.getOneStory(storyId.value)
-    .then((response) => {
-      title.value = response.data.title;
-      content.value = response.data.story;
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
 
 //Navigate to Different Pages
 function navigateToView() {
@@ -76,7 +63,7 @@ function closeSnackBar() {
 <template>
   <v-container>
     <div id="body">
-      <v-card-title class="text-center headline mb-2">Student Name Resumes</v-card-title>
+      <v-card-title class="text-center headline mb-2">{{ name }}</v-card-title>
 
       <v-table fixed-header>
         <thead>

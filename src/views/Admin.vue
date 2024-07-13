@@ -26,6 +26,7 @@ const roles = ref({
 });
 
 onMounted(async () => {
+  localStorage.removeItem("selectedUser");
   account.value = JSON.parse(localStorage.getItem("account"));
   await getUsers();
 });
@@ -45,7 +46,7 @@ async function getUsers() {
 
 //Navigate to Different Pages
 function navigateToView(itemId) {
-  window.localStorage.setItem("userId", JSON.stringify(itemId));
+  window.localStorage.setItem("selectedUser", JSON.stringify(itemId));
   router.push({ name: "studentresumeslist" });
 }
 
@@ -149,7 +150,7 @@ function closeSnackBar() {
             <td class="text-left" v-if="item.id !== account.id && item.id !== 1">{{ roles[item.roleId] }}</td>
             <td class="text-right" v-if="item.id !== account.id && item.id !== 1">
               <v-btn rounded variant="text" @click="openUserUpdate(item.id, item.roleId)"> Change Role </v-btn>
-              <v-btn rounded variant="text" @click="navigateToView(item.id)"> View Resumes</v-btn>
+              <v-btn rounded variant="text" @click="navigateToView(item)"> View Resumes</v-btn>
               <v-btn rounded variant="text" @click="openDelete(item.id)"> Delete </v-btn>
             </td>
           </tr>

@@ -1486,7 +1486,7 @@ export default {
                 <v-container>
                     <!-- TODO: CHANGE ONCE EXPERIENCE TYPE IS UPDATED -->
                     <v-data-table v-model="selectedAwardExperience" :items="experiences"
-                        item-value="id" :search="5"
+                        item-value="id" :search="6"
                         :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' },]"
                         show-select hide-default-footer>
                     </v-data-table>
@@ -1534,7 +1534,7 @@ export default {
                 </v-btn>
                 &nbsp;&nbsp;&nbsp;
                 <!-- TODO: CHANGE ONCE EXPERIENCE TYPE IS UPDATED -->
-                <v-btn variant="tonal" @click="addNewExperience(5)">
+                <v-btn variant="tonal" @click="addNewExperience(6)">
                     Submit
                 </v-btn>
             </v-container>

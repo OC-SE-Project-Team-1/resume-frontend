@@ -21,7 +21,8 @@ export default {
             "experienceTypeId" : experienceTypeID,
             "city": city,
             "state": state,
-            "organization": organization
+            "organization": organization,
+            "history": [], //Will be updated when AI goes online
         })
     },
     updateExperience() {

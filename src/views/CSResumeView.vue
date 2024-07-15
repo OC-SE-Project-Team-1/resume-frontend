@@ -45,6 +45,10 @@ function navigateToEdit() {
   router.push({ name: "edit" });
 }
 
+function navigateToStudentResumes() {
+  router.push({ name: "studentresumeslist" });
+}
+
 //Export Story
 async function exportStory() {
   await StoryExport.exportStory(storyId.value)
@@ -95,9 +99,13 @@ function closeSnackBar() {
 <template>
   <v-container>
     <div id="body">
-      <v-btn variant="flat" color="secondary" @click="openExport()">Export</v-btn>
       <v-card-title class="text-center headline mb-2">View</v-card-title>
-
+      <v-card flat color="transparent">
+          <v-card-actions>
+            <v-btn variant="flat" color="secondary" @click="openExport()">Export</v-btn>
+            <v-btn class="ml-auto" variant="flat" color="secondary" @click="navigateToStudentResumes()"> Back </v-btn>
+          </v-card-actions>
+        </v-card>
       <v-row>
         <v-col>
       <v-card class="rounded-lg elevation-5 my-8">

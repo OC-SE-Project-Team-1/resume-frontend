@@ -44,6 +44,10 @@ function navigateToEdit() {
   router.push({ name: "edit" });
 }
 
+function navigateToLibrary() {
+  router.push({ name: "library" });
+}
+
 //Export Story
 async function exportStory() {
   await StoryExport.exportStory(storyId.value)
@@ -81,9 +85,14 @@ function closeSnackBar() {
 <template>
   <v-container>
     <div id="body">
-      <v-btn variant="flat" color="secondary" @click="navigateToEdit()">Edit</v-btn>
-      <v-btn variant="flat" color="secondary" @click="openExport()">Export</v-btn>
-      <v-btn variant="flat" color="secondary" @click="toggleFeedback()">Toggle Feedback</v-btn>
+      <v-card flat color="transparent">
+          <v-card-actions>
+            <v-btn variant="flat" color="secondary" @click="navigateToEdit()">Edit</v-btn>
+            <v-btn variant="flat" color="secondary" @click="openExport()">Export</v-btn>
+            <v-btn variant="flat" color="secondary" @click="toggleFeedback()">Toggle Feedback</v-btn>
+            <v-btn class="ml-auto" variant="flat" color="secondary" @click="navigateToLibrary()"> Back </v-btn>
+          </v-card-actions>
+        </v-card>
       <v-card-title class="text-center headline mb-2">View</v-card-title>
 
       <div v-show="!isFeedback">

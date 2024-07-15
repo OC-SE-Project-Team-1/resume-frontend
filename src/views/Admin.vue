@@ -27,6 +27,7 @@ const roles = ref({
 
 onMounted(async () => {
   localStorage.removeItem("selectedUser");
+  localStorage.removeItem("previousPage");
   account.value = JSON.parse(localStorage.getItem("account"));
   await getUsers();
 });
@@ -47,6 +48,7 @@ async function getUsers() {
 //Navigate to Different Pages
 function navigateToView(itemId) {
   window.localStorage.setItem("selectedUser", JSON.stringify(itemId));
+  window.localStorage.setItem("previousPage", "admin");
   router.push({ name: "studentresumeslist" });
 }
 

@@ -1,5 +1,5 @@
 <script setup>
-import ftLogo from "/fAIrytales-logo.png";
+import ftLogo from "/rain-logo.png";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import UserServices from "../services/UserServices";
@@ -7,7 +7,7 @@ import { useTheme } from 'vuetify'
 
 const router = useRouter();
 const account = ref(null);
-const title = ref("fAIrytales");
+const title = ref("The R.A.I.N.");
 const logoURL = ref("");
 const theme = useTheme();
 

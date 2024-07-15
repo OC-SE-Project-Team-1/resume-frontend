@@ -20,9 +20,9 @@ function navigateToCreateResume() {
     <div id="body">
       <v-row align="center" class="mb-4">
         <v-col cols="10">
-          <v-card-title class="pl-0 text-h4 font-weight-bold">Welcome to fAIrytales!
+          <v-card-title class="pl-0 text-h4 font-weight-bold">Welcome to The R.A.I.N.!
           </v-card-title>
-          <v-card-title class="pl-0 text-h6 font-weight-bold">Here to generate stories for kids before bedtime.
+          <v-card-title class="pl-0 text-h6 font-weight-bold">Here to help you easily create resume with a little help from AI.
           </v-card-title>
         </v-col>
       </v-row>

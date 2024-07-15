@@ -87,7 +87,7 @@ const courses = ref(null);
 const attending = ref(false);
 
 const experiences = ref();
-const search = ref();
+const search = ref('5');
 const selectedWorkExperience = ref();
 const selectedLeadershipExperience = ref();
 const selectedActivitiesExperience = ref();
@@ -673,6 +673,11 @@ async function addNewSkill() {
         });
 }
 
+function filterPerfectMatch(value, search) {
+    console.log("value: " + value + ", search: " + search);
+    return value != null && String(value) === search
+    }
+
 </script>
 
 <script>
@@ -1001,7 +1006,8 @@ export default {
                 <v-text class="headline mb-2">Select Work Experiences: </v-text>
                 <v-container>
                     <v-data-table v-model="selectedWorkExperience" :items="experiences"
-                        item-value="id" :search="1"
+                        item-value="id" :search="'1'"
+                        :custom-filter="filterPerfectMatch"
                         :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' },]"
                         show-select hide-default-footer>
                     </v-data-table>
@@ -1090,7 +1096,8 @@ export default {
 
                 <v-container>
                     <v-data-table v-model="selectedLeadershipExperience" :items="experiences"
-                        item-value="id" :search="2"
+                        item-value="id" :search="'2'"
+                        :custom-filter="filterPerfectMatch"
                         :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' },]"
                         show-select hide-default-footer>
                     </v-data-table>
@@ -1179,7 +1186,8 @@ export default {
 
                 <v-container>
                     <v-data-table v-model="selectedActivitiesExperience" :items="experiences"
-                        item-value="id" :search="3"
+                        item-value="id" :search="'3'"
+                        :custom-filter="filterPerfectMatch"
                         :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' },]"
                         show-select hide-default-footer>
                     </v-data-table>
@@ -1267,7 +1275,8 @@ export default {
 
                 <v-container>
                     <v-data-table v-model="selectedVolunteerExperience" :items="experiences"
-                        item-value="id" :search="4"
+                        item-value="id" :search="'4'"
+                        :custom-filter="filterPerfectMatch"
                         :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' },]"
                         show-select hide-default-footer>
                     </v-data-table>
@@ -1420,8 +1429,9 @@ export default {
                 <v-text class="headline mb-2">Select Honors: </v-text>
                 <v-container>
                     <v-data-table v-model="selectedHonorExperience" :items="experiences"
-                        item-value="id" :search="5"
-                        :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' },]"
+                        item-value="id" :search="'5'"
+                        :custom-filter="filterPerfectMatch"
+                        :headers="[{ title: 'experienceTypeId', text: 'experienceTypeId',  value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' },]"
                         show-select hide-default-footer>
                     </v-data-table>
                 </v-container>
@@ -1484,9 +1494,9 @@ export default {
             <div align="left">
                 <v-text class="headline mb-2">Select Awards: </v-text>
                 <v-container>
-                    <!-- TODO: CHANGE ONCE EXPERIENCE TYPE IS UPDATED -->
                     <v-data-table v-model="selectedAwardExperience" :items="experiences"
-                        item-value="id" :search="6"
+                        item-value="id" :search="'6'"
+                        :custom-filter="filterPerfectMatch"
                         :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' },]"
                         show-select hide-default-footer>
                     </v-data-table>
@@ -1533,7 +1543,6 @@ export default {
                     Cancel
                 </v-btn>
                 &nbsp;&nbsp;&nbsp;
-                <!-- TODO: CHANGE ONCE EXPERIENCE TYPE IS UPDATED -->
                 <v-btn variant="tonal" @click="addNewExperience(6)">
                     Submit
                 </v-btn>

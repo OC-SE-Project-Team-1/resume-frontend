@@ -87,20 +87,22 @@ const courses = ref(null);
 const attending = ref(false);
 
 const experiences = ref();
-const search = ref();
+const search = ref('5');
 const selectedWorkExperience = ref();
 const selectedLeadershipExperience = ref();
 const selectedActivitiesExperience = ref();
 const selectedVolunteerExperience = ref();
+const selectedHonorExperience = ref();
+const selectedAwardExperience = ref();
 
 const isJobExperience = ref(false);
-const jobExperienceTitle = ref();
-const jobCompany = ref();
-const jobCity = ref();
-const jobState = ref();
-const jobStart = ref();
-const jobEnd = ref();
-const jobDescription = ref();
+const jobExperienceTitle = ref(null);
+const jobCompany = ref(null);
+const jobCity = ref(null);
+const jobState = ref(null);
+const jobStart = ref(null);
+const jobEnd = ref(null);
+const jobDescription = ref(null);
 
 const isLeadershipExperience = ref(false);
 // const leadershipTitle = ref();
@@ -113,6 +115,8 @@ const isLeadershipExperience = ref(false);
 
 const isActivitiesExperience = ref(false);
 const isVolunteerExperience = ref(false);
+const isHonorExperience = ref(false);
+const isAwardExperience = ref(false);
 
 const skillTitle = ref("");
 const skillDescription = ref("");
@@ -240,6 +244,8 @@ async function resetNewInput() {
     closeNewActivitiesExperience();
     closeNewVolunteerExperience();
     closeNewSkill();
+    closeNewHonor();
+    closeNewAward();
 }
 
 async function selectedTemplate(value) {
@@ -317,6 +323,26 @@ function toggleExperience(value) {
             isJobExperience.value = false;
             isLeadershipExperience.value = false;
             isActivitiesExperience.value = false;
+        }
+    }
+    else if (value == 5) {
+        isHonorExperience.value = !isHonorExperience.value;
+        if (isHonorExperience.value == false) {
+            closeNewHonor();
+        }
+        if (isHonorExperience.value == true) {
+            clearExperienceData();
+            isAwardExperience.value = false;
+        }
+    }
+    else if (value == 6) {
+        isAwardExperience.value = !isAwardExperience.value;
+        if (isAwardExperience.value == false) {
+            closeNewAward();
+        }
+        if (isAwardExperience.value == true) {
+            clearExperienceData();
+            isHonorExperience.value = false;
         }
     }
 }
@@ -554,6 +580,8 @@ async function addNewExperience(type) {
             closeNewLeadershipExperience();
             closeNewActivitiesExperience();
             closeNewVolunteerExperience();
+            closeNewHonor();
+            closeNewAward();
         })
         .catch((error) => {
             console.log(error);
@@ -571,7 +599,6 @@ async function clearExperienceData() {
     jobStart.value = null;
     jobEnd.value = null;
     jobDescription.value = null;
-
 }
 
 async function closeNewJobExperience() {
@@ -592,8 +619,17 @@ async function closeNewLeadershipExperience() {
 async function closeNewActivitiesExperience() {
     isActivitiesExperience.value = false;
 }
+
 async function closeNewVolunteerExperience() {
     isVolunteerExperience.value = false;
+}
+
+async function closeNewHonor() {
+    isHonorExperience.value = false;
+}
+
+async function closeNewAward() {
+    isAwardExperience.value = false;
 }
 
 async function setNewskillVisible() {
@@ -637,6 +673,11 @@ async function addNewSkill() {
         });
 }
 
+function filterPerfectMatch(value, search) {
+    console.log("value: " + value + ", search: " + search);
+    return value != null && String(value) === search
+    }
+
 </script>
 
 <script>
@@ -660,7 +701,7 @@ export default {
                             <v-tab value="3" @click="getEducationInfo()">Education</v-tab>
                             <v-tab value="4" @click="getExperiences()">Experience</v-tab>
                             <v-tab value="5" @click="getSkills()">Skills</v-tab>
-                            <v-tab value="6" @click="resetNewInput()">Others</v-tab>
+                            <v-tab value="6" @click="getExperiences()">Others</v-tab>
                         </v-tabs>
 
         <v-tabs-window v-model="tab">
@@ -965,7 +1006,8 @@ export default {
                 <v-text class="headline mb-2">Select Work Experiences: </v-text>
                 <v-container>
                     <v-data-table v-model="selectedWorkExperience" :items="experiences"
-                        item-value="id" :search="1"
+                        item-value="id" :search="'1'"
+                        :custom-filter="filterPerfectMatch"
                         :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' },]"
                         show-select hide-default-footer>
                     </v-data-table>
@@ -1054,7 +1096,8 @@ export default {
 
                 <v-container>
                     <v-data-table v-model="selectedLeadershipExperience" :items="experiences"
-                        item-value="id" :search="2"
+                        item-value="id" :search="'2'"
+                        :custom-filter="filterPerfectMatch"
                         :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' },]"
                         show-select hide-default-footer>
                     </v-data-table>
@@ -1143,7 +1186,8 @@ export default {
 
                 <v-container>
                     <v-data-table v-model="selectedActivitiesExperience" :items="experiences"
-                        item-value="id" :search="3"
+                        item-value="id" :search="'3'"
+                        :custom-filter="filterPerfectMatch"
                         :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' },]"
                         show-select hide-default-footer>
                     </v-data-table>
@@ -1231,7 +1275,8 @@ export default {
 
                 <v-container>
                     <v-data-table v-model="selectedVolunteerExperience" :items="experiences"
-                        item-value="id" :search="4"
+                        item-value="id" :search="'4'"
+                        :custom-filter="filterPerfectMatch"
                         :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' },]"
                         show-select hide-default-footer>
                     </v-data-table>
@@ -1382,26 +1427,13 @@ export default {
 
             <div align="left">
                 <v-text class="headline mb-2">Select Honors: </v-text>
-
                 <v-container>
-                    <v-list lines="two">
-                        <v-list-item v-for="n in 3" :key="n">
-                            <v-row>
-                                <v-col cols="2">
-                                    <v-checkbox></v-checkbox>
-                                </v-col>
-                                <v-col cols="10">
-                                    <v-list-item-content>
-                                        <v-list-item-title>{{ 'Honor Title' }}</v-list-item-title>
-                                        <v-list-item-subtitle>
-                                            Description
-                                        </v-list-item-subtitle>
-                                    </v-list-item-content>
-                                </v-col>
-                            </v-row>
-
-                        </v-list-item>
-                    </v-list>
+                    <v-data-table v-model="selectedHonorExperience" :items="experiences"
+                        item-value="id" :search="'5'"
+                        :custom-filter="filterPerfectMatch"
+                        :headers="[{ title: 'experienceTypeId', text: 'experienceTypeId',  value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' },]"
+                        show-select hide-default-footer>
+                    </v-data-table>
                 </v-container>
 
             </div>
@@ -1418,35 +1450,34 @@ export default {
             </div>
 
 
-            <v-btn variant="tonal" @click="setNewLinkVisible">
+            <v-btn variant="tonal" @click="toggleExperience(5)">
                 Add New Honor
             </v-btn>
 
-            <v-container v-if="isNewLinkVisible">
+            <v-container v-if="isHonorExperience">
                 <v-row>
                     <v-col>
-                        <v-text-field label="Honor Title"></v-text-field>
+                        <v-text-field v-model="jobExperienceTitle"
+                            label="Honor Title"></v-text-field>
                     </v-col>
                 </v-row>
-
                 <v-row>
-                    <v-textarea label="Description">
-                        <template #append-inner>
-                            <v-btn color="secondary" rounded="xl" value="Ai Assist">
-                                AI Assist
-                            </v-btn>
-                        </template>
-                    </v-textarea>
+                    <v-col>
+                        <v-text-field v-model="jobStart" label="Date Awarded" hint="Aug 2024"></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-text-field v-model="jobDescription" label="Honor Description"></v-text-field>
                 </v-row>
 
                 <v-col>
 
                 </v-col>
-                <v-btn variant="tonal" @click="closeNewLink()">
+                <v-btn variant="tonal" @click="toggleExperience(5)">
                     Cancel
                 </v-btn>
                 &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" @click="addNewHonor()">
+                <v-btn variant="tonal" @click="addNewExperience(5)">
                     Submit
                 </v-btn>
             </v-container>
@@ -1462,26 +1493,13 @@ export default {
             </div>
             <div align="left">
                 <v-text class="headline mb-2">Select Awards: </v-text>
-
                 <v-container>
-                    <v-list lines="two">
-                        <v-list-item v-for="n in 3" :key="n">
-                            <v-row>
-                                <v-col cols="2">
-                                    <v-checkbox></v-checkbox>
-                                </v-col>
-                                <v-col cols="10">
-                                    <v-list-item-content>
-                                        <v-list-item-title>{{ 'Title' }}</v-list-item-title>
-                                        <v-list-item-subtitle>
-                                            Description
-                                        </v-list-item-subtitle>
-                                    </v-list-item-content>
-                                </v-col>
-                            </v-row>
-
-                        </v-list-item>
-                    </v-list>
+                    <v-data-table v-model="selectedAwardExperience" :items="experiences"
+                        item-value="id" :search="'6'"
+                        :custom-filter="filterPerfectMatch"
+                        :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' },]"
+                        show-select hide-default-footer>
+                    </v-data-table>
                 </v-container>
 
             </div>
@@ -1498,37 +1516,34 @@ export default {
             </div>
 
 
-            <v-btn variant="tonal" @click="setNewLinkVisible">
+            <v-btn variant="tonal" @click="toggleExperience(6)">
                 Add New Award
             </v-btn>
 
-            <v-container v-if="isNewLinkVisible">
+            <v-container v-if="isAwardExperience">
                 <v-row>
                     <v-col>
-                        <v-text-field label="Title"></v-text-field>
+                        <v-text-field v-model="jobExperienceTitle"
+                            label="Award Title"></v-text-field>
                     </v-col>
-
                 </v-row>
-
-
                 <v-row>
-                    <v-textarea label="Award Description">
-                        <template #append-inner>
-                            <v-btn color="secondary" rounded="xl" value="Ai Assist">
-                                AI Assist
-                            </v-btn>
-                        </template>
-                    </v-textarea>
+                    <v-col>
+                        <v-text-field v-model="jobStart" label="Date Awarded" hint="Aug 2024"></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-text-field v-model="jobDescription" label="Award Description"></v-text-field>
                 </v-row>
 
                 <v-col>
 
                 </v-col>
-                <v-btn variant="tonal" @click="closeNewLink()">
+                <v-btn variant="tonal" @click="toggleExperience(6)">
                     Cancel
                 </v-btn>
                 &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" @click="addNewAward()">
+                <v-btn variant="tonal" @click="addNewExperience(6)">
                     Submit
                 </v-btn>
             </v-container>

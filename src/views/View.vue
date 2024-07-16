@@ -102,12 +102,7 @@ function closeSnackBar() {
       <div v-show="isFeedback">
       <v-row>
         <v-col>
-      <v-card class="rounded-lg elevation-5 my-8">
-        <v-card-title class="text-center headline mb-2">Resume</v-card-title>
-        <v-card-text>
-          <v-textarea v-model="content" label="RESUME FILLER FOR NOW" auto-grow readonly></v-textarea>
-        </v-card-text>
-      </v-card>
+          <Template1></Template1>
     </v-col>
   <v-col>
       <v-card class="rounded-lg elevation-5 my-8">

@@ -17,7 +17,7 @@ onMounted(async () => {
 
 <template>
   <div>
-    <v-sheet class="mx-auto my-auto" >
+    <v-sheet class="mx-auto my-auto" style="font-family: 'Times New Roman', Times, serif;">
       <v-table class="mx-2 my-2">
       <v-row class="my-2">
         <v-col>
@@ -42,8 +42,18 @@ onMounted(async () => {
       </v-row>
       <v-row class="my-1">
         <v-col>
-        <p><div style="font-weight: bold">Oklahoma Christian University</div>, 
-          Oklahoma City, OK</p>
+         <div>
+          <v-row >
+          <v-col cols="5">
+            <p style="font-weight: bold;"> Oklahoma Christian University</p>
+          </v-col>
+          <v-col cols="3">
+            <p>, Oklahoma City, OK</p>
+          </v-col>
+        </v-row>
+        </div>
+       <!-- <p><div style="font-weight: bold">Oklahoma Christian University</div>, 
+          Oklahoma City, OK</p>-->
       </v-col>
       <v-col>
           <p align="right">August 2024 - August 2024</p>

@@ -102,7 +102,6 @@ function closeSnackBar() {
       <div v-show="isFeedback">
       <v-row>
         <v-col>
-          <Template1></Template1>
     </v-col>
   <v-col>
       <v-card class="rounded-lg elevation-5 my-8">

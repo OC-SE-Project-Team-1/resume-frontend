@@ -10,10 +10,11 @@ export default {
   getSkillsForUser(userID){
     return apiClient.get("skill/user/" + userID);
   },
-  addSkill(skill, skillDescription, accountID) {
+  addSkill(skill, skillDescription, chatHistory, accountID) {
     return apiClient.post("/skill/", {
       "title": String(skill),
       "description": String(skillDescription),
+      "chatHistory" : String(chatHistory),
       "userId": accountID
     });
   },
@@ -30,11 +31,12 @@ export default {
   },
 
   skillAiAssist(skill, chatHistory){
+
     return apiClient.post("skill/assist", {
-      data: {
+      
         "chatHistory": chatHistory,
-        "description" : skill, 
-      }
+        "description" : String(skill), 
+      
   });
   }
 };

@@ -121,6 +121,7 @@ const isAwardExperience = ref(false);
 const skillTitle = ref("");
 const skillDescription = ref("");
 const skills = ref();
+let skillHistory = [];
 const selectedSkills = ref();
 const isNewSkillVisible = ref(false);
 
@@ -657,7 +658,7 @@ async function getSkills() {
 }
 
 async function addNewSkill() {
-    await SkillServices.addSkill(skillTitle.value, skillDescription.value, parseInt(account.value.id))
+    await SkillServices.addSkill(skillTitle.value, skillDescription.value, JSON.stringify(skillHistory), parseInt(account.value.id))
         .then(() => {
             snackbar.value.value = true;
             snackbar.value.color = "green";
@@ -678,14 +679,14 @@ function filterPerfectMatch(value, search) {
     return value != null && String(value) === search
     }
 
-async function skillAiAsist(){
-    
-    await SkillServices.skillAiAssist(skillDescription.value,[])
+async function skillAiAssist(){
+    await SkillServices.skillAiAssist(skillDescription.value)
         .then((response) => {
-        console.log(response.data.description)
         skillDescription.value = response.data.description
-       
+        skillHistory.push(response.data.history[0])
+        skillHistory.push(response.data.history[1])         
         })
+        
 }
 </script>
 
@@ -1404,12 +1405,13 @@ export default {
                 </v-row>
                 <v-row>
                     <v-col>
-                        <v-text-field v-model="skillDescription" label="Brief Description/Proficientcy Level"></v-text-field>
-                        
-                            <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="skillAiAsist()">
+                        <v-textarea v-model="skillDescription" label="Brief Description/Proficientcy Level, click AI assist button along with your input to help create a better description">
+                        <template #append-inner>
+                            <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="skillAiAssist()">
                                 AI Assist
                             </v-btn>
-                        
+                        </template>
+                    </v-textarea>         
                     </v-col>
                 </v-row>
                 <v-col>

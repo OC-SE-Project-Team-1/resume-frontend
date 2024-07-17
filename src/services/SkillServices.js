@@ -28,4 +28,13 @@ export default {
       data: {"userId": parseInt(accountID)}
   });
   },
+
+  skillAiAssist(skill, chatHistory){
+    return apiClient.post("skill/assist", {
+      data: {
+        "chatHistory": chatHistory,
+        "description" : skill, 
+      }
+  });
+  }
 };

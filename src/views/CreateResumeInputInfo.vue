@@ -678,6 +678,15 @@ function filterPerfectMatch(value, search) {
     return value != null && String(value) === search
     }
 
+async function skillAiAsist(){
+    
+    await SkillServices.skillAiAssist(skillDescription.value,[])
+        .then((response) => {
+        console.log(response.data.description)
+        skillDescription.value = response.data.description
+       
+        })
+}
 </script>
 
 <script>
@@ -1396,6 +1405,11 @@ export default {
                 <v-row>
                     <v-col>
                         <v-text-field v-model="skillDescription" label="Brief Description/Proficientcy Level"></v-text-field>
+                        
+                            <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="skillAiAsist()">
+                                AI Assist
+                            </v-btn>
+                        
                     </v-col>
                 </v-row>
                 <v-col>

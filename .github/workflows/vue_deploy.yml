@@ -9,10 +9,8 @@ on:
 
 jobs:
   aws-deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     #For google auth
-    env:
-      APP_ENV: production
 
     steps:
       - uses: actions/checkout@v3
@@ -28,7 +26,7 @@ jobs:
       - run: npm run build
 
       - name: Deploy to Server
-        uses: garygrossgarten/github-action-scp@release
+        uses: easingthemes/ssh-deploy@v2.1.1
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY_2 }}
           ARGS: "-rltgoDzvO --delete"

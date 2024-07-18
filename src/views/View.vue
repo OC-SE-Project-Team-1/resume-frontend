@@ -2,9 +2,10 @@
 import { onMounted } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import Template1 from "../components/Template1.vue";
+import template1 from "../components/Template1.vue";
 import template2 from "../components/Template2.vue";
 import template3 from "../components/Template3.vue";
+import template4 from "../components/Template4.vue";
 
 const router = useRouter();
 const account = ref(null);
@@ -97,7 +98,7 @@ function closeSnackBar() {
       <v-card-title class="text-center headline mb-2">View</v-card-title>
 
       <div v-show="!isFeedback">
-      <template3></template3>
+      <template4></template4>
       </div>
 
       <div v-show="isFeedback">

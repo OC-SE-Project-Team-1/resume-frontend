@@ -28,7 +28,7 @@ jobs:
       - run: npm run build
 
       - name: Deploy to Server
-        uses: easingthemes/ssh-deploy@v2.1.1
+        uses: garygrossgarten/github-action-scp@release
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY_2 }}
           ARGS: "-rltgoDzvO --delete"

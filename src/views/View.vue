@@ -4,6 +4,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import CreateStoryServices from "../services/CreateStoryServices";
 import StoryExport from "../reports/StoryExport";
+import template2 from "../components/Template2.vue"
 
 const router = useRouter();
 const account = ref(null);
@@ -96,12 +97,7 @@ function closeSnackBar() {
       <v-card-title class="text-center headline mb-2">View</v-card-title>
 
       <div v-show="!isFeedback">
-      <v-card class="rounded-lg elevation-5 my-8">
-        <v-card-title class="text-center headline mb-2">{{ title }}</v-card-title>
-        <v-card-text>
-          <v-textarea v-model="content" label="RESUME FILLER" auto-grow readonly></v-textarea>
-        </v-card-text>
-      </v-card>
+      <template2></template2>
       </div>
 
       <div v-show="isFeedback">

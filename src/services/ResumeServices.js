@@ -30,8 +30,8 @@ export default {
       "userId": accountID
     });
   },
-  deleteResume(linkId, accountID) {
-    return apiClient.delete("resumes/" + linkId, {
+  deleteResume(resumeId, accountID) {
+    return apiClient.delete("resumes/" + resumeId, {
       data: {"userId": parseInt(accountID)}
   });
   },

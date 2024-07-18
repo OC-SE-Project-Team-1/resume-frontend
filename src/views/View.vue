@@ -6,14 +6,15 @@ import template1 from "../components/Template1.vue";
 import template2 from "../components/Template2.vue";
 import template3 from "../components/Template3.vue";
 import template4 from "../components/Template4.vue";
+import ResumeServices from "../services/ResumeServices";
 
 const router = useRouter();
 const account = ref(null);
-const content = ref(null);
-const title = ref(null);
-const storyId = ref(null);
+const resumeData = ref(null);
+const resumeId = ref(null);
 const isExport = ref(false);
 const isFeedback = ref(false);
+const templateId = ref(0);
 const snackbar = ref({
   value: false,
   color: "",
@@ -23,15 +24,15 @@ const snackbar = ref({
 
 onMounted(async () => {
   account.value = JSON.parse(localStorage.getItem("account"));
-  storyId.value = JSON.parse(localStorage.getItem("storyId"));
-  await getStory();
+  resumeId.value = JSON.parse(localStorage.getItem("resumeId"));
+  await getResume();
 });
 
-async function getStory() {
-  await CreateStoryServices.getOneStory(storyId.value)
+async function getResume() {
+  await ResumeServices.getResume(resumeId.value)
     .then((response) => {
-      title.value = response.data.title;
-      content.value = response.data.story;
+      resumeData.value = response.data;
+      templateId.value = resumeData.value.template;
     })
     .catch((error) => {
       console.log(error);
@@ -50,22 +51,22 @@ function navigateToLibrary() {
   router.push({ name: "library" });
 }
 
-//Export Story
-async function exportStory() {
-  await StoryExport.exportStory(storyId.value)
-    .then(() => {
-      closeExport();
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "Story Exported!";
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
+//Export Resume
+// async function exportStory() {
+//   await StoryExport.exportStory(resumeId.value)
+//     .then(() => {
+//       closeExport();
+//       snackbar.value.value = true;
+//       snackbar.value.color = "green";
+//       snackbar.value.text = "Story Exported!";
+//     })
+//     .catch((error) => {
+//       console.log(error);
+//       snackbar.value.value = true;
+//       snackbar.value.color = "error";
+//       snackbar.value.text = error.response.data.message;
+//     });
+// }
 
 function openExport() {
   isExport.value = true;
@@ -98,7 +99,18 @@ function closeSnackBar() {
       <v-card-title class="text-center headline mb-2">View</v-card-title>
 
       <div v-show="!isFeedback">
-      <template4></template4>
+        <div v-show="templateId == 1">
+          <template1></template1>
+        </div>
+        <div v-show="templateId == 2">
+          <template2></template2>
+        </div>
+        <div v-show="templateId == 3">
+          <template3></template3>
+        </div>
+        <div v-show="templateId == 4">
+          <template4></template4>
+        </div>
       </div>
 
       <div v-show="isFeedback">

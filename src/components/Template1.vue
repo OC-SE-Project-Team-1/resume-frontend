@@ -1,15 +1,17 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import ResumeServices from "../services/ResumeServices";
 import UserServices from "../services/UserServices";
-import { useTheme } from 'vuetify'
 
 const router = useRouter();
 const account = ref(null);
+const resumeId = ref(null);
 
 
 onMounted(async () => {
-  // account.value = JSON.parse(localStorage.getItem("account"));
+  account.value = JSON.parse(localStorage.getItem("account"));
+  resumeId.value = JSON.parse(localStorage.getItem("resumeId"));
 });
 
 

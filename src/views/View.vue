@@ -2,8 +2,8 @@
 import { onMounted } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import CreateStoryServices from "../services/CreateStoryServices";
-import StoryExport from "../reports/StoryExport";
+import Template1 from "../components/Template1.vue";
+import template2 from "../components/Template2.vue";
 import template3 from "../components/Template3.vue";
 
 const router = useRouter();
@@ -103,12 +103,7 @@ function closeSnackBar() {
       <div v-show="isFeedback">
       <v-row>
         <v-col>
-      <v-card class="rounded-lg elevation-5 my-8">
-        <v-card-title class="text-center headline mb-2">Resume</v-card-title>
-        <v-card-text>
-          <v-textarea v-model="content" label="RESUME FILLER FOR NOW" auto-grow readonly></v-textarea>
-        </v-card-text>
-      </v-card>
+          <Template1></Template1>
     </v-col>
   <v-col>
       <v-card class="rounded-lg elevation-5 my-8">

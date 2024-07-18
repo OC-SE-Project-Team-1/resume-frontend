@@ -6,14 +6,46 @@ import UserServices from "../services/UserServices";
 
 const router = useRouter();
 const account = ref(null);
+const user = ref(null);
 const resumeId = ref(null);
+const resumeData = ref();
+
+const links
 
 
 onMounted(async () => {
   account.value = JSON.parse(localStorage.getItem("account"));
   resumeId.value = JSON.parse(localStorage.getItem("resumeId"));
+  await getResume();
+  await getUser();
 });
 
+async function getResume() {
+  await ResumeServices.getResume(resumeId.value)
+    .then((response) => {
+      resumeData.value = response.data;
+      sortData();
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+}
+async function getUser() {
+  await UserServices.getUser(resumeData.value.userId)
+    .then((response) => {
+      user.value = response.data;
+      console.log(user.value);
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+}
 
 </script>
 
@@ -22,8 +54,9 @@ onMounted(async () => {
     <v-sheet style="width: calc(90vh * 8.5 / 11); position:relative; margin: 0 auto;">
         <div class="resume">
       <header>
-        <h1><strong>{{ firstName }} {{ lastName }}</strong></h1>
-        <p>{{ city }}, {{ state }} | {{ phone }} | <a :href="'mailto:' + email">{{ email }}</a> | <a :href="linkedInUrl">{{ linkedInUrl }}</a></p>
+        <h1><strong>{{ user.firstName }} {{ user.lastName }}</strong></h1>
+        <!-- :href="'mailto:' + user.email" :href="linkedInUrl" -->
+        <p>{{ user.address }} | {{ user.phonenumber }} | <a >{{ user.email }}</a> | <a >{{ linkedInUrl }}</a></p>
       </header>
       
       <section>

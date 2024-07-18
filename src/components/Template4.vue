@@ -2,9 +2,7 @@
 <v-container>
   <v-sheet style="width: calc(90vh * 8.5 / 11);
           margin: 0 auto; 
-          position: relative;
-          max-height: 90vh;
-          height: 90vh;"
+          position: relative;"
           >
   <div class="resume">
           <header>

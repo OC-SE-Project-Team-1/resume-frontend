@@ -6,11 +6,22 @@ import UserServices from "../services/UserServices";
 
 const router = useRouter();
 const account = ref(null);
-const user = ref(null);
+const user = ref({
+  id: "",
+  userName: "",
+  email: "",
+  password: "",
+  firstName: "",
+  lastName: "",
+  phoneNumber: "",
+  address: "",
+  darkMode: "",
+  roleId: ""
+});
 const resumeId = ref(null);
 const resumeData = ref();
 
-const links
+// const links = ref();
 
 
 onMounted(async () => {
@@ -24,7 +35,7 @@ async function getResume() {
   await ResumeServices.getResume(resumeId.value)
     .then((response) => {
       resumeData.value = response.data;
-      sortData();
+      // sortData();
     })
     .catch((error) => {
       console.log(error);

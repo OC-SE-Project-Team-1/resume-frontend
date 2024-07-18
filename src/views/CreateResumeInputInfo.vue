@@ -8,6 +8,7 @@ import GoalServices from "../services/GoalServices.js";
 import SkillServices from "../services/SkillServices.js";
 import EducationServices from "../services/EducationServices.js";
 import ExperienceServices from "../services/ExperienceServices.js";
+import ResumeServices from "../services/ResumeServices.js";
 import template1 from "/Template1.png";
 import template2 from "/Template2.png";
 import template3 from "/Template3.png";
@@ -23,9 +24,8 @@ const snackbar = ref({
 });
 const isNewLinkVisible = ref(false);
 const isNewEduVisible = ref(false);
+const tabs = ref();
 const tab = ref("1");
-const resumeTemplate = ref();
-
 
 const resumeSections = ref(
     {
@@ -61,16 +61,16 @@ const email = ref();
 const linkDescription = ref("");
 const link = ref("");
 const links = ref();
-const selectedLinks = ref();
+const selectedLinks = ref(null);
 
 const goalTitle = ref("");
 const goalDescription = ref("");
 const goals = ref();
-const selectedGoals = ref();
+const selectedGoals = ref(null);
 const isNewGoalVisible = ref(false);
 
 const educationInfo = ref();
-const selectedEducation = ref();
+const selectedEducation = ref(null);
 const schoolName = ref("");
 const schoolCity = ref("");
 const schoolState = ref("");
@@ -87,13 +87,12 @@ const courses = ref(null);
 const attending = ref(false);
 
 const experiences = ref();
-const search = ref('5');
-const selectedWorkExperience = ref();
-const selectedLeadershipExperience = ref();
-const selectedActivitiesExperience = ref();
-const selectedVolunteerExperience = ref();
-const selectedHonorExperience = ref();
-const selectedAwardExperience = ref();
+const selectedWorkExperience = ref(null);
+const selectedLeadershipExperience = ref(null);
+const selectedActivitiesExperience = ref(null);
+const selectedVolunteerExperience = ref(null);
+const selectedHonorExperience = ref(null);
+const selectedAwardExperience = ref(null);
 
 const isJobExperience = ref(false);
 const jobExperienceTitle = ref(null);
@@ -105,14 +104,6 @@ const jobEnd = ref(null);
 const jobDescription = ref(null);
 
 const isLeadershipExperience = ref(false);
-// const leadershipTitle = ref();
-// const leadershipOrg = ref();
-// const leadershipStart = ref();
-// const leadershipEnd = ref();
-// const leadershipDescription = ref();
-// const LeadershipCity = ref();
-// const leadershipState = ref();
-
 const isActivitiesExperience = ref(false);
 const isVolunteerExperience = ref(false);
 const isHonorExperience = ref(false);
@@ -121,7 +112,7 @@ const isAwardExperience = ref(false);
 const skillTitle = ref("");
 const skillDescription = ref("");
 const skills = ref();
-const selectedSkills = ref();
+const selectedSkills = ref(null);
 const isNewSkillVisible = ref(false);
 
 const isMinors = ref(false);
@@ -130,6 +121,7 @@ const isCourses = ref(false);
 const isAttending = ref(false);
 
 const templateSelected = ref();
+const selectedResumeTemplate = ref();
 
 const isSelectTemplate = ref(true);
 const isPreviewResume = ref(false);
@@ -152,8 +144,12 @@ const isSkilled = computed(() => {
         skillDescription.value !== ""
     )
 });
-
-const selectedSections = ref();
+const isGenerated = computed(() => {
+    return (
+        isPreviewResume.value === true &&
+        title.value !== "" 
+    )
+})
 
 const isPersonalDetails = ref(false);
 const isProfSum = ref(false);
@@ -249,12 +245,13 @@ async function resetNewInput() {
 }
 
 async function selectedTemplate(value) {
+    selectedResumeTemplate.value = value;
     window.localStorage.setItem("resumeTemplate", JSON.stringify(value));
     toggleSelectPreview();
     console.log(value);
 }
 
-async function toggleSelectPreview(value) {
+async function toggleSelectPreview() {
     isSelectTemplate.value = !isSelectTemplate.value;
     isPreviewResume.value = !isPreviewResume.value;
 }
@@ -526,47 +523,6 @@ async function getExperiences() {
         });
 }
 
-// async function addNewExperience(value) {
-//     const tempDescription = ref("Temp idk replace when able");
-//     if (value == 1) {
-//         await ExperienceServices.addExperience(jobExperienceTitle.value, jobDescription.value, jobStart.value, jobEnd.value, 
-//                 account.value.id, value, jobCity.value, jobState.value, jobCompany.value
-//     )
-//         .then(() => {
-//             snackbar.value.value = true;
-//             snackbar.value.color = "green";
-//             snackbar.value.text = "Experience Added!";
-//             getExperiences();
-//             closeNewJobExperience();
-//         })
-//         .catch((error) => {
-//             console.log(error);
-//             snackbar.value.value = true;
-//             snackbar.value.color = "error";
-//             snackbar.value.text = error.response.data.message;
-//         });
-//     }
-//     else if (value == 2) {
-//         await ExperienceServices.addExperience(leadershipTitle.value, leadershipDescription.value, leadershipStart.value, leadershipEnd.value, 
-//                 account.value.id, value, LeadershipCity.value, leadershipState.value, leadershipOrg.value
-//     )
-//         .then(() => {
-//             snackbar.value.value = true;
-//             snackbar.value.color = "green";
-//             snackbar.value.text = "Experience Added!";
-//             getExperiences();
-//             closeNewLeadershipExperience();
-//             closeNewJobExperience();
-//         })
-//         .catch((error) => {
-//             console.log(error);
-//             snackbar.value.value = true;
-//             snackbar.value.color = "error";
-//             snackbar.value.text = error.response.data.message;
-//         });
-//     }
-// }
-
 async function addNewExperience(type) {
     await ExperienceServices.addExperience(jobExperienceTitle.value, jobDescription.value, jobStart.value, jobEnd.value,
         account.value.id, type, jobCity.value, jobState.value, jobCompany.value)
@@ -606,13 +562,6 @@ async function closeNewJobExperience() {
 }
 
 async function closeNewLeadershipExperience() {
-    // leadershipTitle.value = null;
-    // leadershipOrg.value = null;
-    // LeadershipCity.value = null;
-    // leadershipState.value = null;
-    // leadershipStart.value = null;
-    // leadershipEnd.value = null;
-    // leadershipDescription.value = null;
     isLeadershipExperience.value = false;
 }
 
@@ -674,9 +623,113 @@ async function addNewSkill() {
 }
 
 function filterPerfectMatch(value, search) {
-    console.log("value: " + value + ", search: " + search);
+    // console.log("value: " + value + ", search: " + search);
     return value != null && String(value) === search
     }
+
+async function addResume() {
+    var linkArr = [];
+    var goalArr = [];
+    var eduArr = [];
+    var expArr = [];
+    var skillArr = [];
+
+    if (selectedLinks.value !== null) {
+        for (let [key, value] of Object.entries(selectedLinks.value)) {
+            // console.log("Link Key: " + key + " Value: " + value);
+            linkArr.push(value);
+        }
+        console.log(linkArr);
+    }
+
+    if (selectedGoals.value !== null) {
+        for (let [key, value] of Object.entries(selectedGoals.value)) {
+            // console.log("Goal Key: " + key + " Value: " + value);
+            goalArr.push(value);
+        }
+        console.log(goalArr);
+    }
+
+    if (selectedEducation.value !== null) {
+        for (let [key, value] of Object.entries(selectedEducation.value)) {
+            // console.log("Education Key: " + key + " Value: " + value);
+            eduArr.push(value);
+        }
+        console.log(eduArr);
+    }
+
+    if (selectedWorkExperience.value !== null) {
+    for (let [key, value] of Object.entries(selectedWorkExperience.value)) {
+        // console.log("Work Exp Key: " + key + " Value: " + value);
+        expArr.push(value);
+    }}
+    if (selectedLeadershipExperience.value !== null) {
+    for (let [key, value] of Object.entries(selectedLeadershipExperience.value)) {
+        // console.log("Leadership Exp Key: " + key + " Value: " + value);
+        expArr.push(value);
+    }}
+    if (selectedActivitiesExperience.value !== null) {
+    for (let [key, value] of Object.entries(selectedActivitiesExperience.value)) {
+        // console.log("Activities Exp Key: " + key + " Value: " + value);
+        expArr.push(value);
+    }}
+    if (selectedVolunteerExperience.value !== null) {
+    for (let [key, value] of Object.entries(selectedVolunteerExperience.value)) {
+        // console.log("Volunteer Exp Key: " + key + " Value: " + value);
+        expArr.push(value);
+    }}
+    if (selectedHonorExperience.value !== null) {
+    for (let [key, value] of Object.entries(selectedHonorExperience.value)) {
+        // console.log("Honor Exp Key: " + key + " Value: " + value);
+        expArr.push(value);
+    }}
+    if (selectedAwardExperience.value !== null) {
+    for (let [key, value] of Object.entries(selectedAwardExperience.value)) {
+        // console.log("Award Exp Key: " + key + " Value: " + value);
+        expArr.push(value);
+    }}
+    console.log(expArr);
+
+    if (selectedSkills.value !== null) {
+        for (let [key, value] of Object.entries(selectedSkills.value)) {
+            // console.log("Skills Key: " + key + " Value: " + value);
+            skillArr.push(value);
+        }
+        console.log(skillArr);
+    }
+    //TODO: Get isEdit working and Content Working (currently hardcoded)
+    await ResumeServices.addResume(title.value, goalArr, expArr, skillArr, 
+                eduArr, linkArr, false, selectedResumeTemplate.value, 
+                parseInt(account.value.id))
+        .then(() => {
+            snackbar.value.value = true;
+            snackbar.value.color = "green";
+            snackbar.value.text = "Resume Created!";
+            clearAllSelected();
+        })
+        .catch((error) => {
+            console.log(error);
+            snackbar.value.value = true;
+            snackbar.value.color = "error";
+            snackbar.value.text = error.response.data.message;
+        });
+}
+
+function clearAllSelected() {
+    selectedLinks.value = null;
+    selectedGoals.value = null;
+    selectedEducation.value = null;
+    selectedWorkExperience.value = null;
+    selectedLeadershipExperience.value = null;
+    selectedActivitiesExperience.value = null;
+    selectedVolunteerExperience.value = null;
+    selectedHonorExperience.value = null;
+    selectedAwardExperience.value = null;
+    selectedSkills.value = null;
+    tab.value = "1";
+    title.value = "";
+    toggleSelectPreview();
+}
 
 </script>
 
@@ -706,6 +759,7 @@ export default {
 
         <v-tabs-window v-model="tab">
 
+        <!-- Personal Info -->
         <v-tabs-window-item value="1" style="padding: 50px">
             <v-row>
                 <v-col>
@@ -788,7 +842,7 @@ export default {
             </div>
         </v-tabs-window-item>
 
-
+        <!-- Professional Summary/Goals -->
         <v-tabs-window-item value="2" style="padding: 50px">
 
             <div align="left">
@@ -840,6 +894,7 @@ export default {
 
         </v-tabs-window-item>
 
+        <!-- Education -->
         <v-tabs-window-item value="3" style="padding: 50px">
 
             <div align="left">
@@ -1001,6 +1056,7 @@ export default {
 
         </v-tabs-window-item>
 
+        <!-- Experience -->
         <v-tabs-window-item value="4" style="padding: 50px">
             <div align="left">
                 <v-text class="headline mb-2">Select Work Experiences: </v-text>
@@ -1359,6 +1415,7 @@ export default {
             </div>
         </v-tabs-window-item>
 
+        <!-- Skills -->
         <v-tabs-window-item value="5" style="padding: 50px">
             <div align="left">
                 <v-text class="headline mb-2">Select Skill(s): </v-text>
@@ -1422,6 +1479,7 @@ export default {
             </div>
         </v-tabs-window-item>
 
+        <!-- Others -->
         <v-tabs-window-item value="6" style="padding: 50px">
             Other Resume Parts
 
@@ -1563,43 +1621,6 @@ export default {
             </div>
         </v-tabs-window-item>
 
-        <v-tabs-window-item value="7" style="padding: 50px">
-
-            <div>
-                <p> Resume Preview will be here</p>
-                <v-container>
-                    <v-skeleton-loader type="card"></v-skeleton-loader>
-                </v-container>
-            </div>
-
-
-
-
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-            <v-divider></v-divider>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-
-            <v-checkbox-btn :model-value="isActive" @click="showTab(n)"
-                label=" Allow feedback"></v-checkbox-btn>
-
-
-
-            <div align="right">
-
-                <v-btn variant="tonal" @click="">
-                    Generate resume
-                </v-btn>
-            </div>
-        </v-tabs-window-item>
-
         </v-tabs-window>
         </v-sheet>
         </v-card>
@@ -1660,7 +1681,10 @@ export default {
                     <v-spacer></v-spacer>
                 </div>
                 <div align="center">
-                    <v-btn>Generate Resume</v-btn>
+                    <v-btn :disabled="!isGenerated" @click="addResume()">Generate Resume</v-btn>
+                </div>
+                <div align="center">
+                    <v-btn class="mx-2 my-2" :to="{ name: 'library' }">Go To Library</v-btn>
                 </div>
             </v-col>
 

@@ -9,10 +9,8 @@ on:
 
 jobs:
   aws-deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     #For google auth
-    env:
-      APP_ENV: production
 
     steps:
       - uses: actions/checkout@v3

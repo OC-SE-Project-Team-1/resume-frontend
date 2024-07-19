@@ -11,7 +11,7 @@ export default {
         return apiClient.get("/experience/user/" + userID);
     },
     addExperience(title, description, startDate, endDate, userID, 
-        experienceTypeID, city, state, organization) {
+        experienceTypeID, city, state, organization, chatHistory) {
         return apiClient.post("/experience/", {
             "title": String(title),
             "description": String(description),
@@ -22,7 +22,7 @@ export default {
             "city": city,
             "state": state,
             "organization": organization,
-            "history": [], //Will be updated when AI goes online
+            "chatHistory": chatHistory, //Will be updated when AI goes online
         })
     },
     updateExperience() {
@@ -32,5 +32,15 @@ export default {
         return apiClient.delete("experience/" + experienceID, {
             data: {"userId": parseInt(accountID)}
         })
+    },
+
+    experienceAiAssist(experience, chatHistory){
+
+        return apiClient.post("experience/assist", {
+            "title" : "",
+            "chatHistory": chatHistory,
+            "experience" : String(experience), 
+          
+      });
     }
 }

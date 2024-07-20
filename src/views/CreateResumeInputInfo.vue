@@ -893,7 +893,7 @@ export default {
                                     <v-container>
 
                                         <v-row>
-                                            <v-combobox label="Genre" v-model="aiGoalSkills" v-model:search="search" :hide-no-data="false" :items="goals"
+                                            <v-combobox label="Achievements? Which is what again? Lol" v-model="aiGoalAchievements" v-model:search="search" :hide-no-data="false" :items="goals"
                                                 :rules="comboRules" variant="outlined" style="width: 30%;" multiple 
                                                 auto-select-first="exact" small-chips>
                                                 <template v-slot:no-data>
@@ -907,7 +907,7 @@ export default {
                                             </v-combobox>
                                         </v-row>
                                         <v-row>
-                                            <v-combobox label="Achievements? Which is what again? Lol" v-model="aiGoalAchievements" v-model:search="search" :hide-no-data="false" :items="skills"
+                                            <v-combobox label="Skills" v-model="aiGoalSkills" v-model:search="search" :hide-no-data="false" :items="skills"
                                                 variant="outlined" style="width: 30%;" multiple 
                                                 auto-select-first="exact" small-chips>
                                                 <template v-slot:no-data>

@@ -26,6 +26,10 @@ const isNewLinkVisible = ref(false);
 const isNewEduVisible = ref(false);
 const tabs = ref();
 const tab = ref("1");
+const resumeTemplate = ref();
+
+const dialog = ref(false);
+
 
 const resumeSections = ref(
     {
@@ -68,6 +72,9 @@ const goalDescription = ref("");
 const goals = ref();
 const selectedGoals = ref(null);
 const isNewGoalVisible = ref(false);
+const aiGoalSkills = ref();
+const aiGoalAchievements = ref();
+
 
 const educationInfo = ref();
 const selectedEducation = ref(null);
@@ -869,9 +876,79 @@ export default {
                 <v-row>
                     <v-textarea v-model="goalDescription" label="A brief overview of your skills and experiences">
                         <template #append-inner>
-                            <v-btn color="secondary" rounded="xl" value="Ai Assist">
-                                AI Assist
-                            </v-btn>
+                            <div class="text-center pa-4">
+                                <v-dialog v-model="dialog" persistent>
+                                <template v-slot:activator="{ props: activatorProps }">
+                                    <v-btn color="secondary" rounded="xl" value="Ai Assist" v-bind="activatorProps">
+                                            AI Assist
+                                        </v-btn>
+                                </template>
+
+                                <v-card
+                                    text="Let the AI help to come up with inputs wooo."
+                                    title="Use Ai Assist"
+                                >
+                                    <template v-slot:actions>
+                                    <v-spacer></v-spacer>
+                                    <v-container>
+
+                                        <v-row>
+                                            <v-combobox label="Genre" v-model="aiGoalSkills" v-model:search="search" :hide-no-data="false" :items="goals"
+                                                :rules="comboRules" variant="outlined" style="width: 30%;" multiple 
+                                                auto-select-first="exact" small-chips>
+                                                <template v-slot:no-data>
+                                                <v-list-item>
+                                                    <v-list-item-title>
+                                                    No results matching "<strong>{{ search }}</strong>". Press
+                                                    <kbd>enter</kbd> to create a new one
+                                                    </v-list-item-title>
+                                                </v-list-item>
+                                                </template>
+                                            </v-combobox>
+                                        </v-row>
+                                        <v-row>
+                                            <v-combobox label="Achievements? Which is what again? Lol" v-model="aiGoalAchievements" v-model:search="search" :hide-no-data="false" :items="skills"
+                                                variant="outlined" style="width: 30%;" multiple 
+                                                auto-select-first="exact" small-chips>
+                                                <template v-slot:no-data>
+                                                <v-list-item>
+                                                    <v-list-item-title>
+                                                    No results matching "<strong>{{ search }}</strong>". Press
+                                                    <kbd>enter</kbd> to create a new one
+                                                    </v-list-item-title>
+                                                </v-list-item>
+                                                </template>
+                                            </v-combobox>
+                                        </v-row>
+                                        <v-row>
+                                            <v-text-field label="What is the general goal?">
+
+                                            </v-text-field>
+                                        </v-row>
+                                        <div align="center">
+                                            <v-row style="width:50%">
+                                                <v-col>
+                                                    <v-btn @click="dialog = false"> Cancel </v-btn>
+                                                </v-col>
+                                                <v-col >
+                                                    <v-btn @click="dialog = false"> Confirm </v-btn>
+                                                </v-col>
+                                                                                    
+                                            </v-row>                                            
+                                        </div>
+
+                                    </v-container>
+
+                                    
+
+
+
+                                    </template>
+                                </v-card>
+                                </v-dialog>
+                            </div>
+
+
                         </template>
                     </v-textarea>
                 </v-row>
@@ -889,6 +966,7 @@ export default {
                         Next
                     </v-btn>
                 </div>
+
 
             </div>
 

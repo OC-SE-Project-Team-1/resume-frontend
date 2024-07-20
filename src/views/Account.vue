@@ -26,11 +26,11 @@ const newUsername = ref();
 const newEmail = ref();
 
 const characterName = ref();
-const selectedcharName = ref(null);
+const selectedExperience = ref(null);
 const characterRole = ref();
-const selectedCharRole = ref(null);
+const selectedEducation = ref(null);
 const genre = ref();
-const selectedGenre = ref(null);
+const selectedSkill = ref(null);
 const time = ref();
 const selectedTime = ref(null);
 const location = ref();
@@ -125,7 +125,7 @@ async function getLocations() {
 }
 
 //Delete Selected Character Name
-async function deleteCharaValue(input) {
+async function deleteExpValue(input) {
   if (!isDefault(input)) {
     await CharacterNameServices.deletecharacterName(input.id, account.value.id)
       .then(() => {
@@ -146,7 +146,7 @@ async function deleteCharaValue(input) {
 }
 
 //Delete Selected Character Role
-async function deleteCharaRole(input) {
+async function deleteEducation(input) {
   if (!isDefault(input)) {
     await CharacterRoleServices.deletecharacterRole(input.id, account.value.id)
       .then(() => {
@@ -167,9 +167,9 @@ async function deleteCharaRole(input) {
 }
 
 //Delete Selected Genre
-async function deleteGenre(input) {
+async function deleteSkill(input) {
   if (!isDefault(input)) {
-    await GenreServices.deletegenre(input.id, account.value.id)
+    await GenreServices.deleteSkill(input.id, account.value.id)
       .then(() => {
         getGenres();
         snackbar.value.value = true;
@@ -231,8 +231,8 @@ async function deleteLocation(input) {
 }
 
 //Add Character Name
-async function addCharacterName() {
-  await CharacterNameServices.addcharacterName(selectedcharName.value, account.value.id)
+async function addExpValue() {
+  await CharacterNameServices.addExpValue(selectedExperience.value, account.value.id)
     .then(() => {
       getCharacterNames();
       snackbar.value.value = true;
@@ -250,8 +250,8 @@ async function addCharacterName() {
 }
 
 //Add Character Role
-async function addCharacterRole() {
-  await CharacterRoleServices.addcharacterRole(selectedCharRole.value, account.value.id)
+async function addEducation() {
+  await CharacterRoleServices.addEducation(selectedEducation.value, account.value.id)
     .then(() => {
       getCharacterRoles();
       snackbar.value.value = true;
@@ -268,8 +268,8 @@ async function addCharacterRole() {
 }
 
 //Add Genre
-async function addGenre() {
-  await GenreServices.addgenre(selectedGenre.value, account.value.id)
+async function addSkill() {
+  await GenreServices.addSkill(selectedSkill.value, account.value.id)
     .then(() => {
       getGenres();
       snackbar.value.value = true;
@@ -558,7 +558,7 @@ export default {
                         <v-row margin="align-center">
                           <v-col md="8"><v-list-item-title>{{ name.name }}</v-list-item-title> </v-col>
                           <v-col cols="1">
-                            <v-icon icon="mdi-trash-can" @click="deleteCharaValue(name)"></v-icon>
+                            <v-icon icon="mdi-trash-can" @click="deleteExpValue(name)"></v-icon>
                           </v-col>
                         </v-row>
 
@@ -571,13 +571,13 @@ export default {
 
 
                 <v-row style="width: 75%;">
-                  <v-text-field label="New Name" v-model="selectedcharName">
+                  <v-text-field label="New Name" v-model="selectedExperience">
 
                   </v-text-field>
                 </v-row>
                 <v-row>
                   <v-col align="right">
-                    <v-btn color="primary" variant="text" @click="addCharacterName()">
+                    <v-btn color="primary" variant="text" @click="addExpValue()">
                       Add
                     </v-btn>
                   </v-col>
@@ -610,7 +610,7 @@ export default {
                         <v-row>
                           <v-col md="8"><v-list-item-title>{{ role.name }}</v-list-item-title> </v-col>
                           <v-col cols="1">
-                            <v-icon icon="mdi-trash-can" @click="deleteCharaRole(role)"></v-icon>
+                            <v-icon icon="mdi-trash-can" @click="deleteEducation(role)"></v-icon>
                           </v-col>
                         </v-row>
 
@@ -624,13 +624,13 @@ export default {
 
 
                 <v-row style="width: 75%;">
-                  <v-text-field label="New Role" v-model="selectedCharRole">
+                  <v-text-field label="New Role" v-model="selectedEducation">
 
                   </v-text-field>
                 </v-row>
                 <v-row>
                   <v-col align="right">
-                    <v-btn color="primary" variant="text" @click="addCharacterRole()">
+                    <v-btn color="primary" variant="text" @click="addEducation()">
                       Add
                     </v-btn>
                   </v-col>
@@ -663,7 +663,7 @@ export default {
                         <v-row>
                           <v-col md="8"><v-list-item-title>{{ g.name }}</v-list-item-title> </v-col>
                           <v-col cols="1">
-                            <v-icon icon="mdi-trash-can" @click="deleteGenre(g)"></v-icon>
+                            <v-icon icon="mdi-trash-can" @click="deleteSkill(g)"></v-icon>
                           </v-col>
                         </v-row>
 
@@ -677,13 +677,13 @@ export default {
 
 
                 <v-row style="width: 75%;">
-                  <v-text-field label="New Genre" v-model="selectedGenre">
+                  <v-text-field label="New Genre" v-model="selectedSkill">
 
                   </v-text-field>
                 </v-row>
                 <v-row>
                   <v-col align="right">
-                    <v-btn color="primary" variant="text" @click="addGenre()">
+                    <v-btn color="primary" variant="text" @click="addSkill()">
                       Add
                     </v-btn>
                   </v-col>

@@ -108,6 +108,7 @@ const jobState = ref(null);
 const jobStart = ref(null);
 const jobEnd = ref(null);
 const jobDescription = ref(null);
+let experienceChatHistory = [];
 
 const isLeadershipExperience = ref(false);
 const isActivitiesExperience = ref(false);
@@ -118,6 +119,8 @@ const isAwardExperience = ref(false);
 const skillTitle = ref("");
 const skillDescription = ref("");
 const skills = ref();
+
+let skillHistory = [];
 const selectedSkills = ref(null);
 const isNewSkillVisible = ref(false);
 
@@ -531,7 +534,7 @@ async function getExperiences() {
 
 async function addNewExperience(type) {
     await ExperienceServices.addExperience(jobExperienceTitle.value, jobDescription.value, jobStart.value, jobEnd.value,
-        account.value.id, type, jobCity.value, jobState.value, jobCompany.value)
+        account.value.id, type, jobCity.value, jobState.value, jobCompany.value, experienceChatHistory)
         .then(() => {
             snackbar.value.value = true;
             snackbar.value.color = "green";
@@ -612,7 +615,7 @@ async function getSkills() {
 }
 
 async function addNewSkill() {
-    await SkillServices.addSkill(skillTitle.value, skillDescription.value, parseInt(account.value.id))
+    await SkillServices.addSkill(skillTitle.value, skillDescription.value, skillHistory, parseInt(account.value.id))
         .then(() => {
             snackbar.value.value = true;
             snackbar.value.color = "green";
@@ -632,6 +635,16 @@ function filterPerfectMatch(value, search) {
     // console.log("value: " + value + ", search: " + search);
     return value != null && String(value) === search
     }
+
+async function skillAiAssist(){
+    await SkillServices.skillAiAssist(skillDescription.value)
+        .then((response) => {
+        skillDescription.value = response.data.description
+        skillHistory.push(response.data.history[0])
+        skillHistory.push(response.data.history[1])         
+        })
+        
+}
 
 async function addResume() {
     var linkArr = [];
@@ -754,6 +767,16 @@ async function aiGoalAssist(){
         
     }
         
+async function experienceAIAssist(){
+    await ExperienceServices.experienceAiAssist(jobDescription.value)
+        .then((response) => {
+        jobDescription.value = response.data.description
+        console.log(response.data.history[0])
+        experienceChatHistory.push(response.data.history[0])
+        experienceChatHistory.push(response.data.history[1])         
+    })
+}
+
 </script>
 
 <script>
@@ -1183,7 +1206,7 @@ export default {
                 <v-row>
                     <v-textarea v-model="jobDescription" label="Work Summary">
                         <template #append-inner>
-                            <v-btn color="secondary" rounded="xl" value="Ai Assist">
+                            <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="experienceAIAssist()">
                                 AI Assist
                             </v-btn>
                         </template>
@@ -1273,7 +1296,7 @@ export default {
                 <v-row>
                     <v-textarea v-model="jobDescription" label="Role Summary">
                         <template #append-inner>
-                            <v-btn color="secondary" rounded="xl" value="Ai Assist">
+                            <v-btn color="secondary" rounded="xl" value="Ai Assist"  @click="experienceAIAssist()">
                                 AI Assist
                             </v-btn>
                         </template>
@@ -1362,7 +1385,7 @@ export default {
                 <v-row>
                     <v-textarea v-model="jobDescription" label="Role Summary">
                         <template #append-inner>
-                            <v-btn color="secondary" rounded="xl" value="Ai Assist">
+                            <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="experienceAIAssist()">
                                 AI Assist
                             </v-btn>
                         </template>
@@ -1449,9 +1472,9 @@ export default {
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-textarea label="Role Summary">
+                    <v-textarea v-model="jobDescription" label="Role Summary">
                         <template #append-inner>
-                            <v-btn color="secondary" rounded="xl" value="Ai Assist">
+                            <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="experienceAIAssist()">
                                 AI Assist
                             </v-btn>
                         </template>
@@ -1518,7 +1541,13 @@ export default {
                 </v-row>
                 <v-row>
                     <v-col>
-                        <v-text-field v-model="skillDescription" label="Brief Description/Proficientcy Level"></v-text-field>
+                        <v-textarea v-model="skillDescription" label="Brief Description/Proficientcy Level, click AI assist button along with your input to help create a better description">
+                        <template #append-inner>
+                            <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="skillAiAssist()">
+                                AI Assist
+                            </v-btn>
+                        </template>
+                    </v-textarea>         
                     </v-col>
                 </v-row>
                 <v-col>

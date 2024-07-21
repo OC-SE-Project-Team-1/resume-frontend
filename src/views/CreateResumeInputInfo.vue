@@ -70,9 +70,10 @@ const goalDescription = ref("");
 const goals = ref();
 const selectedGoals = ref();
 const isNewGoalVisible = ref(false);
-const aiGoalSkills = ref();
+const aiGoalExperiences = ref();
 const aiGoalAchievements = ref();
-
+const aiGoalTitle = ref();
+let goalChatHistory = [];
 
 const educationInfo = ref();
 const selectedEducation = ref();
@@ -433,7 +434,7 @@ async function getGoals() {
 async function addNewGoal() {
     console.log(goalTitle.value);
     console.log(goalDescription.value);
-    await GoalServices.addGoal(goalTitle.value, goalDescription.value, parseInt(account.value.id))
+    await GoalServices.addGoal(goalTitle.value, goalDescription.value, parseInt(account.value.id), goalChatHistory)
         .then(() => {
             snackbar.value.value = true;
             snackbar.value.color = "green";
@@ -683,6 +684,17 @@ function filterPerfectMatch(value, search) {
     return value != null && String(value) === search
     }
 
+async function aiGoalAssist(){
+    goalDescription.value = "Generating Description, please wait"
+    await GoalServices.goalAiAssist(aiGoalTitle.value, aiGoalExperiences.value.split(","), aiGoalAchievements.value.split(",") )
+        .then((response) =>{
+            goalDescription.value = response.data.description
+            goalChatHistory.push(response.data.history[0])
+            goalChatHistory.push(response.data.history[1])
+        })
+        
+    }
+        
 </script>
 
 <script>
@@ -829,43 +841,23 @@ export default {
                                 </template>
 
                                 <v-card
-                                    text="Let the AI help to come up with inputs wooo."
-                                    title="Use Ai Assist"
+                                    text="Please list your Experiences and Achievements that you want to include in the summary, separated by commas(,) ."
+                                    title="Goal Ai Assist"
                                 >
                                     <template v-slot:actions>
                                     <v-spacer></v-spacer>
                                     <v-container>
 
                                         <v-row>
-                                            <v-combobox label="Achievements? Which is what again? Lol" v-model="aiGoalAchievements" v-model:search="search" :hide-no-data="false" :items="goals"
-                                                :rules="comboRules" variant="outlined" style="width: 30%;" multiple 
-                                                auto-select-first="exact" small-chips>
-                                                <template v-slot:no-data>
-                                                <v-list-item>
-                                                    <v-list-item-title>
-                                                    No results matching "<strong>{{ search }}</strong>". Press
-                                                    <kbd>enter</kbd> to create a new one
-                                                    </v-list-item-title>
-                                                </v-list-item>
-                                                </template>
-                                            </v-combobox>
+                                            <v-text-field label="Experiences" v-model="aiGoalExperiences" variant="outlined" style="width: 30%;">
+                                            </v-text-field>
                                         </v-row>
                                         <v-row>
-                                            <v-combobox label="Skills" v-model="aiGoalSkills" v-model:search="search" :hide-no-data="false" :items="skills"
-                                                variant="outlined" style="width: 30%;" multiple 
-                                                auto-select-first="exact" small-chips>
-                                                <template v-slot:no-data>
-                                                <v-list-item>
-                                                    <v-list-item-title>
-                                                    No results matching "<strong>{{ search }}</strong>". Press
-                                                    <kbd>enter</kbd> to create a new one
-                                                    </v-list-item-title>
-                                                </v-list-item>
-                                                </template>
-                                            </v-combobox>
+                                            <v-text-field label="Achievements" v-model="aiGoalAchievements" variant="outlined" style="width: 30%;">
+                                            </v-text-field>
                                         </v-row>
                                         <v-row>
-                                            <v-text-field label="What is the general goal?">
+                                            <v-text-field label="Professional title" v-model="aiGoalTitle" variant="outlined" style="width: 30%;">
 
                                             </v-text-field>
                                         </v-row>
@@ -875,7 +867,7 @@ export default {
                                                     <v-btn @click="dialog = false"> Cancel </v-btn>
                                                 </v-col>
                                                 <v-col >
-                                                    <v-btn @click="dialog = false"> Confirm </v-btn>
+                                                    <v-btn @click="aiGoalAssist(), dialog = false"> Confirm </v-btn>
                                                 </v-col>
                                                                                     
                                             </v-row>                                            

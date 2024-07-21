@@ -102,6 +102,7 @@ const jobState = ref(null);
 const jobStart = ref(null);
 const jobEnd = ref(null);
 const jobDescription = ref(null);
+let experienceChatHistory = [];
 
 const isLeadershipExperience = ref(false);
 const isActivitiesExperience = ref(false);
@@ -527,7 +528,7 @@ async function getExperiences() {
 
 async function addNewExperience(type) {
     await ExperienceServices.addExperience(jobExperienceTitle.value, jobDescription.value, jobStart.value, jobEnd.value,
-        account.value.id, type, jobCity.value, jobState.value, jobCompany.value)
+        account.value.id, type, jobCity.value, jobState.value, jobCompany.value, experienceChatHistory)
         .then(() => {
             snackbar.value.value = true;
             snackbar.value.color = "green";
@@ -743,6 +744,15 @@ function clearAllSelected() {
     toggleSelectPreview();
 }
 
+async function experienceAIAssist(){
+    await ExperienceServices.experienceAiAssist(jobDescription.value)
+        .then((response) => {
+        jobDescription.value = response.data.description
+        console.log(response.data.history[0])
+        experienceChatHistory.push(response.data.history[0])
+        experienceChatHistory.push(response.data.history[1])         
+    })
+}
 </script>
 
 <script>
@@ -1129,7 +1139,7 @@ export default {
                 <v-row>
                     <v-textarea v-model="jobDescription" label="Work Summary">
                         <template #append-inner>
-                            <v-btn color="secondary" rounded="xl" value="Ai Assist">
+                            <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="experienceAIAssist()">
                                 AI Assist
                             </v-btn>
                         </template>
@@ -1219,7 +1229,7 @@ export default {
                 <v-row>
                     <v-textarea v-model="jobDescription" label="Role Summary">
                         <template #append-inner>
-                            <v-btn color="secondary" rounded="xl" value="Ai Assist">
+                            <v-btn color="secondary" rounded="xl" value="Ai Assist"  @click="experienceAIAssist()">
                                 AI Assist
                             </v-btn>
                         </template>
@@ -1308,7 +1318,7 @@ export default {
                 <v-row>
                     <v-textarea v-model="jobDescription" label="Role Summary">
                         <template #append-inner>
-                            <v-btn color="secondary" rounded="xl" value="Ai Assist">
+                            <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="experienceAIAssist()">
                                 AI Assist
                             </v-btn>
                         </template>
@@ -1395,9 +1405,9 @@ export default {
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-textarea label="Role Summary">
+                    <v-textarea v-model="jobDescription" label="Role Summary">
                         <template #append-inner>
-                            <v-btn color="secondary" rounded="xl" value="Ai Assist">
+                            <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="experienceAIAssist()">
                                 AI Assist
                             </v-btn>
                         </template>

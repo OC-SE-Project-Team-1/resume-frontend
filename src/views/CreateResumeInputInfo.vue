@@ -27,9 +27,7 @@ const isNewEduVisible = ref(false);
 const tabs = ref();
 const tab = ref("1");
 const resumeTemplate = ref();
-
 const dialog = ref(false);
-
 
 const resumeSections = ref(
     {
@@ -750,6 +748,17 @@ async function aiGoalAssist(){
         
     }
         
+async function aiGoalAssist(){
+    goalDescription.value = "Generating Description, please wait"
+    await GoalServices.goalAiAssist(aiGoalTitle.value, aiGoalExperiences.value.split(","), aiGoalAchievements.value.split(",") )
+        .then((response) =>{
+            goalDescription.value = response.data.description
+            goalChatHistory.push(response.data.history[0])
+            goalChatHistory.push(response.data.history[1])
+        })
+        
+    }
+        
 </script>
 
 <script>
@@ -930,16 +939,10 @@ export default {
                                         </div>
 
                                     </v-container>
-
-                                    
-
-
-
                                     </template>
                                 </v-card>
                                 </v-dialog>
                             </div>
-
 
                         </template>
                     </v-textarea>
@@ -958,8 +961,6 @@ export default {
                         Next
                     </v-btn>
                 </div>
-
-
             </div>
 
         </v-tabs-window-item>

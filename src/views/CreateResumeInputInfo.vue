@@ -526,7 +526,7 @@ async function getExperiences() {
 
 async function addNewExperience(type) {
     await ExperienceServices.addExperience(jobExperienceTitle.value, jobDescription.value, jobStart.value, jobEnd.value,
-        account.value.id, type, jobCity.value, jobState.value, jobCompany.value, JSON.stringify(experienceChatHistory))
+        account.value.id, type, jobCity.value, jobState.value, jobCompany.value, experienceChatHistory)
         .then(() => {
             snackbar.value.value = true;
             snackbar.value.color = "green";

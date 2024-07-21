@@ -22,7 +22,7 @@ export default {
             "city": city,
             "state": state,
             "organization": organization,
-            "chatHistory": chatHistory, //Will be updated when AI goes online
+            "chatHistory": chatHistory,
         })
     },
     updateExperience() {

@@ -748,17 +748,6 @@ async function aiGoalAssist(){
         
     }
         
-async function aiGoalAssist(){
-    goalDescription.value = "Generating Description, please wait"
-    await GoalServices.goalAiAssist(aiGoalTitle.value, aiGoalExperiences.value.split(","), aiGoalAchievements.value.split(",") )
-        .then((response) =>{
-            goalDescription.value = response.data.description
-            goalChatHistory.push(response.data.history[0])
-            goalChatHistory.push(response.data.history[1])
-        })
-        
-    }
-        
 </script>
 
 <script>

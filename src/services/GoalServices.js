@@ -31,7 +31,6 @@ export default {
   },
 
   goalAiAssist(title, experiences, achievements, chatHistory){
-    console.log(experiences)
     return apiClient.post("goal/assist", {
       "chatHistory": chatHistory,
       "title" : title, 

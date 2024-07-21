@@ -608,7 +608,7 @@ async function getSkills() {
 }
 
 async function addNewSkill() {
-    await SkillServices.addSkill(skillTitle.value, skillDescription.value, JSON.stringify(skillHistory), parseInt(account.value.id))
+    await SkillServices.addSkill(skillTitle.value, skillDescription.value, skillHistory, parseInt(account.value.id))
         .then(() => {
             snackbar.value.value = true;
             snackbar.value.color = "green";

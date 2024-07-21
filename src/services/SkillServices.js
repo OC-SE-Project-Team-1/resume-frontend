@@ -14,7 +14,7 @@ export default {
     return apiClient.post("/skill/", {
       "title": String(skill),
       "description": String(skillDescription),
-      "chatHistory" : String(chatHistory),
+      "chatHistory" : chatHistory,
       "userId": accountID
     });
   },

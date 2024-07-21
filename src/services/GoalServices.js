@@ -10,11 +10,11 @@ export default {
   getGoalsForUser(userID){
     return apiClient.get("goal/user/" + userID);
   },
-  addGoal(goal, goalDescription, accountID) {
+  addGoal(goal, goalDescription, accountID, history) {
     return apiClient.post("/goal/", {
       "title": String(goal),
       "description": String(goalDescription),
-      "history": [], //Will be updated when AI goes online
+      "chatHistory": history, //Will be updated when AI goes online
       "userId": accountID
     });
   },
@@ -29,4 +29,14 @@ export default {
       data: {"userId": parseInt(accountID)}
   });
   },
+
+  goalAiAssist(title, experiences, achievements, chatHistory){
+    console.log(experiences)
+    return apiClient.post("goal/assist", {
+      "chatHistory": chatHistory,
+      "title" : title, 
+      "experiences" : experiences, 
+      "achievements" : achievements, 
+    });
+  }
 };

@@ -1642,7 +1642,7 @@ export default {
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-textarea label="Project Summary">
+                    <v-textarea label="Project Summary" v-model="jobDescription">
                         <template #append-inner>
                             <v-btn color="secondary" rounded="xl" value="Ai Assist">
                                 AI Assist

@@ -92,7 +92,9 @@ async function sortData() {
   <div class="resume">
           <header>
                   <h1>{{ user.firstName }} {{ user.lastName }}</h1>
-                  <p>{{ user.address}} ♦ {{ user.phoneNumber }} ♦ {{ user.email }}<a v-if="links.length > 0"> ♦ </a><a v-if="links.length > 0" v-for="(link, index) in links">{{ link.type }}: {{ link.url }}<a v-if="index !== links.length - 1"> ♦ </a></a></p>
+                  <p>{{ user.address}} ♦ {{ user.phoneNumber }} ♦ {{ user.email }}
+                    <a v-if="links.length > 0"> ♦ </a><a v-if="links.length > 0" v-for="(link, index) in links">
+                      {{ link.type }}: {{ link.url }}<a v-if="index !== links.length - 1"> ♦ </a></a></p>
           </header>
 
 

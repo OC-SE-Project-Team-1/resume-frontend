@@ -92,7 +92,7 @@ async function sortData() {
       <header>
         <h1><strong>{{ user.firstName }} {{ user.lastName }}</strong></h1>
         <!-- :href="'mailto:' + user.email" :href="linkedInUrl" -->
-        <p>{{ user.address }} | {{ user.phoneNumber }} | <a >{{ user.email }}</a> | <a v-for="link in links">{{ link.type }}: {{ link.url }}</a></p>
+        <p>{{ user.address }} | {{ user.phoneNumber }} | <a >{{ user.email }}</a><a v-if="links.length > 0"> | </a><a v-for="link in links">{{ link.type }}: {{ link.url }}</a></p>
       </header>
       
       <section>

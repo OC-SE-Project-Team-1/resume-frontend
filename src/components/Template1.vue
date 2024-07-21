@@ -67,20 +67,11 @@ async function getUser() {
 }
 
 async function sortData() {
-  var temp = []
   links.value = resumeData.value.Link;
   goal.value = resumeData.value.Goal[0].description;
   education.value = resumeData.value.Education;
   experience.value = resumeData.value.Experience;
-  for (let [key, value] of Object.entries(experience.value)) {
-    if (value.experienceTypeId == 6) {
-      console.log("here");
-      temp.push(value.title);
-    }
-  }
-  award.value = temp;
   skills.value = resumeData.value.Skill;
-  console.log(skills.value); 
 }
 
 </script>
@@ -123,7 +114,7 @@ async function sortData() {
           </div>
         </div>
         <p><i>GPA: {{ item.gpa }}</i></p>
-        <p v-if="award.length > 0 "><i>Awards: {{ award.join(', ') }}</i></p>
+        <p v-if="item.awards && education[item].awards && item.awards !== 'null'"><i>Awards: {{ item.awards }}</i></p>
         <p v-if="item.courses !== 'null'"><i>Coursework: {{ item.courses }}</i></p>
       </div>
       </section>

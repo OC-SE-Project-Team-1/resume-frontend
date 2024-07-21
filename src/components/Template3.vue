@@ -67,17 +67,10 @@ async function getUser() {
 }
 
 async function sortData() {
-  var temp1 = [];
   links.value = resumeData.value.Link;
   goal.value = resumeData.value.Goal[0].description;
   education.value = resumeData.value.Education;
   experience.value = resumeData.value.Experience;
-  for (let [key, value] of Object.entries(experience.value)) {
-    if (value.experienceTypeId == 6) {
-      temp1.push(value.title);
-    }
-  }
-  award.value = temp1;
   skills.value = resumeData.value.Skill;
 }
 

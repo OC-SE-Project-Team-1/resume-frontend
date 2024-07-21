@@ -737,6 +737,12 @@ function clearAllSelected() {
     toggleSelectPreview();
 }
 
+function clearGoalAiAssist(){
+    aiGoalExperiences.value = null;
+    aiGoalAchievements.value = null;
+    aiGoalTitle.value = null;
+}
+
 async function aiGoalAssist(){
     goalDescription.value = "Generating Description, please wait"
     await GoalServices.goalAiAssist(aiGoalTitle.value, aiGoalExperiences.value.split(","), aiGoalAchievements.value.split(",") )
@@ -918,10 +924,10 @@ export default {
                                         <div align="center">
                                             <v-row style="width:50%">
                                                 <v-col>
-                                                    <v-btn @click="dialog = false"> Cancel </v-btn>
+                                                    <v-btn @click="clearGoalAiAssist(), dialog = false"> Cancel </v-btn>
                                                 </v-col>
                                                 <v-col >
-                                                    <v-btn @click="aiGoalAssist(), dialog = false"> Confirm </v-btn>
+                                                    <v-btn @click="aiGoalAssist(), clearGoalAiAssist(), dialog = false"> Confirm </v-btn>
                                                 </v-col>
                                                                                     
                                             </v-row>                                            

@@ -105,7 +105,10 @@ async function sortData() {
             <div class="education-left" >
                 <p><strong>{{ item.organization }}</strong>, {{ item.city }}, {{ item.state }}</p>
             </div>
-            <div class="education-right">
+            <div class="education-right" v-if="item.gradDate !== null">
+                <p>{{ item.startDate }} - Projected {{ item.gradDate }}</p>
+            </div>
+            <div class="education-right" v-if="item.gradDate == null">
                 <p>{{ item.startDate }} - {{ item.endDate }}</p>
             </div>
         </div>
@@ -132,8 +135,11 @@ async function sortData() {
                 <div class="job-left">
                     <p><strong>{{ job.organization }}</strong>, <em>{{ job.title }}</em>, {{ job.city }}, {{ job.state }}</p>    
                 </div>
-                <div class="job-right">
+                <div class="job-right" v-if="job.current == false">
                     <p>{{ job.startDate }} - {{ job.endDate }}</p>
+                </div>
+                <div class="job-right"v-if="job.current == true">
+                    <p>{{ job.startDate }} - Current</p>
                 </div>
 
             </div>

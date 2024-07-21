@@ -1,3 +1,86 @@
+<script setup>
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import ResumeServices from "../services/ResumeServices";
+import UserServices from "../services/UserServices";
+
+const router = useRouter();
+const account = ref(null);
+const user = ref({
+  id: "",
+  userName: "",
+  email: "",
+  password: "",
+  firstName: "",
+  lastName: "",
+  phoneNumber: "",
+  address: "",
+  darkMode: "",
+  roleId: ""
+});
+const resumeId = ref(null);
+const resumeData = ref();
+
+const links = ref([]);
+const goal = ref([]);
+const education = ref([]);
+const experience = ref([]);
+const award = ref([]);
+const skills = ref([]);
+
+
+onMounted(async () => {
+  account.value = JSON.parse(localStorage.getItem("account"));
+  resumeId.value = JSON.parse(localStorage.getItem("resumeId"));
+  await getResume();
+  await getUser();
+  await sortData();
+});
+
+async function getResume() {
+  await ResumeServices.getResume(resumeId.value)
+    .then((response) => {
+      resumeData.value = response.data;
+      console.log(resumeData);
+      
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+}
+async function getUser() {
+  await UserServices.getUser(resumeData.value.userId)
+    .then((response) => {
+      user.value = response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+}
+
+async function sortData() {
+  var temp1 = [];
+  links.value = resumeData.value.Link;
+  goal.value = resumeData.value.Goal[0].description;
+  education.value = resumeData.value.Education;
+  experience.value = resumeData.value.Experience;
+  for (let [key, value] of Object.entries(experience.value)) {
+    if (value.experienceTypeId == 6) {
+      temp1.push(value.title);
+    }
+  }
+  award.value = temp1;
+  skills.value = resumeData.value.Skill;
+}
+
+</script>
+
 <template>
 <v-container>
   <v-sheet style="width: calc(90vh * 8.5 / 11);
@@ -6,92 +89,134 @@
           >
   <div class="resume">
           <header>
-                  <h1>{{ name }}</h1>
-                  <p>{{ city }}, {{ state }} ♦ {{ phone }} ♦ {{ email }} ♦ <a :href="linkedin">{{ linkedin }}</a></p>
+                  <h1>{{ user.firstName }} {{ user.lastName }}</h1>
+                  <p>{{ user.address}} ♦ {{ user.phoneNumber }} ♦ {{ user.email }}<a v-if="links.length > 0"> ♦ </a><a v-if="links.length > 0" v-for="(link, index) in links">{{ link.type }}: {{ link.url }}<a v-if="index !== links.length - 1"> ♦ </a></a></p>
           </header>
 
 
       <section>
         <h2>OBJECTIVE</h2>
-        <p>{{ objective }}</p>
+        <p>{{ goal }}</p>
       </section>
       
       <section>
         <h2>EDUCATION</h2>
+        <div v-for="edu in education">
         <div class="dated-row">
           <div>
-        <p><strong>{{ education.institution }}</strong>, {{ education.location }}</p>
+            <p><strong>{{ edu.organization }}</strong>, {{ edu.city }}, {{ edu.state }}</p>
           </div>
           <div>
- <p>{{ education.startDate }} - {{ education.endDate }}</p>
+            <p>{{ edu.startDate }} - <a v-if="edu.gradDate !== null">Projected </a>{{ edu.endDate }}</p>
           </div>
         </div>
 
-        <p>{{ education.degree }}</p>
-        <p v-if="education.minor">Minor: {{ education.minor }}</p>
-        <p>Major GPA: {{ education.majorGPA }}; Cumulative GPA: {{ education.cumulativeGPA }}</p>
-        <p v-if="education.coursework.length">Coursework: {{ education.coursework.join(', ') }}</p>
-      </section>
-      
-      <section>
-        <h2>{{ leadership.title }}</h2>
-        <div class="dated-row">
-            <div>
-          <p><strong>{{ leadership.organization }}</strong></p>
-            </div>
-            <div>
-          <p>{{ leadership.dateRange }}</p>
-        </div>
+        <p>{{ edu.degree }}</p>
+        <p v-if="edu.minor !== 'null'">Minor: {{ edu.minor }}</p>
+        <!-- ; Cumulative GPA: {{ edu.cumulativeGPA }} -->
+        <p>Major GPA: {{ edu.gpa }}</p>
+        <p v-if="edu.courses !== 'null'">Coursework: {{ edu.courses }}</p>
       </div>
-        <div v-for="item in leadership.items" :key="item.organization">
-          <div v-for="position in item.positions" :key="position.title">
-            <p><em>{{ position.title }}</em> ({{ position.dateRange }})</p>
+      </section>
+      
+    <div v-for="(exp, index) in experience" :key="index">
+        <div v-if="exp.experienceTypeId == 2">
+          <section>
+            <h2>LEADERSHIP</h2>
+            <div class="dated-row">
+                <div>
+              <p><strong>{{ exp.organization }}</strong></p>
+                </div>
+                <div>
+              <p>{{ exp.startDate }} - <a v-if="exp.current">Current</a><a v-else>{{ exp.endDate }}</a></p>
+            </div>
+          </div>
+              <div>
+                <p><em>{{ exp.title }}</em></p>
+                <ul>
+                  <li v-for="achievement in exp.description.split('\n')">{{ achievement }}</li>
+                </ul>
+              </div>
+          </section>
+        </div>
+
+        <div v-if="exp.experienceTypeId == 1">
+        <section>
+          <h2>WORK EXPERIENCE</h2>
+            <div class="dated-row">
+              <div>
+            <p>{{ exp.organization }}, {{ exp.city }}, {{ exp.state }}</p>
+              </div>
+              <div>
+            <p>{{ exp.startDate }} - <a v-if="exp.current">Current</a><a v-else>{{ exp.endDate }}</a></p>
+              </div>
+            </div>
+            <p><strong><em>{{ exp.title }}</em></strong></p>
             <ul>
-              <li v-for="duty in position.duties" :key="duty">{{ duty }}</li>
+              <li v-for="achievement in exp.description.split('\n')">{{ achievement }}</li>
             </ul>
-          </div>
-        </div>
-      </section>
+        </section>
+      </div>
       
-      <section>
-        <h2>{{ workExperience.title }}</h2>
-        <div v-for="item in workExperience.items" :key="item.company">
-          <div class="dated-row">
-            <div>
-          <p>{{ item.company }}, {{ item.location }}</p>
+      <div v-if="exp.experienceTypeId == 3">
+        <section>
+          <h2>ACTIVITIES</h2>
+            <div class="dated-row">
+              <div>
+            <p>{{ exp.organization }}, {{ exp.city }}, {{ exp.state }}</p>
+              </div>
+              <div>
+            <p>{{ exp.startDate }} - <a v-if="exp.current">Current</a><a v-else>{{ exp.endDate }}</a></p>
+              </div>
             </div>
-            <div>
-          <p>{{ item.dateRange }}</p>
+            <p><strong><em>{{ exp.title }}</em></strong></p>
+            <ul>
+              <li v-for="achievement in exp.description.split('\n')">{{ achievement }}</li>
+            </ul>
+        </section>
+      </div>
+
+      <div v-if="exp.experienceTypeId == 4">
+        <section>
+          <h2>VOLUNTEER WORK</h2>
+            <div class="dated-row">
+              <div>
+            <p>{{ exp.organization }}, {{ exp.city }}, {{ exp.state }}</p>
+              </div>
+              <div>
+            <p>{{ exp.startDate }} - <a v-if="exp.current">Current</a><a v-else>{{ exp.endDate }}</a></p>
+              </div>
             </div>
-          </div>
-          <p><strong><em>{{ item.title }}</em></strong></p>
-          <ul>
-            <li v-for="duty in item.duties" :key="duty">{{ duty }}</li>
-          </ul>
-        </div>
-      </section>
-      
-      <section>
-        <h2>{{ honors.title }}</h2>
-        <div v-for="honor in honors.items" :key="honor.name">
-          <div class="dated-row">
-            <div>
-          <p><strong>{{ honor.name }} </strong></p>
+            <p><strong><em>{{ exp.title }}</em></strong></p>
+            <ul>
+              <li v-for="achievement in exp.description.split('\n')">{{ achievement }}</li>
+            </ul>
+        </section>
+      </div>
+
+    
+      <div v-if="exp.experienceTypeId == 5 || exp.experienceTypeId == 6">
+        <section>
+          <h2> HONORS AND AWARDS</h2>
+            <div class="dated-row">
+              <div>
+            <p><strong>{{ exp.title }} </strong></p>
+              </div>
+              <div>
+            <p>{{ exp.startDate }}</p>
+              </div>
             </div>
-            <div>
-          <p>{{ honor.dateRange }}</p>
-            </div>
-          </div>
-          <ul>
-            <li v-for="detail in honor.details" :key="detail">{{ detail }}</li>
-          </ul>
-        </div>
-      </section>
+            <ul>
+              <li v-for="achievement in exp.description.split('\n')">{{ achievement }}</li>
+            </ul>
+        </section>
+      </div>
+    </div>
       
       <section>
         <h2>SKILLS</h2>
         <ul style="padding-left: 0%;">
-          <li style="list-style-type: none;" v-for="skill in skills" :key="skill">{{ skill }}</li>
+          <li style="list-style-type: none;" v-for="skill in skills" :key="skill">{{ skill.title }}</li>
         </ul>
       </section>
     </div>
@@ -112,7 +237,7 @@
         email: "Email Address",
         linkedin: "LinkedIn or Website URL",
         objective: "Recent graduate with a degree in marketing seeking an entry-level position in digital marketing. Experienced in creating social media campaigns and analyzing data to drive engagement and sales.",
-        education: {
+        educations: {
           institution: "Oklahoma Christian University",
           location: "Oklahoma City, OK",
           startDate: "Start Month, Year",
@@ -181,7 +306,7 @@
             }
           ]
         },
-        skills: [
+        allSkills: [
           "List language skills and declare fluency (if applicable)",
           "List relevant computer skills"
         ]

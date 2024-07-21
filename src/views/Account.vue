@@ -11,6 +11,10 @@ import GenreServices from "../services/GenreServices.js";
 import TimeServices from "../services/TimePeriodServices.js";
 import LocationServices from "../services/LocationServices.js";
 
+import ExperienceServices from "../service/ExperienceServices.js";
+import EducationServices from "../service/EducationServices.js";
+import SkillServices from "../service/SkillServices.js";
+
 const router = useRouter();
 const account = ref(null);
 const snackbar = ref({
@@ -26,15 +30,19 @@ const newUsername = ref();
 const newEmail = ref();
 
 const characterName = ref();
-const selectedExperience = ref(null);
 const characterRole = ref();
-const selectedEducation = ref(null);
 const genre = ref();
-const selectedSkill = ref(null);
 const time = ref();
 const selectedTime = ref(null);
 const location = ref();
 const selectedLocation = ref(null);
+
+const selectedExperience = ref(null);
+const experience = ref();
+const selectedEducation = ref(null);
+const education = ref();
+const selectedSkill = ref(null);
+const skill = ref();
 
 onMounted(async () => {
   account.value = JSON.parse(localStorage.getItem("account"));
@@ -124,15 +132,57 @@ async function getLocations() {
     });
 }
 
-//Delete Selected Character Name
+//Grab all Experiences
+async function getExperience() {
+  await ExperienceServices.getExperiencesForUser(account.value.id)
+    .then((response) => {
+      experience.value = response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+}
+
+//Grab all Educations
+async function getEducation() {
+  await EducationServices.getEducationsForUser(account.value.id)
+    .then((response) => {
+      education.value = response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+}
+
+//Grab all Skills
+async function getSkill() {
+  await SkillServices.getSkillsForUser(account.value.id)
+    .then((response) => {
+      skill.value = response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+}
+
+//Delete Selected Experience
 async function deleteExpValue(input) {
   if (!isDefault(input)) {
-    await CharacterNameServices.deletecharacterName(input.id, account.value.id)
+    await ExperienceServices.deleteExperience(input.id, account.value.id)
       .then(() => {
-        getCharacterNames();
+        getExperiences();
         snackbar.value.value = true;
         snackbar.value.color = "green";
-        snackbar.value.text = "Name Deleted";
+        snackbar.value.text = "Experience Deleted";
         router.push({ name: "account" });
       })
       .catch((error) => {
@@ -145,15 +195,15 @@ async function deleteExpValue(input) {
 
 }
 
-//Delete Selected Character Role
+//Delete Selected Education
 async function deleteEducation(input) {
   if (!isDefault(input)) {
-    await CharacterRoleServices.deletecharacterRole(input.id, account.value.id)
+    await EducationServices.deleteEducation(input.id, account.value.id)
       .then(() => {
-        getCharacterRoles();
+        getEducations();
         snackbar.value.value = true;
         snackbar.value.color = "green";
-        snackbar.value.text = "Name Deleted";
+        snackbar.value.text = "Education Deleted";
         router.push({ name: "account" });
       })
       .catch((error) => {
@@ -166,15 +216,15 @@ async function deleteEducation(input) {
 
 }
 
-//Delete Selected Genre
+//Delete Selected Skill
 async function deleteSkill(input) {
   if (!isDefault(input)) {
-    await GenreServices.deleteSkill(input.id, account.value.id)
+    await SkillServices.deleteSkill(input.id, account.value.id)
       .then(() => {
-        getGenres();
+        getSkills();
         snackbar.value.value = true;
         snackbar.value.color = "green";
-        snackbar.value.text = "Genre Deleted";
+        snackbar.value.text = "Skill Deleted";
         router.push({ name: "account" });
       })
       .catch((error) => {
@@ -230,14 +280,14 @@ async function deleteLocation(input) {
   }
 }
 
-//Add Character Name
+//Add Experience
 async function addExpValue() {
-  await CharacterNameServices.addExpValue(selectedExperience.value, account.value.id)
+  await ExperienceServices.addExpValue(selectedExperience.value, account.value.id)
     .then(() => {
-      getCharacterNames();
+      getExperiences();
       snackbar.value.value = true;
       snackbar.value.color = "green";
-      snackbar.value.text = "Name Added";
+      snackbar.value.text = "Experience Added";
       router.push({ name: "account" });
     })
     .catch((error) => {
@@ -249,14 +299,14 @@ async function addExpValue() {
 
 }
 
-//Add Character Role
+//Add Education
 async function addEducation() {
-  await CharacterRoleServices.addEducation(selectedEducation.value, account.value.id)
+  await EducationServices.addEducation(selectedEducation.value, account.value.id)
     .then(() => {
-      getCharacterRoles();
+      getEducations();
       snackbar.value.value = true;
       snackbar.value.color = "green";
-      snackbar.value.text = "Role Added";
+      snackbar.value.text = "Education Added";
       router.push({ name: "account" });
     })
     .catch((error) => {
@@ -267,14 +317,14 @@ async function addEducation() {
     });
 }
 
-//Add Genre
+//Add Skill
 async function addSkill() {
-  await GenreServices.addSkill(selectedSkill.value, account.value.id)
+  await SkillServices.addSkill(selectedSkill.value, account.value.id)
     .then(() => {
-      getGenres();
+      getSkills();
       snackbar.value.value = true;
       snackbar.value.color = "green";
-      snackbar.value.text = "Genre Added";
+      snackbar.value.text = "Skill Added";
       router.push({ name: "account" });
     })
     .catch((error) => {

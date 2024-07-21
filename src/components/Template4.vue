@@ -1,10 +1,12 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { useDate } from 'vuetify';
 import ResumeServices from "../services/ResumeServices";
 import UserServices from "../services/UserServices";
 
 const router = useRouter();
+const date = useDate();
 const account = ref(null);
 const user = ref({
   id: "",
@@ -107,7 +109,7 @@ async function sortData() {
             <p><strong>{{ edu.organization }}</strong>, {{ edu.city }}, {{ edu.state }}</p>
           </div>
           <div>
-            <p>{{ edu.startDate }} - <a v-if="edu.gradDate !== null">Projected </a>{{ edu.endDate }}</p>
+            <p>{{ date.format(edu.startDate, 'monthAndYear') }} - <a v-if="edu.gradDate !== null">Projected </a>{{ date.format(edu.endDate, 'monthAndYear') }}</p>
           </div>
         </div>
 
@@ -128,7 +130,7 @@ async function sortData() {
               <p><strong>{{ exp.organization }}</strong></p>
                 </div>
                 <div>
-              <p>{{ exp.startDate }} - <a v-if="exp.current">Current</a><a v-else>{{ exp.endDate }}</a></p>
+              <p>{{ date.format(exp.startDate, 'monthAndYear') }} - <a v-if="exp.current">Current</a><a v-else>{{ date.format(exp.endDate, 'monthAndYear') }}</a></p>
             </div>
           </div>
               <div>
@@ -148,7 +150,7 @@ async function sortData() {
             <p>{{ exp.organization }}, {{ exp.city }}, {{ exp.state }}</p>
               </div>
               <div>
-            <p>{{ exp.startDate }} - <a v-if="exp.current">Current</a><a v-else>{{ exp.endDate }}</a></p>
+            <p>{{ date.format(exp.startDate, 'monthAndYear') }} - <a v-if="exp.current">Current</a><a v-else>{{ date.format(exp.endDate, 'monthAndYear') }}</a></p>
               </div>
             </div>
             <p><strong><em>{{ exp.title }}</em></strong></p>
@@ -166,7 +168,7 @@ async function sortData() {
             <p>{{ exp.organization }}, {{ exp.city }}, {{ exp.state }}</p>
               </div>
               <div>
-            <p>{{ exp.startDate }} - <a v-if="exp.current">Current</a><a v-else>{{ exp.endDate }}</a></p>
+            <p>{{ date.format(exp.startDate, 'monthAndYear') }} - <a v-if="exp.current">Current</a><a v-else>{{ date.format(exp.endDate, 'monthAndYear') }}</a></p>
               </div>
             </div>
             <p><strong><em>{{ exp.title }}</em></strong></p>
@@ -184,7 +186,7 @@ async function sortData() {
             <p>{{ exp.organization }}, {{ exp.city }}, {{ exp.state }}</p>
               </div>
               <div>
-            <p>{{ exp.startDate }} - <a v-if="exp.current">Current</a><a v-else>{{ exp.endDate }}</a></p>
+            <p>{{ date.format(exp.startDate, 'monthAndYear') }} - <a v-if="exp.current">Current</a><a v-else>{{ date.format(exp.endDate, 'monthAndYear') }}</a></p>
               </div>
             </div>
             <p><strong><em>{{ exp.title }}</em></strong></p>
@@ -203,7 +205,7 @@ async function sortData() {
             <p><strong>{{ exp.title }} </strong></p>
               </div>
               <div>
-            <p>{{ exp.startDate }}</p>
+            <p>{{ date.format(exp.startDate, 'monthAndYear') }}</p>
               </div>
             </div>
             <ul>

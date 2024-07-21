@@ -1,10 +1,12 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { useDate } from 'vuetify';
 import ResumeServices from "../services/ResumeServices";
 import UserServices from "../services/UserServices";
 
 const router = useRouter();
+const date = useDate();
 const account = ref(null);
 const user = ref({
   id: "",
@@ -106,10 +108,10 @@ async function sortData() {
                 <p><strong>{{ item.organization }}</strong>, {{ item.city }}, {{ item.state }}</p>
             </div>
             <div class="education-right" v-if="item.gradDate !== null">
-                <p>{{ item.startDate }} - Projected {{ item.gradDate }}</p>
+                <p>{{ date.format(item.startDate, 'monthAndYear') }} - Projected {{ date.format(item.gradDate, 'monthAndYear') }}</p>
             </div>
             <div class="education-right" v-if="item.gradDate == null">
-                <p>{{ item.startDate }} - {{ item.endDate }}</p>
+                <p>{{ date.format(item.startDate, 'monthAndYear') }} - {{ date.format(item.endDate, 'monthAndYear') }}</p>
             </div>
         </div>
         <div class="dated-row">
@@ -135,13 +137,9 @@ async function sortData() {
                 <div class="job-left">
                     <p><strong>{{ job.organization }}</strong>, <em>{{ job.title }}</em>, {{ job.city }}, {{ job.state }}</p>    
                 </div>
-                <div class="job-right" v-if="job.current == false">
-                    <p>{{ job.startDate }} - {{ job.endDate }}</p>
+                <div class="job-right">
+                    <p>{{ date.format(job.startDate, 'monthAndYear') }} - <a v-if="job.current">Current</a><a v-else>{{ date.format(job.endDate, 'monthAndYear') }}</a></p>
                 </div>
-                <div class="job-right"v-if="job.current == true">
-                    <p>{{ job.startDate }} - Current</p>
-                </div>
-
             </div>
 
           <ul>

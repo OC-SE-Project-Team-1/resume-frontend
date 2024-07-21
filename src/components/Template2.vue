@@ -1,10 +1,12 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { useDate } from 'vuetify';
 import ResumeServices from "../services/ResumeServices";
 import UserServices from "../services/UserServices";
 
 const router = useRouter();
+const date = useDate();
 const account = ref(null);
 const user = ref({
   id: "",
@@ -96,7 +98,7 @@ async function sortData() {
             <section >
                 <h2>EDUCATION</h2>
                 <div v-for="(edu, index) in education" :key="index" style="padding-bottom: 15px;">
-                <p><strong>{{ edu.organization }}</strong> | {{ edu.startDate }} - <a v-if="edu.gradDate !== null">Projected </a>{{ edu.endDate }}</p>
+                <p><strong>{{ edu.organization }}</strong> | {{ date.format(edu.startDate, 'monthAndYear') }} - <a v-if="edu.gradDate !== null">Projected </a>{{ date.format(edu.endDate, 'monthAndYear') }}</p>
                 <p><strong><em>{{ edu.degree }}</em></strong></p>
                 <p>{{ edu.gpa }}</p>
                 <!-- TODO: FIgure out what to do for study abroad -->
@@ -109,7 +111,7 @@ async function sortData() {
             <section>
                 <h2>EXPERIENCE</h2>
                 <div v-for="(exp, index) in experience" :key="index">
-                <p><strong>{{ exp.title }}</strong>, {{ exp.organization }} | {{ exp.startDate }} - <a v-if="exp.current">Current</a><a v-else>{{ exp.endDate }}</a></p>
+                <p><strong>{{ exp.title }}</strong>, {{ exp.organization }} | {{ date.format(exp.startDate, 'monthAndYear') }} - <a v-if="exp.current">Current</a><a v-else>{{ date.format(exp.endDate, 'monthAndYear') }}</a></p>
                 <ul>
                     <li v-for="achievement in exp.description.split('\n')">{{ achievement }}</li>
                 </ul>

@@ -1,10 +1,12 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { useDate } from 'vuetify';
 import ResumeServices from "../services/ResumeServices";
 import UserServices from "../services/UserServices";
 
 const router = useRouter();
+const date = useDate();
 const account = ref(null);
 const user = ref({
   id: "",
@@ -104,11 +106,8 @@ async function sortData() {
             <div>
             <p><strong>{{ item.organization }}</strong>, {{ item.city }}, {{ item.state }} </p>
           </div>
-          <div v-if="item.gradDate !== null">
-              <p>{{ item.startDate }} - Projected {{ item.gradDate }}</p>
-          </div>
-          <div v-if="item.gradDate == null">
-              <p>{{ item.startDate }} - {{ item.endDate }}</p>
+          <div >
+              <p>{{ date.format(item.startDate, 'monthAndYear') }} - <a v-if="item.gradDate !== null">Projected</a> {{ date.format(item.endDate, 'monthAndYear') }}</p>
           </div>
         </div>
         <div class="dated-row">
@@ -130,11 +129,8 @@ async function sortData() {
             <div>
               <p><strong>{{ job.organization }}</strong>, {{ job.city }}, {{ job.state }} </p>
           </div>
-          <div v-if="job.current == false">
-            <p> {{ job.startDate }} - {{ job.endDate }}</p>
-          </div>
-          <div v-if="job.current == true">
-            <p> {{ job.startDate }} - Current</p>
+          <div >
+            <p>{{ date.format(job.startDate, 'monthAndYear') }} - <a v-if="job.current">Current</a><a v-else>{{ date.format(job.endDate, 'monthAndYear') }}</a></p>
           </div>
           </div>
           <p>{{ job.title }}</p>
@@ -154,7 +150,7 @@ async function sortData() {
             <p><strong>{{ project.organization }}</strong>, {{ project.city }}, {{ project.state }} </p>
           </div>
           <div>
-            <p>{{ project.startDate }} - {{ project.endDate }}</p>
+            <p>{{ date.format(project.startDate, 'monthAndYear') }} - {{ date.format(project.endDate, 'monthAndYear') }}</p>
           </div>
           </div>
 

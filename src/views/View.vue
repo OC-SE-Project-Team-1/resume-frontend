@@ -89,49 +89,60 @@ function closeSnackBar() {
   <v-container>
     <div id="body">
       <v-card flat color="transparent">
-          <v-card-actions>
-            <v-btn variant="flat" color="secondary" @click="navigateToEdit()">Edit</v-btn>
-            <v-btn variant="flat" color="secondary" @click="openExport()">Export</v-btn>
-            <v-btn variant="flat" color="secondary" @click="toggleFeedback()">Toggle Feedback</v-btn>
-            <v-btn class="ml-auto" variant="flat" color="secondary" @click="navigateToLibrary()"> Back </v-btn>
-          </v-card-actions>
-        </v-card>
+        <v-card-actions>
+          <v-btn variant="flat" color="secondary" @click="navigateToEdit()">Edit</v-btn>
+          <v-btn variant="flat" color="secondary" @click="openExport()">Export</v-btn>
+          <v-btn variant="flat" color="secondary" @click="toggleFeedback()">Toggle Feedback</v-btn>
+          <v-btn class="ml-auto" variant="flat" color="secondary" @click="navigateToLibrary()"> Back </v-btn>
+        </v-card-actions>
+      </v-card>
       <v-card-title class="text-center headline mb-2">View</v-card-title>
 
       <div v-show="!isFeedback">
-        <div v-show="templateId == 1">
+        <div v-if="templateId == 1">
           <template1></template1>
         </div>
-        <div v-show="templateId == 2">
+        <div v-if="templateId == 2">
           <template2></template2>
         </div>
-        <div v-show="templateId == 3">
+        <div v-if="templateId == 3">
           <template3></template3>
         </div>
-        <div v-show="templateId == 4">
+        <div v-if="templateId == 4">
           <template4></template4>
         </div>
       </div>
 
       <div v-show="isFeedback">
-      <v-row>
-        <v-col>
-          <Template1></Template1>
-    </v-col>
-  <v-col>
-      <v-card class="rounded-lg elevation-5 my-8">
-        <v-card-title class="text-center headline mb-2">Feedback</v-card-title>
-        <v-card-text>
-          <v-textarea v-model="feedback" label="View Feedback" auto-grow readonly></v-textarea>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn variant="flat" color="primary" @click="submitFeedback()">Submit</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-    </v-row>
-  </div>
+        <v-row>
+          <v-col>
+            <div v-if="templateId == 1">
+              <template1></template1>
+            </div>
+            <div v-if="templateId == 2">
+              <template2></template2>
+            </div>
+            <div v-if="templateId == 3">
+              <template3></template3>
+            </div>
+            <div v-if="templateId == 4">
+              <template4></template4>
+            </div>
+          </v-col>
+          <v-col>
+            <v-card class="rounded-lg elevation-5 my-8">
+              <v-card-title class="text-center headline mb-2">Feedback</v-card-title>
+              <v-card-text>
+                <v-textarea v-model="feedback" label="View Feedback" auto-grow readonly></v-textarea>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn variant="flat" color="primary" @click="submitFeedback()">Submit</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </v-row>
+      </div>
 
       <v-dialog persistent v-model="isExport" width="800">
         <v-card class="rounded-lg elevation-5">

@@ -1,11 +1,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
 import { useDate } from 'vuetify';
 import ResumeServices from "../services/ResumeServices";
 import UserServices from "../services/UserServices";
 
-const router = useRouter();
 const date = useDate();
 const account = ref(null);
 const user = ref({
@@ -27,7 +25,6 @@ const links = ref([]);
 const goal = ref([]);
 const education = ref([]);
 const experience = ref([]);
-const award = ref([]);
 const skills = ref([]);
 
 
@@ -85,7 +82,9 @@ async function sortData() {
       <div class="resume" >
       <header>
         <h1>{{ user.firstName }} {{ user.lastName }}</h1>
-        <p>{{ user.address }} | {{ user.phoneNumber }} | <a>{{ user.email }}</a><a v-if="links.length > 0"> | </a><a v-if="links.length > 0"v-for="link in links">{{ link.type }}: {{ link.url }} </a></p>
+        <p>{{ user.address }} | {{ user.phoneNumber }} | <a>{{ user.email }}</a>
+          <a v-if="links.length > 0"> | </a><a v-if="links.length > 0"v-for="link in links">
+            {{ link.type }}: {{ link.url }}<a v-if="index !== links.length - 1"> | </a></a></p>
       </header>
   
       <section >

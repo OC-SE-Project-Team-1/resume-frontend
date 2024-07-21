@@ -1,11 +1,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
 import { useDate } from 'vuetify';
 import ResumeServices from "../services/ResumeServices";
 import UserServices from "../services/UserServices";
 
-const router = useRouter();
 const date = useDate();
 const account = ref(null);
 const user = ref({
@@ -27,7 +25,6 @@ const links = ref([]);
 const goal = ref([]);
 const education = ref([]);
 const experience = ref([]);
-const award = ref([]);
 const skills = ref([]);
 
 
@@ -110,7 +107,7 @@ async function sortData() {
 
         <p>{{ edu.degree }}</p>
         <p v-if="edu.minor !== 'null'">Minor: {{ edu.minor }}</p>
-        <!-- ; Cumulative GPA: {{ edu.cumulativeGPA }} -->
+        <!-- TODO: Cumulative GPA Instead of Total GPA??; Cumulative GPA: {{ edu.cumulativeGPA }} -->
         <p>Major GPA: {{ edu.gpa }}</p>
         <p v-if="edu.courses !== 'null'">Coursework: {{ edu.courses }}</p>
       </div>
@@ -213,7 +210,7 @@ async function sortData() {
       <section>
         <h2>SKILLS</h2>
         <ul style="padding-left: 0%;">
-          <li style="list-style-type: none;" v-for="skill in skills" :key="skill">{{ skill.title }}</li>
+          <li style="list-style-type: none;" v-for="skill in skills" :key="skill">{{ skill.title }}: {{ skill.description }}</li>
         </ul>
       </section>
     </div>

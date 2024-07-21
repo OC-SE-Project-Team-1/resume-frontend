@@ -1,11 +1,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
 import { useDate } from 'vuetify';
 import ResumeServices from "../services/ResumeServices";
 import UserServices from "../services/UserServices";
 
-const router = useRouter();
 const date = useDate();
 const account = ref(null);
 const user = ref({
@@ -27,7 +25,6 @@ const links = ref([]);
 const goal = ref([]);
 const education = ref([]);
 const experience = ref([]);
-const award = ref([]);
 const skills = ref([]);
 
 
@@ -83,7 +80,9 @@ async function sortData() {
       <header>
         <h1><strong>{{ user.firstName }} {{ user.lastName }}</strong></h1>
         <!-- :href="'mailto:' + user.email" :href="linkedInUrl" -->
-        <p>{{ user.address }} | {{ user.phoneNumber }} | <a >{{ user.email }}</a><a v-if="links.length > 0"> | </a><a v-for="link in links">{{ link.type }}: {{ link.url }}</a></p>
+        <p>{{ user.address }} | {{ user.phoneNumber }} | <a >{{ user.email }}</a>
+          <a v-if="links.length > 0"> | </a><a v-for="(link, index) in links">
+            {{ link.type }}: {{ link.url }}<a v-if="index !== links.length - 1"> | </a></a></p>
       </header>
       
       <section>
@@ -122,7 +121,7 @@ async function sortData() {
       <section>
         <h2>PROFESSIONAL EXPERIENCE</h2>
         <div class="job" v-for="(job, index) in experience" :key="index" >
-          <div v-if="job.experienceTypeId < 5">
+          <div v-if="job.experienceTypeId < 5 && (job.experienceTypeId !== 3 || skills.length > 0)">
             <div class="dated-row">
 
                 <div class="job-left">
@@ -132,22 +131,34 @@ async function sortData() {
                     <p>{{ date.format(job.startDate, 'monthAndYear') }} - <a v-if="job.current">Current</a><a v-else>{{ date.format(job.endDate, 'monthAndYear') }}</a></p>
                 </div>
             </div>
-
           <ul>
             <li v-for="achievement in job.description.split('\n')">{{ achievement }}</li>
           </ul>
         </div>
       </div>
       </section>
-  
-      <section>
-        <!-- <span class="small-text">| LEADERSHIP SKILLS | ACTIVITIES | EXTRACURRICULAR ACTIVITIES</span> -->
-        <h2 >SKILLS </h2>
-        <ul class="padded-top-list">
-          <li v-for="(skill, index) in skills" :key="index"><em>{{ skill.title }}</em>: {{ skill.description }}</li>
-          <!-- <li v-for="(languageSkill, index) in languageSkills" :key="index"><em>{{ languageSkill.title }}</em>{{ languageSkill.content }}</li> -->
-        </ul>
-      </section>
+      
+      <div v-if="skills.length > 0">
+        <section>
+          <!-- <span class="small-text">| LEADERSHIP SKILLS</span> -->
+          <h2>SKILLS </h2>
+          <ul class="padded-top-list">
+            <li v-for="(skill, index) in skills" :key="index"><em>{{ skill.title }}</em>: {{ skill.description }}</li>
+            <!-- <li v-for="(languageSkill, index) in languageSkills" :key="index"><em>{{ languageSkill.title }}</em>{{ languageSkill.content }}</li> -->
+          </ul>
+        </section>
+      </div>
+      <div v-else>
+        <section>
+          <!-- <span class="small-text">ACTIVITIES | EXTRACURRICULAR ACTIVITIES</span> -->
+          <h2 > ACTIVITIES </h2>
+          <ul class="padded-top-list">
+            <div v-for="(exp, index) in experience" :key="index">
+              <li v-if="exp.experienceTypeId == 3"><em>{{ exp.organization }} {{ exp.title }}</em>: {{ exp.description }}</li>
+            </div>
+          </ul>
+        </section>
+      </div>
     </div>
     </v-sheet>
 </v-container>

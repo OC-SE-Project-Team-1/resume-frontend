@@ -1100,7 +1100,7 @@ export default {
                 </v-row>
                 <v-row>
                     <v-col>
-                        <v-text-field v-mmodel="jobCity" label="City"></v-text-field>
+                        <v-text-field v-model="jobCity" label="City"></v-text-field>
                     </v-col>
                     <v-col>
                         <v-text-field v-model="jobState" label="State"></v-text-field>
@@ -1384,7 +1384,7 @@ export default {
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-textarea label="Role Summary">
+                    <v-textarea v-model="jobDescription" label="Role Summary">
                         <template #append-inner>
                             <v-btn color="secondary" rounded="xl" value="Ai Assist">
                                 AI Assist

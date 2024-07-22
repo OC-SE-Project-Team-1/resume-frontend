@@ -28,6 +28,8 @@ const tabs = ref();
 const tab = ref("1");
 const resumeTemplate = ref();
 const dialog = ref(false);
+const checkbox1 = ref(false);
+
 
 const resumeSections = ref(
     {
@@ -99,6 +101,7 @@ const selectedActivitiesExperience = ref(null);
 const selectedVolunteerExperience = ref(null);
 const selectedHonorExperience = ref(null);
 const selectedAwardExperience = ref(null);
+const selectedProjectExperience = ref(null);
 
 const isJobExperience = ref(false);
 const jobExperienceTitle = ref(null);
@@ -115,6 +118,7 @@ const isActivitiesExperience = ref(false);
 const isVolunteerExperience = ref(false);
 const isHonorExperience = ref(false);
 const isAwardExperience = ref(false);
+const isProjectExperience = ref(false);
 
 const skillTitle = ref("");
 const skillDescription = ref("");
@@ -236,6 +240,12 @@ async function navigateNextTab(value) {
     resetNewInput();
     //const temp = parseInt(tab.value) + 1;
     const temp = value + 1;
+
+    getGoals();
+    getEducationInfo();
+    getExperiences();
+    getSkills();
+
     tab.value = temp.toString();
 }
 
@@ -251,6 +261,7 @@ async function resetNewInput() {
     closeNewSkill();
     closeNewHonor();
     closeNewAward();
+    closeNewProject();
 }
 
 async function selectedTemplate(value) {
@@ -339,6 +350,7 @@ function toggleExperience(value) {
         if (isHonorExperience.value == true) {
             clearExperienceData();
             isAwardExperience.value = false;
+            isProjectExperience.value = false;
         }
     }
     else if (value == 6) {
@@ -348,6 +360,18 @@ function toggleExperience(value) {
         }
         if (isAwardExperience.value == true) {
             clearExperienceData();
+            isHonorExperience.value = false;
+            isProjectExperience.value = false;
+        }
+    }
+    else if (value == 7) {
+        isProjectExperience.value = !isProjectExperience.value;
+        if (isProjectExperience.value == false) {
+            closeNewProject();
+        }
+        if (isProjectExperience.value == true) {
+            clearExperienceData();
+            isAwardExperience.value = false;
             isHonorExperience.value = false;
         }
     }
@@ -588,6 +612,10 @@ async function closeNewHonor() {
 
 async function closeNewAward() {
     isAwardExperience.value = false;
+}
+
+async function closeNewProject() {
+    isProjectExperience.value = false;
 }
 
 async function setNewskillVisible() {
@@ -1710,10 +1738,97 @@ export default {
             <div class="mb-10">
                 <v-spacer></v-spacer>
             </div>
+            <div align="left">
+                <v-text class="headline mb-2">Select Projects: </v-text>
+                <v-container>
+                    <v-data-table v-model="selectedProjectExperience" :items="experiences"
+                        item-value="id" :search="'7'"
+                        :custom-filter="filterPerfectMatch"
+                        :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' },]"
+                        show-select hide-default-footer>
+                    </v-data-table>
+                </v-container>
+
+            </div>
+
+
+            <div class="mb-10">
+                <v-spacer></v-spacer>
+            </div>
+
+            <v-divider></v-divider>
+
+            <div class="mb-10">
+                <v-spacer></v-spacer>
+            </div>
+
+
+            <v-btn variant="tonal" @click="toggleExperience(7)">
+                Add New Project
+            </v-btn>
+
+            <v-container v-if="isProjectExperience">
+                <v-row>
+                    <v-col>
+                        <v-text-field v-model="jobExperienceTitle" label="Position"></v-text-field>
+                    </v-col>
+                    <v-col>
+                        <v-text-field v-model="jobCompany" label="Organization Name"></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        <v-text-field v-model="jobCity" label="City"></v-text-field>
+                    </v-col>
+                    <v-col>
+                        <v-text-field v-model="jobState" label="State"></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
+                    </v-col>
+                    <v-col>
+                        <v-text-field v-model="jobEnd" label="End Date"></v-text-field>
+                        <v-switch label="Present Role" color="primary"></v-switch>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-textarea label="Project Summary" v-model="jobDescription">
+                        <template #append-inner>
+                            <v-btn color="secondary" rounded="xl" value="Ai Assist">
+                                AI Assist
+                            </v-btn>
+                        </template>
+                    </v-textarea>
+                </v-row>
+
+                <v-col>
+
+                </v-col>
+                <v-btn variant="tonal" @click="toggleExperience(7)">
+                    Cancel
+                </v-btn>
+                &nbsp;&nbsp;&nbsp;
+                <v-btn variant="tonal" @click="addNewExperience(7)">
+                    Submit
+                </v-btn>
+            </v-container>
+
+            <div class="mb-10">
+                <v-spacer></v-spacer>
+            </div>
+
+            <v-divider></v-divider>
+
+            <div class="mb-10">
+                <v-spacer></v-spacer>
+            </div>
 
             <div align="right">
 
             </div>
+
         </v-tabs-window-item>
 
         </v-tabs-window>
@@ -1747,7 +1862,7 @@ export default {
                             <v-spacer></v-spacer>
                         </div>
                         <v-btn variant="tonal" @click="selectedTemplate(templateSelected)">
-                            submit
+                            Select
                         </v-btn>
 
                     </div>
@@ -1776,6 +1891,10 @@ export default {
                     <v-spacer></v-spacer>
                 </div>
                 <div align="center">
+                            <v-checkbox
+                                v-model="checkbox1"
+                                :label="'Allow Feedback on this resume'"
+                            ></v-checkbox>
                     <v-btn :disabled="!isGenerated" @click="addResume()">Generate Resume</v-btn>
                 </div>
                 <div align="center">

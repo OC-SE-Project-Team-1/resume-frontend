@@ -26,6 +26,8 @@ const isNewLinkVisible = ref(false);
 const isNewEduVisible = ref(false);
 const tabs = ref();
 const tab = ref("1");
+const resumeTemplate = ref();
+const dialog = ref(false);
 
 const resumeSections = ref(
     {
@@ -68,6 +70,10 @@ const goalDescription = ref("");
 const goals = ref();
 const selectedGoals = ref(null);
 const isNewGoalVisible = ref(false);
+const aiGoalExperiences = ref();
+const aiGoalAchievements = ref();
+const aiGoalTitle = ref();
+let goalChatHistory = [];
 
 const educationInfo = ref();
 const selectedEducation = ref(null);
@@ -428,7 +434,7 @@ async function getGoals() {
 async function addNewGoal() {
     console.log(goalTitle.value);
     console.log(goalDescription.value);
-    await GoalServices.addGoal(goalTitle.value, goalDescription.value, parseInt(account.value.id))
+    await GoalServices.addGoal(goalTitle.value, goalDescription.value, parseInt(account.value.id), goalChatHistory)
         .then(() => {
             snackbar.value.value = true;
             snackbar.value.color = "green";
@@ -744,6 +750,23 @@ function clearAllSelected() {
     toggleSelectPreview();
 }
 
+function clearGoalAiAssist(){
+    aiGoalExperiences.value = null;
+    aiGoalAchievements.value = null;
+    aiGoalTitle.value = null;
+}
+
+async function aiGoalAssist(){
+    goalDescription.value = "Generating Description, please wait"
+    await GoalServices.goalAiAssist(aiGoalTitle.value, aiGoalExperiences.value.split(","), aiGoalAchievements.value.split(",") )
+        .then((response) =>{
+            goalDescription.value = response.data.description
+            goalChatHistory.push(response.data.history[0])
+            goalChatHistory.push(response.data.history[1])
+        })
+        
+    }
+        
 async function experienceAIAssist(){
     await ExperienceServices.experienceAiAssist(jobDescription.value)
         .then((response) => {
@@ -753,6 +776,7 @@ async function experienceAIAssist(){
         experienceChatHistory.push(response.data.history[1])         
     })
 }
+
 </script>
 
 <script>
@@ -891,9 +915,53 @@ export default {
                 <v-row>
                     <v-textarea v-model="goalDescription" label="A brief overview of your skills and experiences">
                         <template #append-inner>
-                            <v-btn color="secondary" rounded="xl" value="Ai Assist">
-                                AI Assist
-                            </v-btn>
+                            <div class="text-center pa-4">
+                                <v-dialog v-model="dialog" persistent>
+                                <template v-slot:activator="{ props: activatorProps }">
+                                    <v-btn color="secondary" rounded="xl" value="Ai Assist" v-bind="activatorProps">
+                                            AI Assist
+                                        </v-btn>
+                                </template>
+
+                                <v-card
+                                    text="Please list your Experiences and Achievements that you want to include in the summary, separated by commas(,) ."
+                                    title="Goal Ai Assist"
+                                >
+                                    <template v-slot:actions>
+                                    <v-spacer></v-spacer>
+                                    <v-container>
+
+                                        <v-row>
+                                            <v-text-field label="Experiences" v-model="aiGoalExperiences" variant="outlined" style="width: 30%;">
+                                            </v-text-field>
+                                        </v-row>
+                                        <v-row>
+                                            <v-text-field label="Achievements" v-model="aiGoalAchievements" variant="outlined" style="width: 30%;">
+                                            </v-text-field>
+                                        </v-row>
+                                        <v-row>
+                                            <v-text-field label="Professional title" v-model="aiGoalTitle" variant="outlined" style="width: 30%;">
+
+                                            </v-text-field>
+                                        </v-row>
+                                        <div align="center">
+                                            <v-row style="width:50%">
+                                                <v-col>
+                                                    <v-btn @click="clearGoalAiAssist(), dialog = false"> Cancel </v-btn>
+                                                </v-col>
+                                                <v-col >
+                                                    <v-btn @click="aiGoalAssist(), clearGoalAiAssist(), dialog = false"> Confirm </v-btn>
+                                                </v-col>
+                                                                                    
+                                            </v-row>                                            
+                                        </div>
+
+                                    </v-container>
+                                    </template>
+                                </v-card>
+                                </v-dialog>
+                            </div>
+
                         </template>
                     </v-textarea>
                 </v-row>
@@ -911,7 +979,6 @@ export default {
                         Next
                     </v-btn>
                 </div>
-
             </div>
 
         </v-tabs-window-item>

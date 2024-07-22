@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "cross-env APP_ENV=development vite",
-    "build": "vite build",
+    "build": "cross-env APP_ENV=production vite build",
     "preview": "cross-env vite preview"
   },
   "dependencies": {

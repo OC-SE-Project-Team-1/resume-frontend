@@ -10,10 +10,9 @@ import CharacterRoleServices from "../services/CharacterRoleServices.js";
 import GenreServices from "../services/GenreServices.js";
 import TimeServices from "../services/TimePeriodServices.js";
 import LocationServices from "../services/LocationServices.js";
-
-import ExperienceServices from "../service/ExperienceServices.js";
-import EducationServices from "../service/EducationServices.js";
-import SkillServices from "../service/SkillServices.js";
+import ExperienceServices from "../services/ExperienceServices.js";
+import EducationServices from "../services/EducationServices.js";
+import SkillServices from "../services/SkillServices.js";
 
 const router = useRouter();
 const account = ref(null);
@@ -51,17 +50,22 @@ onMounted(async () => {
   newEmail.value = account.value.email;
 
   await getTheme();
+  /*
   await getCharacterNames();
   await getCharacterRoles();
   await getGenres();
   await getTimes();
   await getLocations();
+  */
+  await getExperiences();
+  await getEducations();
+  await getSkills();
 });
 
 function closeSnackBar() {
   snackbar.value.value = false;
 }
-
+/*
 //Grab all Characacter Names 
 async function getCharacterNames() {
   await CharacterNameServices.getcharacterNameForUser(account.value.id)
@@ -131,12 +135,13 @@ async function getLocations() {
       snackbar.value.text = error.response.data.message;
     });
 }
-
+*/
 //Grab all Experiences
-async function getExperience() {
+async function getExperiences() {
   await ExperienceServices.getExperiencesForUser(account.value.id)
     .then((response) => {
       experience.value = response.data;
+      console.log(experience.value);
     })
     .catch((error) => {
       console.log(error);
@@ -147,7 +152,7 @@ async function getExperience() {
 }
 
 //Grab all Educations
-async function getEducation() {
+async function getEducations() {
   await EducationServices.getEducationsForUser(account.value.id)
     .then((response) => {
       education.value = response.data;
@@ -161,7 +166,7 @@ async function getEducation() {
 }
 
 //Grab all Skills
-async function getSkill() {
+async function getSkills() {
   await SkillServices.getSkillsForUser(account.value.id)
     .then((response) => {
       skill.value = response.data;
@@ -603,12 +608,12 @@ export default {
                   <v-col>
 
                     <v-list>
-                      <v-list-item v-for="name in characterName" :key="name.id">
+                      <v-list-item v-for="exp in experience" :key="exp.id">
 
                         <v-row margin="align-center">
-                          <v-col md="8"><v-list-item-title>{{ name.name }}</v-list-item-title> </v-col>
+                          <v-col md="8"><v-list-item-title>{{ exp.name }}</v-list-item-title> </v-col>
                           <v-col cols="1">
-                            <v-icon icon="mdi-trash-can" @click="deleteExpValue(name)"></v-icon>
+                            <v-icon icon="mdi-trash-can" @click="deleteExpValue(exp)"></v-icon>
                           </v-col>
                         </v-row>
 
@@ -621,7 +626,7 @@ export default {
 
 
                 <v-row style="width: 75%;">
-                  <v-text-field label="New Name" v-model="selectedExperience">
+                  <v-text-field label="New Experience" v-model="selectedExperience">
 
                   </v-text-field>
                 </v-row>
@@ -655,12 +660,12 @@ export default {
                   <v-col>
 
                     <v-list>
-                      <v-list-item v-for="role in characterRole" :key="role.id">
+                      <v-list-item v-for="edu in education" :key="edu.id">
 
                         <v-row>
-                          <v-col md="8"><v-list-item-title>{{ role.name }}</v-list-item-title> </v-col>
+                          <v-col md="8"><v-list-item-title>{{ edu.name }}</v-list-item-title> </v-col>
                           <v-col cols="1">
-                            <v-icon icon="mdi-trash-can" @click="deleteEducation(role)"></v-icon>
+                            <v-icon icon="mdi-trash-can" @click="deleteEducation(edu)"></v-icon>
                           </v-col>
                         </v-row>
 
@@ -674,7 +679,7 @@ export default {
 
 
                 <v-row style="width: 75%;">
-                  <v-text-field label="New Role" v-model="selectedEducation">
+                  <v-text-field label="New Education" v-model="selectedEducation">
 
                   </v-text-field>
                 </v-row>
@@ -708,12 +713,12 @@ export default {
                   <v-col>
 
                     <v-list>
-                      <v-list-item v-for="g in genre" :key="g.id">
+                      <v-list-item v-for="s in skill" :key="s.id">
 
                         <v-row>
-                          <v-col md="8"><v-list-item-title>{{ g.name }}</v-list-item-title> </v-col>
+                          <v-col md="8"><v-list-item-title>{{ s.name }}</v-list-item-title> </v-col>
                           <v-col cols="1">
-                            <v-icon icon="mdi-trash-can" @click="deleteSkill(g)"></v-icon>
+                            <v-icon icon="mdi-trash-can" @click="deleteSkill(s)"></v-icon>
                           </v-col>
                         </v-row>
 
@@ -727,7 +732,7 @@ export default {
 
 
                 <v-row style="width: 75%;">
-                  <v-text-field label="New Genre" v-model="selectedSkill">
+                  <v-text-field label="New Skill" v-model="selectedSkill">
 
                   </v-text-field>
                 </v-row>

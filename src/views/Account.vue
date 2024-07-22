@@ -611,7 +611,7 @@ export default {
                       <v-list-item v-for="exp in experience" :key="exp.id">
 
                         <v-row margin="align-center">
-                          <v-col md="8"><v-list-item-title>{{ exp.name }}</v-list-item-title> </v-col>
+                          <v-col md="8"><v-list-item-title>{{ exp.title }}</v-list-item-title> </v-col>
                           <v-col cols="1">
                             <v-icon icon="mdi-trash-can" @click="deleteExpValue(exp)"></v-icon>
                           </v-col>
@@ -663,7 +663,7 @@ export default {
                       <v-list-item v-for="edu in education" :key="edu.id">
 
                         <v-row>
-                          <v-col md="8"><v-list-item-title>{{ edu.name }}</v-list-item-title> </v-col>
+                          <v-col md="8"><v-list-item-title>{{ edu.description }}</v-list-item-title> </v-col>
                           <v-col cols="1">
                             <v-icon icon="mdi-trash-can" @click="deleteEducation(edu)"></v-icon>
                           </v-col>
@@ -716,7 +716,7 @@ export default {
                       <v-list-item v-for="s in skill" :key="s.id">
 
                         <v-row>
-                          <v-col md="8"><v-list-item-title>{{ s.name }}</v-list-item-title> </v-col>
+                          <v-col md="8"><v-list-item-title>{{ s.title }}</v-list-item-title> </v-col>
                           <v-col cols="1">
                             <v-icon icon="mdi-trash-can" @click="deleteSkill(s)"></v-icon>
                           </v-col>

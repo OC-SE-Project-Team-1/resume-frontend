@@ -14,12 +14,31 @@ const theme = useTheme();
 onMounted(async () => {
   logoURL.value = ftLogo;
   account.value = JSON.parse(localStorage.getItem("account"));
-  if (JSON.parse(localStorage.getItem("darkMode") === null)) {
+  
+
+  if (account.value !== null) {
+    console.log("Account is logged in");
+    console.log(account.value);
+
+    if (account.value.isDark === true || account.value.isDark === "1") {
+      theme.global.name.value = 'DarkTheme';
+    }
+    else {
+      theme.global.name.value = 'LightTheme';
+    }
+  }
+  else {
+    
+    console.log("Account isn't logged in");
+    console.log(account.value);
+
+    if (JSON.parse(localStorage.getItem("darkMode") === null)) {
     theme.global.name.value = 'LightTheme';
     window.localStorage.setItem("darkMode", JSON.stringify(theme.global.name.value));
   }
   else {
     theme.global.name.value = JSON.parse(localStorage.getItem("darkMode"));
+  }
   }
 
 });
@@ -45,8 +64,23 @@ function logout() {
 }
 
 function toggleTheme() {
+
   theme.global.name.value = theme.global.current.value.dark ? 'LightTheme' : 'DarkTheme';
-  window.localStorage.setItem("darkMode", JSON.stringify(theme.global.name.value));
+
+  if (account.value !== null) {
+    if (theme.global.name.value === 'LightTheme') {
+      account.value.isDark = "0";
+    }
+    else {
+      account.value.isDark = true;
+    }
+  }
+  else {
+  
+    window.localStorage.setItem("darkMode", JSON.stringify(theme.global.name.value));
+
+  }
+
 }
 </script>
 

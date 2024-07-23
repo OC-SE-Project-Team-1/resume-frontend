@@ -20,7 +20,7 @@ const snackbar = ref({
   color: "",
   text: "",
 });
-
+const isEdit = ref();
 
 onMounted(async () => {
   account.value = JSON.parse(localStorage.getItem("account"));
@@ -32,6 +32,7 @@ async function getResume() {
   await ResumeServices.getResume(resumeId.value)
     .then((response) => {
       resumeData.value = response.data;
+      isEdit.value = response.data.editing; 
       templateId.value = resumeData.value.template;
     })
     .catch((error) => {
@@ -83,6 +84,10 @@ function closeExport() {
 function closeSnackBar() {
   snackbar.value.value = false;
 }
+async function updateEditing(){
+isEdit.value = !isEdit.value
+await ResumeServices.updateResumeEditing(resumeId.value, isEdit.value, account.value.id )
+}
 </script>
 
 <template>
@@ -95,6 +100,9 @@ function closeSnackBar() {
           <v-btn variant="flat" color="secondary" @click="toggleFeedback()">Toggle Feedback</v-btn>
           <v-btn class="ml-auto" variant="flat" color="secondary" @click="navigateToLibrary()"> Back </v-btn>
         </v-card-actions>
+
+        <v-checkbox  id="editingCheckBox" v-model="isEdit" :label="'Allow Feedback on this resume'"
+                        @click = "updateEditing()"></v-checkbox>
       </v-card>
       <v-card-title class="text-center headline mb-2">View</v-card-title>
 

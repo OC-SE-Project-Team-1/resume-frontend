@@ -28,7 +28,6 @@ const tabs = ref();
 const tab = ref("1");
 const resumeTemplate = ref();
 const dialog = ref(false);
-const checkbox1 = ref(false);
 
 
 const resumeSections = ref(
@@ -1892,10 +1891,6 @@ export default {
                     <v-spacer></v-spacer>
                 </div>
                 <div align="center">
-                            <v-checkbox
-                                v-model="checkbox1"
-                                :label="'Allow Feedback on this resume'"
-                            ></v-checkbox>
                     <v-btn :disabled="!isGenerated" @click="addResume()">Generate Resume</v-btn>
                 </div>
                 <div align="center">

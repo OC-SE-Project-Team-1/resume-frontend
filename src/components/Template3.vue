@@ -1,3 +1,78 @@
+<script setup>
+import { ref, onMounted } from "vue";
+import { useDate } from 'vuetify';
+import ResumeServices from "../services/ResumeServices";
+import UserServices from "../services/UserServices";
+
+const date = useDate();
+const account = ref(null);
+const user = ref({
+  id: "",
+  userName: "",
+  email: "",
+  password: "",
+  firstName: "",
+  lastName: "",
+  phoneNumber: "",
+  address: "",
+  darkMode: "",
+  roleId: ""
+});
+const resumeId = ref(null);
+const resumeData = ref();
+
+const links = ref([]);
+const goal = ref([]);
+const education = ref([]);
+const experience = ref([]);
+const skills = ref([]);
+
+
+onMounted(async () => {
+  account.value = JSON.parse(localStorage.getItem("account"));
+  resumeId.value = JSON.parse(localStorage.getItem("resumeId"));
+  await getResume();
+  await getUser();
+  await sortData();
+});
+
+async function getResume() {
+  await ResumeServices.getResume(resumeId.value)
+    .then((response) => {
+      resumeData.value = response.data;
+      console.log(resumeData);
+      
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+}
+async function getUser() {
+  await UserServices.getUser(resumeData.value.userId)
+    .then((response) => {
+      user.value = response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+}
+
+async function sortData() {
+  links.value = resumeData.value.Link;
+  goal.value = resumeData.value.Goal[0].description;
+  education.value = resumeData.value.Education;
+  experience.value = resumeData.value.Experience;
+  skills.value = resumeData.value.Skill;
+}
+
+</script>
+
 <template>
   <v-container>
     <v-sheet style="width: calc(90vh * 8.5 / 11);
@@ -6,31 +81,33 @@
 
       <div class="resume" >
       <header>
-        <h1>{{ name }}</h1>
-        <p>{{ location }} | {{ phone }} | <a :href="'mailto:' + email">{{ email }}</a> | <a :href="linkedin">{{ linkedin }}</a></p>
+        <h1>{{ user.firstName }} {{ user.lastName }}</h1>
+        <p>{{ user.address }} | {{ user.phoneNumber }} | <a>{{ user.email }}</a>
+          <a v-if="links.length > 0"> | </a><a v-if="links.length > 0"v-for="link in links">
+            {{ link.type }}: {{ link.url }}<a v-if="index !== links.length - 1"> | </a></a></p>
       </header>
   
       <section >
-        <p >{{ about }}</p>
+        <p >{{ goal }}</p>
       </section>
   
       <section>
         <h2><strong>EDUCATION</strong></h2>
-        <div>
+        <div v-for="item in education">
         <div class="dated-row">
             <div>
-            <p><strong>{{ education.institution }}</strong>, {{ education.location }} </p>
+            <p><strong>{{ item.organization }}</strong>, {{ item.city }}, {{ item.state }} </p>
           </div>
-          <div>
-            <p> Projected {{ education.graduation }} </p>
+          <div >
+              <p>{{ date.format(item.startDate, 'monthAndYear') }} - <a v-if="item.gradDate !== null">Projected</a> {{ date.format(item.endDate, 'monthAndYear') }}</p>
           </div>
         </div>
         <div class="dated-row">
           <div>
-          <p> Bachelor of Science in {{ education.degree }}</p> 
+          <p>{{ item.degree }}</p> 
           </div>
           <div>
-          <p> GPA: {{ education.gpa }} </p>
+          <p> GPA: {{ item.gpa }} </p>
           </div>
         </div>
       </div>
@@ -39,45 +116,47 @@
       <section>
         <h2><strong>EXPERIENCE</strong></h2>
         <div v-for="job in experience" :key="job.id">
+          <div v-if="job.experienceTypeId < 5">
           <div class="dated-row">
             <div>
-              <p><strong>{{ job.company }}</strong>, {{ job.location }} </p>
+              <p><strong>{{ job.organization }}</strong>, {{ job.city }}, {{ job.state }} </p>
           </div>
-          <div>
-            <p> {{ job.period }}</p>
+          <div >
+            <p>{{ date.format(job.startDate, 'monthAndYear') }} - <a v-if="job.current">Current</a><a v-else>{{ date.format(job.endDate, 'monthAndYear') }}</a></p>
           </div>
           </div>
-
           <p>{{ job.title }}</p>
           <ul>
-            <li v-for="task in job.tasks" :key="task">{{ task }}</li>
+            <li v-for="achievement in job.description.split('\n')">{{ achievement }}</li>
           </ul>
+          </div>
         </div>
       </section>
   
       <section>
         <h2><strong>PROJECTS</strong></h2>
-        <div v-for="project in projects" :key="project.id">
+        <div v-for="project in experience" :key="project.id">
+          <div v-if="project.experienceTypeId == 7">
           <div class="dated-row">
             <div>
-            <p><strong>{{ project.institution }}</strong>, {{ project.location }} </p>
+            <p><strong>{{ project.organization }}</strong>, {{ project.city }}, {{ project.state }} </p>
           </div>
           <div>
-            
-            <p>{{ project.period }}</p>
+            <p>{{ date.format(project.startDate, 'monthAndYear') }} - {{ date.format(project.endDate, 'monthAndYear') }}</p>
           </div>
           </div>
 
           <p>{{ project.title }}</p>
           <ul>
-            <li v-for="task in project.tasks" :key="task">{{ task }}</li>
+            <li v-for="task in project.description.split('\n')" :key="task">{{ task }}</li>
           </ul>
         </div>
+      </div>
       </section>
   
       <section>
         <h2><strong>SKILLS</strong></h2>
-        <p>{{ skills.join(' | ') }}</p>
+        <p><a v-for="(item, index) in skills">{{ item.title }}<a v-if="index !== skills.length - 1"> | </a></a></p>
       </section>
     </div>
     </v-sheet>
@@ -95,14 +174,14 @@
         email: "ike.eagle@eagles.oc.edu",
         linkedin: "Linkedin Url / Website Url (optional)",
         about: "Analytic-focused data professional with 2+ years’ experience developing computational models and executing statistical projects to drive insights. Demonstrated ability to translate complex datasets into actionable information and support overarching research initiatives.",
-        education: {
+        schoolEducation: {
           institution: "Oklahoma Christian University",
           location: "Edmond, OK",
           graduation: "May, 20xx",
           degree: "Computer Engineering",
           gpa: "3.xx/4.x"
         },
-        experience: [
+        allExperience: [
           {
             id: 1,
             company: "Oklahoma Christian University",
@@ -132,7 +211,7 @@
             ]
           }
         ],
-        skills: [
+        allSkills: [
           "Simple Linear Regression",
           "Multivariate Linear Regression",
           "Statistical Modeling",
@@ -195,7 +274,6 @@
   }
   
   a {
-    color: #007BFF;
     text-decoration: none;
   }
 

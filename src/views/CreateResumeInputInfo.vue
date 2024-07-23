@@ -288,9 +288,9 @@ function toggleIsAttending() {
     if (isAttending.value == false) {
         schoolGrad.value = null;
     }
-    else {
-        schoolEnd.value = schoolGrad.value;
-    }
+    // else {
+    //     schoolEnd.value = schoolGrad.value;
+    // }
 }
 
 function toggleExperience(value) {
@@ -498,9 +498,10 @@ async function addNewEducation() {
 
     if (schoolGrad.value !== null) {
         schoolEnd.value = schoolGrad.value;
-    } else {
-        schoolGrad.value = schoolEnd.value;
-    }
+    } 
+    // else {
+    //     schoolGrad.value = schoolEnd.value;
+    // }
 
     await EducationServices.addEducation(tempTitle, tempDegree, account.value.id,
         schoolStart.value, schoolEnd.value, schoolGrad.value, gpa.value, schoolName.value,
@@ -530,7 +531,7 @@ async function closeEducation() {
     isMinors.value = false;
     schoolStart.value = null;
     schoolEnd.value = null;
-    schoolEnd.value = null;
+    schoolGrad.value = null;
     gpa.value = null;
     schoolName.value = null;
     schoolCity.value = null;
@@ -1216,7 +1217,7 @@ export default {
                 </v-row>
                 <v-row>
                     <v-col>
-                        <v-text-field v-mmodel="jobCity" label="City"></v-text-field>
+                        <v-text-field v-model="jobCity" label="City"></v-text-field>
                     </v-col>
                     <v-col>
                         <v-text-field v-model="jobState" label="State"></v-text-field>

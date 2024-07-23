@@ -18,7 +18,7 @@ export default {
             "userId": accountID,
             "startDate": String(startDate),
             "endDate": String(endDate),
-            "gradDate": String(gradDate),
+            "gradDate": gradDate,
             "gpa": String(gpa),
             "organization": String(organization),
             "city": String(city),

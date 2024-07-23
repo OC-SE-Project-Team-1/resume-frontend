@@ -27,6 +27,11 @@ const education = ref([]);
 const experience = ref([]);
 const skills = ref([]);
 
+const leadership = ref([]);
+const activities = ref([]);
+const work = ref([]);
+const volunteer = ref([]);
+
 
 onMounted(async () => {
   account.value = JSON.parse(localStorage.getItem("account"));
@@ -68,6 +73,25 @@ async function sortData() {
   goal.value = resumeData.value.Goal[0].description;
   education.value = resumeData.value.Education;
   experience.value = resumeData.value.Experience;
+
+  console.log(experience.value);
+   for ( let [key, value] of Object.entries(experience.value)) {
+    
+    if (value.experienceTypeId == 1){
+      work.value.push(value);
+    }
+    else if (value.experienceTypeId == 2){
+      leadership.value.push(value);
+    }
+    else if (value.experienceTypeId == 3){
+      activities.value.push(value);
+    }
+    else if (value.experienceTypeId == 4){
+      volunteer.value.push(value);
+    }
+
+    }
+
   skills.value = resumeData.value.Skill;
 }
 
@@ -114,7 +138,7 @@ async function sortData() {
           </div>
         </section>
 
-        <section>
+        <section v-if="leadership.length > 0">
           <h2>LEADERSHIP</h2>
           <div v-for="(exp, index) in experience" :key="index">
             <div v-if="exp.experienceTypeId == 2">
@@ -137,7 +161,7 @@ async function sortData() {
           </div>
         </section>
 
-        <section>
+        <section v-if="work.length > 0">
           <h2>WORK EXPERIENCE</h2>
           <div v-for="(exp, index) in experience" :key="index">
             <div v-if="exp.experienceTypeId == 1">
@@ -158,7 +182,7 @@ async function sortData() {
           </div>
         </section>
 
-        <section>
+        <section v-if="activities.length > 0">
           <h2>ACTIVITIES</h2>
           <div v-for="(exp, index) in experience" :key="index">
             <div v-if="exp.experienceTypeId == 3">
@@ -179,7 +203,7 @@ async function sortData() {
           </div>
         </section>
 
-        <section>
+        <section v-if="volunteer.length > 0">
           <h2>VOLUNTEER WORK</h2>
           <div v-for="(exp, index) in experience" :key="index">
             <div v-if="exp.experienceTypeId == 4">

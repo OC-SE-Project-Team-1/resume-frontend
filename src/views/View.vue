@@ -24,7 +24,6 @@ const snackbar = ref({
   text: "",
 });
 const theme = useTheme();
-const darkTheme = (theme.global.name.value === "DarkTheme")
 
 onMounted(async () => {
   account.value = JSON.parse(localStorage.getItem("account"));
@@ -57,10 +56,9 @@ function navigateToLibrary() {
 
 //Export Resume
 async function exportResume() {
-  
-  if(darkTheme){
+
     theme.global.name.value = 'LightTheme';
-  }
+  
     const html = document.getElementsByClassName("resume")
     await ResumeExport.exportResume(html[0])
     .then(() => {

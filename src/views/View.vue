@@ -59,10 +59,9 @@ function navigateToLibrary() {
 
 //Export Resume
 async function exportResume() {
-  
-  if(darkTheme){
+
     theme.global.name.value = 'LightTheme';
-  }
+  
     const html = document.getElementsByClassName("resume")
     await ResumeExport.exportResume(html[0])
     .then(() => {

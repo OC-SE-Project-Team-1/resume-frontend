@@ -13,6 +13,7 @@ import template1 from "/Template1.png";
 import template2 from "/Template2.png";
 import template3 from "/Template3.png";
 import template4 from "/Template4.png";
+import PreviewTemplate1 from "../components/PreviewTemplate1.vue";
 
 const account = ref();
 const title = ref("");
@@ -29,32 +30,6 @@ const tab = ref("1");
 const resumeTemplate = ref();
 const dialog = ref(false);
 const checkbox1 = ref(false);
-
-
-const resumeSections = ref(
-    {
-        0: ["Personal Details",
-            "Professional Summary",
-            "Education",
-            "Experience",
-            "Skills"],
-        1: ["Personal Details",
-            "Professional Summary",
-            "Education",
-            "Experience"],
-        2: ["Personal Details",
-            "Professional Summary",
-            "Education",
-            "Experience",
-            "Skills"],
-        3: ["Personal Details",
-            "Professional Summary",
-            "Education",
-            "Experience",
-            "Skills",
-            "Others"]
-    }
-);
 
 const personalInfo = ref();
 const firstName = ref();
@@ -94,7 +69,7 @@ const minors = ref(null);
 const courses = ref(null);
 const attending = ref(false);
 
-const experiences = ref();
+const experiences = ref(null);
 const selectedWorkExperience = ref(null);
 const selectedLeadershipExperience = ref(null);
 const selectedActivitiesExperience = ref(null);
@@ -171,15 +146,113 @@ const isExperience = ref(false);
 const isSkills = ref(false);
 const isOthers = ref(false);
 
+const displayLinks = computed(() => {
+    var linkArr = [];
+    if (selectedLinks.value !== null) {
+        for (let [key, value] of Object.entries(links.value)) {
+            for (let [key2, value2] of Object.entries(selectedLinks.value)) {
+            // console.log("Link Key: " + key + " Value: " + value.id);
+            // console.log("Selected Link Key: " + key2 + " Selected Value: " + value2);
+            if (value.id == value2) {
+                linkArr.push(value);
+            }}
+        }
+    }
+    return (
+        linkArr
+    )
+})
+
+const displayGoal = computed(() => {
+    var goalArr = [];
+    if (selectedGoals.value !== null) {
+        for (let [key, value] of Object.entries(goals.value)) {
+            for (let [key2, value2] of Object.entries(selectedGoals.value)) {
+            console.log("Link Key: " + key + " Value: " + value.id);
+            console.log("Selected Link Key: " + key2 + " Selected Value: " + value2);
+            if (value.id == value2) {
+                goalArr.push(value.description);
+                break;
+            }}
+        }
+    }
+    return (
+        goalArr.join("")
+    )
+})
+
+const displayEducation = computed(() => {
+    var eduArr = [];
+    if (selectedEducation.value !== null) {
+        for (let [key, value] of Object.entries(educationInfo.value)) {
+            for (let [key2, value2] of Object.entries(selectedEducation.value)) {
+            // console.log("Link Key: " + key + " Value: " + value.id);
+            // console.log("Selected Link Key: " + key2 + " Selected Value: " + value2);
+            if (value.id == value2) {
+                eduArr.push(value);
+            }}
+        }
+    }
+    return (
+        eduArr
+    )
+})
+// const displayExperience = computed(() => {
+//     var expArr = [];
+//     if (experiences.value !== null) {
+//     if (selectedWorkExperience.value !== null) {
+//         for (let [key, value] of Object.entries(experiences.value)) {
+//             for (let [key2, value2] of Object.entries(selectedWorkExperience.value)) {
+//                 if (value.id == value2) {
+//                     expArr.push(value);
+//                 }}
+//     }}
+//     if (selectedLeadershipExperience.value !== null) {
+//         for (let [key, value] of Object.entries(experiences.value)) {
+//             for (let [key2, value2] of Object.entries(selectedLeadershipExperience.value)) {
+//                 if (value.id == value2) {
+//                     expArr.push(value);
+//                 }}
+//             }}
+//     if (selectedActivitiesExperience.value !== null) {
+//         for (let [key, value] of Object.entries(experiences.value)) {
+//             for (let [key2, value2] of Object.entries(selectedActivitiesExperience.value)) {
+//                 if (value.id == value2) {
+//                     expArr.push(value);
+//                 }}
+//             }}
+//     if (selectedVolunteerExperience.value !== null) {
+//         for (let [key, value] of Object.entries(experiences.value)) {
+//             for (let [key2, value2] of Object.entries(selectedVolunteerExperience.value)) {
+//                 if (value.id == value2) {
+//                     expArr.push(value);
+//                 }}
+//     }}
+//     if (selectedHonorExperience.value !== null) {
+//         for (let [key, value] of Object.entries(experiences.value)) {
+//             for (let [key2, value2] of Object.entries(selectedHonorExperience.value)) {
+//                 if (value.id == value2) {
+//                     expArr.push(value);
+//                 }}
+//             }}
+//     if (selectedAwardExperience.value !== null) {
+//         for (let [key, value] of Object.entries(experiences.value)) {
+//             for (let [key2, value2] of Object.entries(selectedAwardExperience.value)) {
+//                 if (value.id == value2) {
+//                     expArr.push(value);
+//                 }}
+//     }}
+//     }
+//     return (
+//         expArr
+//     )
+
+// })
 
 onMounted(() => {
     account.value = JSON.parse(localStorage.getItem("account"));
-    console.log(account.value);
     localStorage.removeItem("resumeTemplate");
-    // resumeSection.value = JSON.parse(localStorage.getItem("resumeSections"));
-    //resumeTemplate.value = JSON.parse(localStorage.getItem("resumeTemplate"));
     getPersonalInfo();
-    //console.log(resumeTemplate.value);
 });
 
 function closeSnackBar() {
@@ -547,7 +620,7 @@ async function getExperiences() {
     await ExperienceServices.getExperiencesForUser(account.value.id)
         .then((response) => {
             experiences.value = response.data;
-            console.log(experiences.value);
+            // console.log(experiences.value);
         })
         .catch((error) => {
             console.log(error);
@@ -806,6 +879,10 @@ async function experienceAIAssist(){
     })
 }
 
+ function handleClick() {
+  console.log(selectedLinks.value);
+}
+
 </script>
 
 <script>
@@ -880,7 +957,7 @@ export default {
             </v-row>
 
             <v-data-table v-model="selectedLinks" :items="links" item-value="id" :headers="[{ title: 'Description', value: 'type' },
-            { title: 'URL', value: 'url' }]" show-select hide-default-footer>
+            { title: 'URL', value: 'url' }]" show-select hide-default-footer @click="handleClick">
             </v-data-table>
 
             <v-btn variant="text" @click="setNewLinkVisible()">
@@ -1881,9 +1958,15 @@ export default {
                         </div>
 
                         <v-text> Preview Resume </v-text>
+                        <!-- <v-skeleton-loader type="card"></v-skeleton-loader> -->
 
                         <v-container>
-                            <v-skeleton-loader type="card"></v-skeleton-loader>
+                            <PreviewTemplate1 
+                                    :links="displayLinks" 
+                                    :goal="displayGoal" 
+                                    :education="displayEducation"
+                                    :experience="displayExperience"
+                                    ></PreviewTemplate1>
                         </v-container>
                     </div>
 

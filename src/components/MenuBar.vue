@@ -10,6 +10,14 @@ const account = ref(null);
 const title = ref("The R.A.I.N.");
 const logoURL = ref("");
 const theme = useTheme();
+const accountData = ref(null);
+const isDark = ref(null);
+
+const snackbar = ref({
+  value: false,
+  color: "",
+  text: "",
+});
 
 onMounted(async () => {
   logoURL.value = ftLogo;
@@ -17,10 +25,12 @@ onMounted(async () => {
   
 
   if (account.value !== null) {
+    await getAccount();
     console.log("Account is logged in");
-    console.log(account.value);
+    console.log(accountData.value);
+    console.log(isDark.value);
 
-    if (account.value.isDark === true || account.value.isDark === "1") {
+    if (isDark.value === true || isDark.value === "1") {
       theme.global.name.value = 'DarkTheme';
     }
     else {
@@ -30,7 +40,7 @@ onMounted(async () => {
   else {
     
     console.log("Account isn't logged in");
-    console.log(account.value);
+    console.log(accountData.value);
 
     if (JSON.parse(localStorage.getItem("darkMode") === null)) {
     theme.global.name.value = 'LightTheme';
@@ -42,6 +52,20 @@ onMounted(async () => {
   }
 
 });
+
+async function getAccount() {
+  await UserServices.getUser(account.value.id)
+  .then((response) => {
+      accountData.value = response.data;
+      isDark.value = response.data.darkMode; 
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+}
 
 function navigateToAccountSettings() {
   router.push({ name: "account" });

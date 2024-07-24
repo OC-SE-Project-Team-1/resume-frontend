@@ -23,9 +23,7 @@ const snackbar = ref({
   color: "",
   text: "",
 });
-const theme = useTheme();
-const darkTheme = (theme.global.name.value === "DarkTheme")
-const isEdit = ref();
+
 
 onMounted(async () => {
   account.value = JSON.parse(localStorage.getItem("account"));
@@ -93,15 +91,6 @@ function closeExport() {
 
 function closeSnackBar() {
   snackbar.value.value = false;
-}
-
-function refreshPage(){
-  window.location.reload(true)
-  isDownloaded.value = false;
-}
-async function updateEditing(){
-  isEdit.value = !isEdit.value
-  await ResumeServices.updateResumeEditing(resumeId.value, isEdit.value, account.value.id )
 }
 </script>
 

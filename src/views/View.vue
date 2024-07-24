@@ -85,8 +85,8 @@ function closeSnackBar() {
   snackbar.value.value = false;
 }
 async function updateEditing(){
-isEdit.value = !isEdit.value
-await ResumeServices.updateResumeEditing(resumeId.value, isEdit.value, account.value.id )
+  isEdit.value = !isEdit.value
+  await ResumeServices.updateResumeEditing(resumeId.value, isEdit.value, account.value.id )
 }
 </script>
 

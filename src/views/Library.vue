@@ -68,6 +68,11 @@ function openDelete(itemId) {
   resumeId.value = JSON.parse(localStorage.getItem("resumeId"));
   isDeleted.value = true;
 }
+function compareToJobDesc(itemId) {
+  window.localStorage.setItem("resumeId", JSON.stringify(itemId));
+  resumeId.value = JSON.parse(localStorage.getItem("resumeId"));
+  router.push({ name: "jobDescription" });
+}
 function closeSnackBar() {
   snackbar.value.value = false;
 }
@@ -111,6 +116,7 @@ export default {
             <td class="text-left">{{ item.title }}</td>
             <td class="text-right">
               <v-btn rounded variant="text" @click="navigateToView(item.id)"> View </v-btn>
+              <v-btn rounded variant="text" @click="compareToJobDesc(item.id)"> Check with Job </v-btn>
               <v-btn rounded variant="text" @click="openDelete(item.id)"> Delete </v-btn>
             </td>
           </tr>

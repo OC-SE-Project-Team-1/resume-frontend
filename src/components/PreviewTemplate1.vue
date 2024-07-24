@@ -19,7 +19,11 @@ const user = ref({
   roleId: ""
 });
 
-const props = defineProps(['links', 'goal', 'education', 'experience', 'skills']);
+const props = defineProps({links: Array, 
+                          goal: Array, 
+                          education: Array, 
+                          experience: Array, 
+                          skills: Array});
 
 onMounted(async () => {
   account.value = JSON.parse(localStorage.getItem("account"));
@@ -49,7 +53,7 @@ async function getUser() {
         <h1><strong>{{ user.firstName }} {{ user.lastName }}</strong></h1>
         <!-- :href="'mailto:' + user.email" :href="linkedInUrl" -->
         <p>{{ user.address }} | {{ user.phoneNumber }} | <a >{{ user.email }}</a>
-          <a v-if="props.links.length > 0"> | </a><a v-for="(link, index) in props.links">
+          <a v-if="props.links && props.links.length > 0"> | </a><a v-for="(link, index) in props.links">
             {{ link.type }}: {{ link.url }}<a v-if="index !== links.length - 1"> | </a></a></p>
       </header>
       
@@ -89,7 +93,7 @@ async function getUser() {
       <section>
         <h2>PROFESSIONAL EXPERIENCE</h2>
         <div class="job" v-for="(job, index) in props.experience" :key="index" >
-          <div v-if="job.experienceTypeId < 5 && (job.experienceTypeId !== 3 || skills.length > 0)">
+          <div v-if="job.experienceTypeId < 5 && (job.experienceTypeId !== 3 || (props.skills && skills.length > 0) )">
             <div class="dated-row">
 
                 <div class="job-left">
@@ -106,17 +110,17 @@ async function getUser() {
       </div>
       </section>
       
-      <div>
+      <div v-if="props.skills && props.skills.length > 0">
         <section>
           <!-- <span class="small-text">| LEADERSHIP SKILLS</span> -->
           <h2>SKILLS </h2>
           <ul class="padded-top-list">
-            <li v-for="(skill, index) in skills" :key="index"><em>{{ skill.title }}</em>: {{ skill.description }}</li>
+            <li v-for="(skill, index) in props.skills" :key="index"><em>{{ skill.title }}</em>: {{ skill.description }}</li>
             <!-- <li v-for="(languageSkill, index) in languageSkills" :key="index"><em>{{ languageSkill.title }}</em>{{ languageSkill.content }}</li> -->
           </ul>
         </section>
       </div>
-      <div >
+      <div v-else>
         <section>
           <!-- <span class="small-text">ACTIVITIES | EXTRACURRICULAR ACTIVITIES</span> -->
           <h2 > ACTIVITIES </h2>

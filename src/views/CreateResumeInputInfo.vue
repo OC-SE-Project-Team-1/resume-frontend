@@ -69,7 +69,7 @@ const minors = ref(null);
 const courses = ref(null);
 const attending = ref(false);
 
-const experiences = ref(null);
+const experiences = ref();
 const selectedWorkExperience = ref(null);
 const selectedLeadershipExperience = ref(null);
 const selectedActivitiesExperience = ref(null);
@@ -109,7 +109,7 @@ const isCourses = ref(false);
 const isAttending = ref(false);
 
 const templateSelected = ref();
-const selectedResumeTemplate = ref();
+const selectedResumeTemplate = ref(0);
 
 const isSelectTemplate = ref(true);
 const isPreviewResume = ref(false);
@@ -197,57 +197,81 @@ const displayEducation = computed(() => {
         eduArr
     )
 })
-// const displayExperience = computed(() => {
-//     var expArr = [];
-//     if (experiences.value !== null) {
-//     if (selectedWorkExperience.value !== null) {
-//         for (let [key, value] of Object.entries(experiences.value)) {
-//             for (let [key2, value2] of Object.entries(selectedWorkExperience.value)) {
-//                 if (value.id == value2) {
-//                     expArr.push(value);
-//                 }}
-//     }}
-//     if (selectedLeadershipExperience.value !== null) {
-//         for (let [key, value] of Object.entries(experiences.value)) {
-//             for (let [key2, value2] of Object.entries(selectedLeadershipExperience.value)) {
-//                 if (value.id == value2) {
-//                     expArr.push(value);
-//                 }}
-//             }}
-//     if (selectedActivitiesExperience.value !== null) {
-//         for (let [key, value] of Object.entries(experiences.value)) {
-//             for (let [key2, value2] of Object.entries(selectedActivitiesExperience.value)) {
-//                 if (value.id == value2) {
-//                     expArr.push(value);
-//                 }}
-//             }}
-//     if (selectedVolunteerExperience.value !== null) {
-//         for (let [key, value] of Object.entries(experiences.value)) {
-//             for (let [key2, value2] of Object.entries(selectedVolunteerExperience.value)) {
-//                 if (value.id == value2) {
-//                     expArr.push(value);
-//                 }}
-//     }}
-//     if (selectedHonorExperience.value !== null) {
-//         for (let [key, value] of Object.entries(experiences.value)) {
-//             for (let [key2, value2] of Object.entries(selectedHonorExperience.value)) {
-//                 if (value.id == value2) {
-//                     expArr.push(value);
-//                 }}
-//             }}
-//     if (selectedAwardExperience.value !== null) {
-//         for (let [key, value] of Object.entries(experiences.value)) {
-//             for (let [key2, value2] of Object.entries(selectedAwardExperience.value)) {
-//                 if (value.id == value2) {
-//                     expArr.push(value);
-//                 }}
-//     }}
-//     }
-//     return (
-//         expArr
-//     )
+const displayExperience = computed(() => {
+    var expArr = [];
+    if (experiences.value !== null) {
+    if (selectedWorkExperience.value !== null) {
+        for (let [key, value] of Object.entries(experiences.value)) {
+            for (let [key2, value2] of Object.entries(selectedWorkExperience.value)) {
+                if (value.id == value2) {
+                    expArr.push(value);
+                }}
+    }}
+    if (selectedLeadershipExperience.value !== null) {
+        for (let [key, value] of Object.entries(experiences.value)) {
+            for (let [key2, value2] of Object.entries(selectedLeadershipExperience.value)) {
+                if (value.id == value2) {
+                    expArr.push(value);
+                }}
+            }}
+    if (selectedActivitiesExperience.value !== null) {
+        for (let [key, value] of Object.entries(experiences.value)) {
+            for (let [key2, value2] of Object.entries(selectedActivitiesExperience.value)) {
+                if (value.id == value2) {
+                    expArr.push(value);
+                }}
+            }}
+    if (selectedVolunteerExperience.value !== null) {
+        for (let [key, value] of Object.entries(experiences.value)) {
+            for (let [key2, value2] of Object.entries(selectedVolunteerExperience.value)) {
+                if (value.id == value2) {
+                    expArr.push(value);
+                }}
+    }}
+    if (selectedHonorExperience.value !== null) {
+        for (let [key, value] of Object.entries(experiences.value)) {
+            for (let [key2, value2] of Object.entries(selectedHonorExperience.value)) {
+                if (value.id == value2) {
+                    expArr.push(value);
+                }}
+            }}
+    if (selectedAwardExperience.value !== null) {
+        for (let [key, value] of Object.entries(experiences.value)) {
+            for (let [key2, value2] of Object.entries(selectedAwardExperience.value)) {
+                if (value.id == value2) {
+                    expArr.push(value);
+                }}
+    }}
+    if (selectedProjectExperience.value !== null) {
+        for (let [key, value] of Object.entries(experiences.value)) {
+            for (let [key2, value2] of Object.entries(selectedProjectExperience.value)) {
+                if (value.id == value2) {
+                    expArr.push(value);
+                }}
+    }}
+    }
+    return (
+        expArr
+    )
 
-// })
+})
+
+const displaySkills = computed(() => {
+    var skillsArr = [];
+    if (selectedSkills.value !== null) {
+        for (let [key, value] of Object.entries(skills.value)) {
+            for (let [key2, value2] of Object.entries(selectedSkills.value)) {
+            // console.log("Link Key: " + key + " Value: " + value.id);
+            // console.log("Selected Link Key: " + key2 + " Selected Value: " + value2);
+            if (value.id == value2) {
+                skillsArr.push(value);
+            }}
+        }
+    }
+    return (
+        skillsArr
+    )
+})
 
 onMounted(() => {
     account.value = JSON.parse(localStorage.getItem("account"));
@@ -338,7 +362,7 @@ async function resetNewInput() {
 }
 
 async function selectedTemplate(value) {
-    selectedResumeTemplate.value = value;
+    selectedResumeTemplate.value = parseInt(value);
     window.localStorage.setItem("resumeTemplate", JSON.stringify(value));
     toggleSelectPreview();
     console.log(value);
@@ -809,6 +833,11 @@ async function addResume() {
         // console.log("Award Exp Key: " + key + " Value: " + value);
         expArr.push(value);
     }}
+    if (selectedProjectExperience.value !== null) {
+    for (let [key, value] of Object.entries(selectedProjectExperience.value)) {
+        // console.log("Project Exp Key: " + key + " Value: " + value);
+        expArr.push(value);
+    }}
     console.log(expArr);
 
     if (selectedSkills.value !== null) {
@@ -877,10 +906,6 @@ async function experienceAIAssist(){
         experienceChatHistory.push(response.data.history[0])
         experienceChatHistory.push(response.data.history[1])         
     })
-}
-
- function handleClick() {
-  console.log(selectedLinks.value);
 }
 
 </script>
@@ -957,7 +982,7 @@ export default {
             </v-row>
 
             <v-data-table v-model="selectedLinks" :items="links" item-value="id" :headers="[{ title: 'Description', value: 'type' },
-            { title: 'URL', value: 'url' }]" show-select hide-default-footer @click="handleClick">
+            { title: 'URL', value: 'url' }]" show-select hide-default-footer>
             </v-data-table>
 
             <v-btn variant="text" @click="setNewLinkVisible()">
@@ -1960,14 +1985,11 @@ export default {
                         <v-text> Preview Resume </v-text>
                         <!-- <v-skeleton-loader type="card"></v-skeleton-loader> -->
 
-                        <v-container>
-                            <PreviewTemplate1 
-                                    :links="displayLinks" 
-                                    :goal="displayGoal" 
-                                    :education="displayEducation"
-                                    :experience="displayExperience"
-                                    ></PreviewTemplate1>
-                        </v-container>
+                        <div v-if="selectedResumeTemplate == 1">
+                            <v-container>
+                                <PreviewTemplate1 :links="displayLinks" :goal="displayGoal" :education="displayEducation" :experience="displayExperience" :skills="displaySkills"></PreviewTemplate1>
+                            </v-container>
+                        </div>
                     </div>
 
                 </v-card>

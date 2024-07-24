@@ -14,6 +14,9 @@ import template2 from "/Template2.png";
 import template3 from "/Template3.png";
 import template4 from "/Template4.png";
 import PreviewTemplate1 from "../components/PreviewTemplate1.vue";
+import PreviewTemplate2 from "../components/PreviewTemplate2.vue";
+import PreviewTemplate3 from "../components/PreviewTemplate3.vue";
+import PreviewTemplate4 from "../components/PreviewTemplate4.vue";
 
 const account = ref();
 const title = ref("");
@@ -1971,23 +1974,39 @@ export default {
                     </div>
                 </v-card>
 
-                <v-card align="center" v-if="isPreviewResume">
+                <v-card  v-if="isPreviewResume">
 
                     <div style="padding: 3%;">
-                        <v-btn variant="tonal" @click="clearTemplateSelecton()">
-                            Select different template
-                        </v-btn>
+                        <div align="center">
+                            <v-btn variant="tonal" @click="clearTemplateSelecton()">
+                                Select different template
+                            </v-btn>
 
-                        <div class="mb-3">
-                            <v-spacer></v-spacer>
+                            <div class="mb-3">
+                                <v-spacer></v-spacer>
+                            </div>
+
+                            <v-text> Preview Resume </v-text>
+                            <!-- <v-skeleton-loader type="card"></v-skeleton-loader> -->
                         </div>
-
-                        <v-text> Preview Resume </v-text>
-                        <!-- <v-skeleton-loader type="card"></v-skeleton-loader> -->
-
                         <div v-if="selectedResumeTemplate == 1">
                             <v-container>
                                 <PreviewTemplate1 :links="displayLinks" :goal="displayGoal" :education="displayEducation" :experience="displayExperience" :skills="displaySkills"></PreviewTemplate1>
+                            </v-container>
+                        </div>
+                        <div v-if="selectedResumeTemplate == 2">
+                            <v-container>
+                                <PreviewTemplate2 :links="displayLinks" :goal="displayGoal" :education="displayEducation" :experience="displayExperience" :skills="displaySkills"></PreviewTemplate2>
+                            </v-container>
+                        </div>
+                        <div v-if="selectedResumeTemplate == 3">
+                            <v-container>
+                                <PreviewTemplate3 :links="displayLinks" :goal="displayGoal" :education="displayEducation" :experience="displayExperience" :skills="displaySkills"></PreviewTemplate3>
+                            </v-container>
+                        </div>
+                        <div v-if="selectedResumeTemplate == 4">
+                            <v-container>
+                                <PreviewTemplate4 :links="displayLinks" :goal="displayGoal" :education="displayEducation" :experience="displayExperience" :skills="displaySkills"></PreviewTemplate4>
                             </v-container>
                         </div>
                     </div>

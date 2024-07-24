@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted, defineProps } from "vue";
 import { useDate } from 'vuetify';
-import ResumeServices from "../services/ResumeServices";
 import UserServices from "../services/UserServices";
 
 const date = useDate();

@@ -22,6 +22,7 @@ const snackbar = ref({
   text: "",
 });
 
+const id = ref(null);
 const isAccountEditable = ref(false);
 const isDark = ref();
 
@@ -37,11 +38,21 @@ const location = ref();
 const selectedLocation = ref(null);
 
 const selectedExperience = ref(null);
-const experience = ref();
+const experience = ref(null);
+const jobExperienceTitle = ref(null);
+const jobCompany = ref(null);
+const jobCity = ref(null);
+const jobState = ref(null);
+const jobStart = ref(null);
+const jobEnd = ref(null);
+const jobDescription = ref(null);
+
 const selectedEducation = ref(null);
 const education = ref();
 const selectedSkill = ref(null);
 const skill = ref();
+
+const isExpEdit = ref(false);
 
 onMounted(async () => {
   account.value = JSON.parse(localStorage.getItem("account"));
@@ -62,8 +73,21 @@ onMounted(async () => {
   await getSkills();
 });
 
+//Open/Close Pop Ups
+function openExpEdit(itemId) {
+  window.localStorage.setItem("id", JSON.stringify(itemId));
+  id.value = JSON.parse(localStorage.getItem("id"));
+  getExperienceById(id.value);
+  
+  isExpEdit.value = true;
+}
+
 function closeSnackBar() {
   snackbar.value.value = false;
+}
+
+function closeEdit() {
+  isExpEdit.value = false;
 }
 /*
 //Grab all Characacter Names 
@@ -151,6 +175,25 @@ async function getExperiences() {
     });
 }
 
+async function getExperienceById() {
+  await ExperienceServices.getExperiences(id.value, account.value.id)
+    .then((response) => {
+      jobExperienceTitle.value = response.data.title;
+      jobCompany.value = response.data.company;
+      jobCity.value = response.data.city;
+      jobState.value = response.data.state;
+      jobStart.value = response.data.startDate;
+      jobEnd.value = response.data.endDate;
+      jobDescription.value = response.data.description;
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+}
+
 //Grab all Educations
 async function getEducations() {
   await EducationServices.getEducationsForUser(account.value.id)
@@ -177,6 +220,46 @@ async function getSkills() {
       snackbar.value.color = "error";
       snackbar.value.text = error.response.data.message;
     });
+}
+
+async function getPersonalInfo() {
+    resetNewInput()
+    await UserServices.getUser(parseInt(account.value.id))
+        .then((response) => {
+            personalInfo.value = response.data;
+            firstName.value = personalInfo.value.firstName;
+            lastName.value = personalInfo.value.lastName;
+            address.value = personalInfo.value.address;
+            phoneNumber.value = personalInfo.value.phoneNumber;
+            email.value = personalInfo.value.email;
+            getLinks();
+        })
+        .catch((error) => {
+            console.log(error);
+            snackbar.value.value = true;
+            snackbar.value.color = "error";
+            snackbar.value.text = error.response.data.message;
+        });
+}
+
+// Edit Experience
+async function editExperience() {
+  await ExperienceServices.updateExperience(input.id, account.value.id)
+    .then(() => {
+      closeEdit();
+      localStorage.removeItem("id");
+      snackbar.value.value = true;
+      snackbar.value.color = "green";
+      snackbar.value.text = "Experience Editted!";
+      router.push({ name: "library" });
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+
 }
 
 //Delete Selected Experience
@@ -613,6 +696,9 @@ export default {
                         <v-row margin="align-center">
                           <v-col md="8"><v-list-item-title>{{ exp.title }}</v-list-item-title> </v-col>
                           <v-col cols="1">
+                            <v-icon icon="mdi-trash-can" @click="openExpEdit(exp.id)"></v-icon>
+                          </v-col>
+                          <v-col cols="2">
                             <v-icon icon="mdi-trash-can" @click="deleteExpValue(exp)"></v-icon>
                           </v-col>
                         </v-row>
@@ -624,6 +710,52 @@ export default {
                   </v-col>
                 </v-row>
 
+                <v-dialog persistent v-model="isExpEdit" width="800">
+                  <v-card class="rounded-lg elevation-5">
+                    <v-card-title class="text-center headline mb-2">Edit Experience</v-card-title>
+              <v-container>
+                <v-row>
+                    <v-col>
+                        <v-text-field v-model="jobExperienceTitle" label="Position Title"></v-text-field>
+                    </v-col>
+                    <v-col>
+                        <v-text-field v-model="jobCompany" label="Company Name"></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        <v-text-field v-mmodel="jobCity" label="City"></v-text-field>
+                    </v-col>
+                    <v-col>
+                        <v-text-field v-model="jobState" label="State"></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
+                    </v-col>
+                    <v-col>
+                        <v-text-field v-model="jobEnd" label="End Date"></v-text-field>
+                        <v-switch label="Present Job" color="primary"></v-switch>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-textarea v-model="jobDescription" label="Work Summary">
+                        <template #append-inner>
+                            <v-btn color="secondary" rounded="xl" value="Ai Assist">
+                                AI Assist
+                            </v-btn>
+                        </template>
+                    </v-textarea>
+                </v-row>
+            </v-container>
+                    <v-card-actions>
+                      <v-btn variant="flat" color="primary" @click="editExperience()">Edit Experience</v-btn>
+                      <v-spacer></v-spacer>
+                      <v-btn variant="flat" color="secondary" @click="closeEdit()">Close</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
 
                 <v-row style="width: 75%;">
                   <v-text-field label="New Experience" v-model="selectedExperience">

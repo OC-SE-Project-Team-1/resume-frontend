@@ -63,9 +63,12 @@ const eduTotalGPA = ref(null);
 
 const selectedSkill = ref(null);
 const skill = ref();
+const skillTitle = ref(null);
+const skillDescription = ref(null);
 
 const isExpEdit = ref(false);
 const isEduEdit = ref(false);
+const isSkillEdit = ref(false);
 
 onMounted(async () => {
   account.value = JSON.parse(localStorage.getItem("account"));
@@ -103,6 +106,14 @@ function openEduEdit(itemId) {
   isEduEdit.value = true;
 }
 
+function openSkillEdit(itemId) {
+  window.localStorage.setItem("id", JSON.stringify(itemId));
+  id.value = JSON.parse(localStorage.getItem("id"));
+  getSkillById(id.value);
+  
+  isSkillEdit.value = true;
+}
+
 function closeSnackBar() {
   snackbar.value.value = false;
 }
@@ -110,6 +121,7 @@ function closeSnackBar() {
 function closeEdit() {
   isExpEdit.value = false;
   isEduEdit.value = false;
+  isSkillEdit.value = false;
 }
 /*
 //Grab all Characacter Names 
@@ -267,6 +279,20 @@ async function getSkills() {
     });
 }
 
+async function getSkillById() {
+  await SkillServices.getSkill(id.value, account.value.id)
+    .then((response) => {
+      skillTitle.value = response.data.title;
+      skillDescription.value = response.data.description;
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+}
+
 async function getPersonalInfo() {
     resetNewInput()
     await UserServices.getUser(parseInt(account.value.id))
@@ -366,6 +392,26 @@ async function deleteEducation(input) {
         snackbar.value.text = error.response.data.message;
       });
   }
+
+}
+
+// Edit Skill
+async function editSkill() {
+  await SkillServices.updateSkill(input.id, account.value.id)
+    .then(() => {
+      closeEdit();
+      localStorage.removeItem("id");
+      snackbar.value.value = true;
+      snackbar.value.color = "green";
+      snackbar.value.text = "Skill Editted!";
+      router.push({ name: "library" });
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
 
 }
 
@@ -975,6 +1021,9 @@ export default {
                         <v-row>
                           <v-col md="8"><v-list-item-title>{{ s.title }}</v-list-item-title> </v-col>
                           <v-col cols="1">
+                            <v-icon icon="mdi-trash-can" @click="openSkillEdit(s)"></v-icon>
+                          </v-col>
+                          <v-col cols="2">
                             <v-icon icon="mdi-trash-can" @click="deleteSkill(s)"></v-icon>
                           </v-col>
                         </v-row>
@@ -993,6 +1042,27 @@ export default {
 
                   </v-text-field>
                 </v-row>
+
+                <v-dialog persistent v-model="isSkillEdit" width="800">
+                  <v-card class="rounded-lg elevation-5">
+                    <v-card-title class="text-center headline mb-2">Edit Skill</v-card-title>
+                <v-container>
+                <v-row>
+                    <v-col>
+                        <v-text-field v-model="skillTitle" label="Title"></v-text-field>
+                    </v-col>
+                    <v-col>
+                        <v-text-field v-model="skillDescription" label="Description"></v-text-field>
+                    </v-col>
+                </v-row>
+            </v-container>
+                    <v-card-actions>
+                      <v-btn variant="flat" color="primary" @click="editSkill()">Edit Skill</v-btn>
+                      <v-spacer></v-spacer>
+                      <v-btn variant="flat" color="secondary" @click="closeEdit()">Close</v-btn>
+                    </v-card-actions>
+                 </v-card>
+              </v-dialog>
                 <v-row>
                   <v-col align="right">
                     <v-btn color="primary" variant="text" @click="addSkill()">

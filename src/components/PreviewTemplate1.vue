@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, defineProps } from "vue";
+import { ref, onMounted } from "vue";
 import { useDate } from 'vuetify';
 import UserServices from "../services/UserServices";
 
@@ -19,7 +19,7 @@ const user = ref({
 });
 
 const props = defineProps({links: Array, 
-                          goal: Array, 
+                          goal: String, 
                           education: Array, 
                           experience: Array, 
                           skills: Array});
@@ -46,7 +46,7 @@ async function getUser() {
 
 <template>
     <v-container>
-    <v-sheet style="width: calc(90vh * 8.5 / 11); position:relative; margin: 0 auto;">
+    <v-sheet :elevation="4" style="width: calc(90vh * 8.5 / 11); position:relative; margin: 0 auto;">
         <div class="resume">
       <header>
         <h1><strong>{{ user.firstName }} {{ user.lastName }}</strong></h1>
@@ -119,7 +119,7 @@ async function getUser() {
           </ul>
         </section>
       </div>
-      <div v-else>
+      <div v-else-if="props.experience  && experience.some(e => e.experienceTypeId == 3)">
         <section>
           <!-- <span class="small-text">ACTIVITIES | EXTRACURRICULAR ACTIVITIES</span> -->
           <h2 > ACTIVITIES </h2>

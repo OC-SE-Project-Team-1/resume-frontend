@@ -19,7 +19,7 @@ const user = ref({
 });
 
 const props = defineProps({links: Array, 
-                          goal: Array, 
+                          goal: String, 
                           education: Array, 
                           experience: Array, 
                           skills: Array});
@@ -46,7 +46,7 @@ async function getUser() {
 
 <template>
 <v-container>
-    <v-sheet class="resume" style="width: calc(90vh * 8.5 / 11); position:relative; margin:0 auto;">
+    <v-sheet :elevation="4" class="resume" style="width: calc(90vh * 8.5 / 11); position:relative; margin:0 auto;">
         <div>
             <header>
                 <h1>{{ user.firstName }} {{ user.lastName }}</h1>

@@ -62,7 +62,7 @@ async function getUser() {
 
 <template>
   <v-container>
-    <v-sheet style="width: calc(90vh * 8.5 / 11);
+    <v-sheet :elevation="4" style="width: calc(90vh * 8.5 / 11);
           margin: 0 auto; 
           position: relative;">
       <div class="resume">
@@ -100,7 +100,7 @@ async function getUser() {
           </div>
         </section>
         
-        <section v-if="props.experience">
+        <section v-if="props.experience && experience.some(e => e.experienceTypeId == 2)">
           <h2>LEADERSHIP</h2>
           <div v-for="(exp, index) in props.experience" :key="index">
             <div v-if="exp.experienceTypeId == 2">
@@ -123,7 +123,7 @@ async function getUser() {
           </div>
         </section>
 
-        <section v-if="props.experience">
+        <section v-if="props.experience && experience.some(e => e.experienceTypeId == 1)">
           <h2>WORK EXPERIENCE</h2>
           <div v-for="(exp, index) in experience" :key="index">
             <div v-if="exp.experienceTypeId == 1">
@@ -144,7 +144,7 @@ async function getUser() {
           </div>
         </section>
 
-        <section v-if="props.experience">
+        <section v-if="props.experience && experience.some(e => e.experienceTypeId == 3)">
           <h2>ACTIVITIES</h2>
           <div v-for="(exp, index) in experience" :key="index">
             <div v-if="exp.experienceTypeId == 3">
@@ -165,7 +165,7 @@ async function getUser() {
           </div>
         </section>
 
-        <section v-if="props.experience">
+        <section v-if="props.experience  && experience.some(e => e.experienceTypeId == 4)">
           <h2>VOLUNTEER WORK</h2>
           <div v-for="(exp, index) in experience" :key="index">
             <div v-if="exp.experienceTypeId == 4">

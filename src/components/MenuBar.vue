@@ -30,7 +30,7 @@ onMounted(async () => {
     console.log(accountData.value);
     console.log(isDark.value);
 
-    if (isDark.value === true || isDark.value === "1") {
+    if (accountData.value.darkMode === true) {
       theme.global.name.value = 'DarkTheme';
     }
     else {
@@ -45,10 +45,10 @@ onMounted(async () => {
     if (JSON.parse(localStorage.getItem("darkMode") === null)) {
     theme.global.name.value = 'LightTheme';
     window.localStorage.setItem("darkMode", JSON.stringify(theme.global.name.value));
-  }
-  else {
-    theme.global.name.value = JSON.parse(localStorage.getItem("darkMode"));
-  }
+    }
+    else {
+      theme.global.name.value = JSON.parse(localStorage.getItem("darkMode"));
+    }
   }
 
 });
@@ -83,7 +83,7 @@ function logout() {
   localStorage.removeItem("storyId");
   account.value = null;
   router.push({ name: "home" });
-
+  location.reload();
 
 }
 
@@ -92,12 +92,16 @@ function toggleTheme() {
   theme.global.name.value = theme.global.current.value.dark ? 'LightTheme' : 'DarkTheme';
 
   if (account.value !== null) {
+
     if (theme.global.name.value === 'LightTheme') {
-      account.value.isDark = "0";
+      isDark.value = false;
     }
     else {
-      account.value.isDark = true;
+      isDark.value = true;
     }
+
+    updateDarkMode();
+
   }
   else {
   
@@ -106,6 +110,19 @@ function toggleTheme() {
   }
 
 }
+
+async function updateDarkMode() {
+  await UserServices.updateDarkMode(account.value.id, isDark.value)
+  .then ((response) => {
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+}
+
 </script>
 
 <template>

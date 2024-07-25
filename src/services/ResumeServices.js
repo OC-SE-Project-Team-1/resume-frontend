@@ -42,4 +42,10 @@ export default {
       data: {"userId": parseInt(accountID)}
   });
   },
+  getFeedback(resumeId, jobDescriptionId) {
+    return apiClient.post("resumes/jobFeedback", {
+      resumeId: resumeId,
+      jobDescriptionId: jobDescriptionId
+    });
+  }
 };

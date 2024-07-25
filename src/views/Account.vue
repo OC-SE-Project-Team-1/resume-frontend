@@ -39,20 +39,33 @@ const selectedLocation = ref(null);
 
 const selectedExperience = ref(null);
 const experience = ref(null);
-const jobExperienceTitle = ref(null);
-const jobCompany = ref(null);
-const jobCity = ref(null);
-const jobState = ref(null);
-const jobStart = ref(null);
-const jobEnd = ref(null);
-const jobDescription = ref(null);
+const expExperienceTitle = ref(null);
+const expCompany = ref(null);
+const expCity = ref(null);
+const expState = ref(null);
+const expStart = ref(null);
+const expEnd = ref(null);
+const expDescription = ref(null);
 
 const selectedEducation = ref(null);
 const education = ref();
+const eduDescription = ref(null);
+const eduStart = ref(null);
+const eduEnd = ref(null);
+const eduGrad = ref(null);
+const eduGPA = ref(null);
+const eduOrganization = ref(null);
+const eduCity = ref(null);
+const eduState = ref(null);
+const eduCourse = ref(null);
+const eduMinor = ref(null);
+const eduTotalGPA = ref(null);
+
 const selectedSkill = ref(null);
 const skill = ref();
 
 const isExpEdit = ref(false);
+const isEduEdit = ref(false);
 
 onMounted(async () => {
   account.value = JSON.parse(localStorage.getItem("account"));
@@ -82,12 +95,21 @@ function openExpEdit(itemId) {
   isExpEdit.value = true;
 }
 
+function openEduEdit(itemId) {
+  window.localStorage.setItem("id", JSON.stringify(itemId));
+  id.value = JSON.parse(localStorage.getItem("id"));
+  getEducationById(id.value);
+  
+  isEduEdit.value = true;
+}
+
 function closeSnackBar() {
   snackbar.value.value = false;
 }
 
 function closeEdit() {
   isExpEdit.value = false;
+  isEduEdit.value = false;
 }
 /*
 //Grab all Characacter Names 
@@ -178,13 +200,13 @@ async function getExperiences() {
 async function getExperienceById() {
   await ExperienceServices.getExperiences(id.value, account.value.id)
     .then((response) => {
-      jobExperienceTitle.value = response.data.title;
-      jobCompany.value = response.data.company;
-      jobCity.value = response.data.city;
-      jobState.value = response.data.state;
-      jobStart.value = response.data.startDate;
-      jobEnd.value = response.data.endDate;
-      jobDescription.value = response.data.description;
+      expExperienceTitle.value = response.data.title;
+      expCompany.value = response.data.company;
+      expCity.value = response.data.city;
+      expState.value = response.data.state;
+      expStart.value = response.data.startDate;
+      expEnd.value = response.data.endDate;
+      expDescription.value = response.data.description;
     })
     .catch((error) => {
       console.log(error);
@@ -199,6 +221,29 @@ async function getEducations() {
   await EducationServices.getEducationsForUser(account.value.id)
     .then((response) => {
       education.value = response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+}
+
+async function getEducationById() {
+  await EducationServices.getEducations(id.value, account.value.id)
+    .then((response) => {
+      eduDescription.value = response.data.description;
+      eduStart.value = response.data.startDate;
+      eduEnd.value = response.data.endDate;
+      eduGrad.value = response.data.gradDate;
+      eduGPA.value = response.data.gpa;
+      eduOrganization.value = response.data.orgnization;
+      eduCity.value = response.data.city;
+      eduState.value = response.data.state;
+      eduCourse.value = response.data.course;
+      eduMinor.value = response.data.minor;
+      eduTotalGPA.value = response.data.totalGPA;
     })
     .catch((error) => {
       console.log(error);
@@ -280,6 +325,26 @@ async function deleteExpValue(input) {
         snackbar.value.text = error.response.data.message;
       });
   }
+
+}
+
+// Edit Education
+async function editEducation() {
+  await EducationServices.updateEducation(input.id, account.value.id)
+    .then(() => {
+      closeEdit();
+      localStorage.removeItem("id");
+      snackbar.value.value = true;
+      snackbar.value.color = "green";
+      snackbar.value.text = "Education Editted!";
+      router.push({ name: "library" });
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
 
 }
 
@@ -716,31 +781,31 @@ export default {
               <v-container>
                 <v-row>
                     <v-col>
-                        <v-text-field v-model="jobExperienceTitle" label="Position Title"></v-text-field>
+                        <v-text-field v-model="expExperienceTitle" label="Position Title"></v-text-field>
                     </v-col>
                     <v-col>
-                        <v-text-field v-model="jobCompany" label="Company Name"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-mmodel="jobCity" label="City"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="jobState" label="State"></v-text-field>
+                        <v-text-field v-model="expCompany" label="Company Name"></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row>
                     <v-col>
-                        <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
+                        <v-text-field v-mmodel="expCity" label="City"></v-text-field>
                     </v-col>
                     <v-col>
-                        <v-text-field v-model="jobEnd" label="End Date"></v-text-field>
+                        <v-text-field v-model="expState" label="State"></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        <v-text-field v-model="expStart" label="Start Date"></v-text-field>
+                    </v-col>
+                    <v-col>
+                        <v-text-field v-model="expEnd" label="End Date"></v-text-field>
                         <v-switch label="Present Job" color="primary"></v-switch>
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-textarea v-model="jobDescription" label="Work Summary">
+                    <v-textarea v-model="expDescription" label="Work Summary">
                         <template #append-inner>
                             <v-btn color="secondary" rounded="xl" value="Ai Assist">
                                 AI Assist
@@ -797,6 +862,9 @@ export default {
                         <v-row>
                           <v-col md="8"><v-list-item-title>{{ edu.description }}</v-list-item-title> </v-col>
                           <v-col cols="1">
+                            <v-icon icon="mdi-trash-can" @click="openEduEdit(edu)"></v-icon>
+                          </v-col>
+                          <v-col cols="2">
                             <v-icon icon="mdi-trash-can" @click="deleteEducation(edu)"></v-icon>
                           </v-col>
                         </v-row>
@@ -809,6 +877,63 @@ export default {
                   </v-col>
                 </v-row>
 
+              <v-dialog persistent v-model="isEduEdit" width="800">
+                  <v-card class="rounded-lg elevation-5">
+                    <v-card-title class="text-center headline mb-2">Edit Education</v-card-title>
+              <v-container>
+                <v-row>
+                    <v-col>
+                        <v-text-field v-model="eduDescription" label="Major"></v-text-field>
+                    </v-col>
+                    <v-col>
+                        <v-text-field v-model="eduStart" label="Start Date"></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        <v-text-field v-mmodel="eduEnd" label="End Date"></v-text-field>
+                    </v-col>
+                    <v-col>
+                        <v-text-field v-model="eduGrad" label="Grad Date"></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        <v-text-field v-model="eduGPA" label="GPA"></v-text-field>
+                    </v-col>
+                    <v-col>
+                        <v-text-field v-model="eduOrganization" label="Organization"></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        <v-text-field v-model="eduCity" label="City"></v-text-field>
+                    </v-col>
+                    <v-col>
+                        <v-text-field v-model="eduState" label="State"></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        <v-text-field v-model="eduCourse" label="Courses"></v-text-field>
+                    </v-col>
+                    <v-col>
+                        <v-text-field v-model="eduMinor" label="Minor"></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        <v-text-field v-model="eduTotalGPA" label="Total GPA"></v-text-field>
+                    </v-col>
+                </v-row>
+            </v-container>
+                    <v-card-actions>
+                      <v-btn variant="flat" color="primary" @click="editEducation()">Edit Education</v-btn>
+                      <v-spacer></v-spacer>
+                      <v-btn variant="flat" color="secondary" @click="closeEdit()">Close</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
 
                 <v-row style="width: 75%;">
                   <v-text-field label="New Education" v-model="selectedEducation">

@@ -127,6 +127,7 @@ async function requestFeedback() {
 function navigateToLibrary() {
     router.push({ name: "library" });
 }
+
 </script>
 
 <script>
@@ -138,31 +139,23 @@ export default {
 
 <template>
     <v-container>
-        <v-col cols="10">
-            <v-card-title class="pl-0 text-h5 font-weight-bold">AI Feedback</v-card-title>
-        </v-col>
-        <v-row>
             <v-col class="text-right">
                 <v-btn class="ml-auto" variant="flat" color="secondary" @click="navigateToLibrary()"> Back </v-btn>
             </v-col>
-        </v-row>
-        <!-- Select Job Description -->
+
+            <v-card-title class="pl-0 text-h5 font-weight-bold" align="center">AI Feedback</v-card-title>
         <v-row>
             <v-col>
-                <v-card-title class="pl-0 text-h6 font-weight-bold">Select Job Description</v-card-title>
-            </v-col>
-        </v-row>
-        <v-row>
-            <v-col>
-                <div id="body">
-                    <v-container>
+                <v-container>
+                    <div>
+                        <v-container>
                         <v-data-table v-model="selectedJobDescription" :items="jobDescriptionInfo" item-value="id"
                             :headers="[{ title: 'Job Name', value: 'title' }, { title: 'Description', value: 'description' }]"
                             show-select hide-default-footer select-strategy="single">
                         </v-data-table>
                     </v-container>
-                </div>
-                <div class="mb-10">
+                    </div>
+                    <div class="mb-10">
                     <v-spacer></v-spacer>
                 </div>
                 <v-divider></v-divider>
@@ -171,11 +164,11 @@ export default {
                 </div>
                 <!-- Add New Job Description -->
                 <v-row class="text-right">
-                    <div>
-                        <v-btn variant="tonal" @click="setNewJobDescVisible">
+                    <v-container  align="center">
+                        <v-btn variant="tonal" @click="setNewJobDescVisible" >
                             Add New Job Description
                         </v-btn>
-                    </div>
+                    </v-container>
                     <v-container v-if="isNewJobDescVisible">
                         <v-row>
                             <v-col>
@@ -203,9 +196,10 @@ export default {
                     <div class="mb-10">
                         <v-spacer></v-spacer>
                     </div>
+
                 </v-row>
-                <v-row>
-                    <v-card class="rounded-lg elevation-5 my-8">
+
+                <v-card class="rounded-lg elevation-5 my-8" >
                         <v-card-title class="text-center headline mb-2">Feedback</v-card-title>
                         <v-card-text>
                             <v-skeleton-loader v-if="isRequestingFeedback" type="card"></v-skeleton-loader>
@@ -217,12 +211,22 @@ export default {
                             <v-btn variant="flat" color="primary" @click="requestFeedback()">Request Feedback</v-btn>
                         </v-card-actions>
                     </v-card>
-                </v-row>
+                
+
+            </v-container>
+
             </v-col>
+
+
             <v-col>
+
                 <div id="body">
                     <v-card class="rounded-lg elevation-5 my-8">
-                        <v-card-title class="text-center headline mb-2">Resume</v-card-title>
+                        
+                <div class="mb-10">
+                    <v-spacer></v-spacer>
+                </div>
+                        <v-card-title class="text-center headline mb-2">Resume </v-card-title>
                         <div>
                             <v-row>
                                 <v-col>
@@ -245,6 +249,10 @@ export default {
                 </div>
             </v-col>
         </v-row>
+
+
+
+
 
         <v-snackbar v-model="snackbar.value" rounded="pill">
             {{ snackbar.text }}

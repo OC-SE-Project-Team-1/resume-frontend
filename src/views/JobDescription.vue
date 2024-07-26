@@ -10,6 +10,7 @@ import template3 from "../components/Template3.vue";
 import template4 from "../components/Template4.vue";
 
 const router = useRouter();
+const isRequestingFeedback = ref(false);
 
 // Snackbar
 const snackbar = ref({
@@ -99,17 +100,28 @@ async function closeNewJobDesc() {
 }
 
 async function requestFeedback() {
-    await ResumeServices.getFeedback(resumeId.value, selectedJobDescription.value[0])
-        .then((response) => {
-            console.log(response.data);
-            feedback.value = response.data.response;
-        })
-        .catch((error) => {
-            console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
-        });;
+    if(selectedJobDescription.value !== null) {
+        isRequestingFeedback.value = true;
+        await ResumeServices.getFeedback(resumeId.value, selectedJobDescription.value[0])
+            .then((response) => {
+                console.log(response.data);
+                feedback.value = response.data.response;
+                isRequestingFeedback.value = false;
+                ResumeServices.updateResumeFeedback(resumeId.value, feedback.value, account.value.id);
+            })
+            .catch((error) => {
+                console.log(error);
+                isRequestingFeedback.value = false;
+                snackbar.value.value = true;
+                snackbar.value.color = "error";
+                snackbar.value.text = error.response.data.message;
+            }
+        );
+    } else {
+        snackbar.value.value = true;
+        snackbar.value.color = "error";
+        snackbar.value.text = "Select a value from the table first.";
+    }
 }
 
 function navigateToLibrary() {
@@ -179,7 +191,8 @@ export default {
                     <v-card class="rounded-lg elevation-5 my-8">
                         <v-card-title class="text-center headline mb-2">Feedback</v-card-title>
                         <v-card-text>
-                            <v-textarea v-model="feedback" label="View Feedback" auto-grow readonly></v-textarea>
+                            <v-skeleton-loader v-if="isRequestingFeedback" type="card"></v-skeleton-loader>
+                            <v-textarea v-if="!isRequestingFeedback" v-model="feedback" label="View Feedback" auto-grow readonly></v-textarea>
                         </v-card-text>
                         <v-card-actions>
                             <v-spacer></v-spacer>

@@ -121,7 +121,6 @@ const isSkilled = computed(() => {
 
 onMounted(() => {
     account.value = JSON.parse(localStorage.getItem("account"));
-    console.log(account.value);
     getPersonalInfo();
 });
 
@@ -129,6 +128,11 @@ function closeSnackBar() {
     snackbar.value.value = false;
 }
 
+function makeSnackbar(value, color, text){
+    snackbar.value.value = value;
+    snackbar.value.color = color;
+    snackbar.value.text = text;
+}
 async function setNewLinkVisible() {
     isNewLinkVisible.value = true;
 }
@@ -155,26 +159,19 @@ async function getLinks() {
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar(true, "error", error.response.data.message);
         });
 }
 
 async function addNewLink() {
     await LinkServices.addLink(link.value, linkDescription.value, parseInt(account.value.id))
         .then(() => {
-            snackbar.value.value = true;
-            snackbar.value.color = "green";
-            snackbar.value.text = "Link Added!";
+            makeSnackbar(true, "green", "Link Added!");
             closeNewLink();
             getLinks();
         })
         .catch((error) => {
-            console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar(true, "error", error.response.data.message);
         });
 }
 
@@ -329,9 +326,7 @@ async function getPersonalInfo() {
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar(true, "error", error.response.data.message);
         });
 }
 
@@ -343,26 +338,20 @@ async function getGoals() {
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar(true, "error", error.response.data.message);
         });
 }
 
 async function addNewGoal() {
     await GoalServices.addGoal(goalTitle.value, goalDescription.value, parseInt(account.value.id), goalChatHistory)
         .then(() => {
-            snackbar.value.value = true;
-            snackbar.value.color = "green";
-            snackbar.value.text = "Goal Added!";
+            makeSnackbar(true, "green", "Goal Added!");
             closeNewGoal();
             getGoals();
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar(true, "error", error.response.data.message);
         });
 }
 
@@ -374,9 +363,7 @@ async function getEducationInfo() {
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar(true, "error", error.response.data.message);
         });
 }
 
@@ -396,17 +383,13 @@ async function addNewEducation() {
         schoolStart.value, schoolEnd.value, schoolGrad.value, gpa.value, schoolName.value,
         schoolCity.value, schoolState.value, courses.value, minors.value, maxGpa.value)
         .then(() => {
-            snackbar.value.value = true;
-            snackbar.value.color = "green";
-            snackbar.value.text = "Education Added!";
+            makeSnackbar(true, "green", "Education Added!");
             closeEducation();
             getEducationInfo();
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar(true, "error", error.response.data.message);
         });
 }
 
@@ -436,13 +419,10 @@ async function getExperiences() {
     await ExperienceServices.getExperiencesForUser(account.value.id)
         .then((response) => {
             experiences.value = response.data;
-            console.log(experiences.value);
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar(true, "error", error.response.data.message);
         });
 }
 
@@ -450,9 +430,7 @@ async function addNewExperience(type) {
     await ExperienceServices.addExperience(jobExperienceTitle.value, jobDescription.value, jobStart.value, jobEnd.value,
         account.value.id, type, jobCity.value, jobState.value, jobCompany.value, experienceChatHistory)
         .then(() => {
-            snackbar.value.value = true;
-            snackbar.value.color = "green";
-            snackbar.value.text = "Experience Added!";
+            makeSnackbar(true, "green", "Experience Added!");
             getExperiences();
             clearExperienceData();
             closeNewJobExperience();
@@ -464,9 +442,7 @@ async function addNewExperience(type) {
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar(true, "error", error.response.data.message);
         });
 }
 
@@ -478,6 +454,7 @@ async function clearExperienceData() {
     jobStart.value = null;
     jobEnd.value = null;
     jobDescription.value = null;
+    experienceChatHistory = [];
 }
 
 async function closeNewJobExperience() {
@@ -516,6 +493,7 @@ async function closeNewSkill() {
     isNewSkillVisible.value = false;
     skillTitle.value = "";
     skillDescription.value = "";
+    skillHistory = []
 }
 
 async function getSkills() {
@@ -526,26 +504,20 @@ async function getSkills() {
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar(true, "error", error.response.data.message);
         });
 }
 
 async function addNewSkill() {
     await SkillServices.addSkill(skillTitle.value, skillDescription.value, skillHistory, parseInt(account.value.id))
         .then(() => {
-            snackbar.value.value = true;
-            snackbar.value.color = "green";
-            snackbar.value.text = "Skill Added!";
+            makeSnackbar(true, "green", "Skill Added!");
             closeNewSkill();
             getSkills();
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar(true, "error", error.response.data.message);
         });
 }
 
@@ -553,14 +525,23 @@ function filterPerfectMatch(value, search) {
     return value != null && String(value) === search
 }
 
-async function skillAiAssist() {
-    await SkillServices.skillAiAssist(skillDescription.value)
+async function skillAiAssist(edit) {
+    if (edit){
+        await SkillServices.skillAiAssist(editedItem.value.description, JSON.parse(editedItem.value.chatHistory))
+        .then((response) => {
+            editedItem.value.description = response.data.description
+            editedItem.value.chatHistory = response.data.chatHistory
+            skillHistory = response.data.chatHistory
+        })
+    }
+    else{
+        await SkillServices.skillAiAssist(skillDescription.value)
         .then((response) => {
             skillDescription.value = response.data.description
-            skillHistory.push(response.data.history[0])
-            skillHistory.push(response.data.history[1])
+            skillHistory.push(response.data.chatHistory[0])
+            skillHistory.push(response.data.chatHistory[1])
         })
-
+    }
 }
 
 function clearGoalAiAssist() {
@@ -574,19 +555,26 @@ async function aiGoalAssist() {
     await GoalServices.goalAiAssist(aiGoalTitle.value, aiGoalExperiences.value.split(","), aiGoalAchievements.value.split(","))
         .then((response) => {
             goalDescription.value = response.data.description
-            goalChatHistory.push(response.data.history[0])
-            goalChatHistory.push(response.data.history[1])
+            goalChatHistory.push(response.data.chatHistory[0])
+            goalChatHistory.push(response.data.chatHistory[1])
         })
 
 }
 
-async function experienceAIAssist() {
-    await ExperienceServices.experienceAiAssist(jobDescription.value)
+async function experienceAIAssist(edit) {
+    if (edit){
+        await ExperienceServices.experienceAiAssist(editedItem.value.description, JSON.parse(editedItem.value.chatHistory) )
         .then((response) => {
-            jobDescription.value = response.data.description
-            console.log(response.data.history[0])
-            experienceChatHistory.push(response.data.history[0])
-            experienceChatHistory.push(response.data.history[1])
+                editedItem.value.description = response.data.description
+                editedItem.value.chatHistory = response.data.chatHistory
+                experienceChatHistory = response.data.chatHistory; 
+            })
+    }else
+        await ExperienceServices.experienceAiAssist(jobDescription.value)
+        .then((response) => {          
+                jobDescription.value = response.data.description
+                experienceChatHistory.push(response.data.chatHistory[0])
+                experienceChatHistory.push(response.data.chatHistory[1])      
         })
 }
 
@@ -603,7 +591,16 @@ function closeEditLinksDialog() {
     editLinksDialog.value = false;
 }
 
-function saveEditLinks() {
+async function saveEditLinks() {
+    await LinkServices.updateLink(editedItem.value.id, editedItem.value.type, editedItem.value.url, account.value.id)
+    .then(() => {
+            makeSnackbar(true, "green", "Link Updated!");
+        })
+        .catch((error) => {
+            console.log(error);
+            makeSnackbar(true, "error", error.response.data.message);
+        });
+    getLinks();
     closeEditLinksDialog();
 }
 
@@ -619,7 +616,17 @@ function closeEditProfSumDialog() {
     editProfSumDialog.value = false;
 }
 
-function saveEditProfSum() {
+async function saveEditProfSum() {
+    console.log(editedItem.value)
+    await GoalServices.updateGoal(editedItem.value.id, editedItem.value.title, editedItem.value.description, account.value.id)
+    .then(() => {
+            makeSnackbar(true, "green", "Professional Summary Updated!");
+        })
+        .catch((error) => {
+            console.log(error);
+            makeSnackbar(true, "error", error.response.data.message);
+        });
+    getGoals();
     closeEditProfSumDialog();
 }
 
@@ -635,7 +642,19 @@ function closeEditEducationDialog() {
     editEducationDialog.value = false;
 }
 
-function saveEditEducation() {
+async function saveEditEducation() {
+    await EducationServices.updateEducation(editedItem.value.title, editedItem.value.description, editedItem.value.startDate, editedItem.value.endDate,
+                                            editedItem.value.gradDate, editedItem.value.gpa, editedItem.value.organization, editedItem.value.city, editedItem.value.state,
+                                            editedItem.value.courses,editedItem.value.minor, editedItem.value.totalGPA, account.value.id, editedItem.value.id
+                                            )
+    .then(() => {
+            makeSnackbar(true, "green", "Education Updated!");
+        })
+        .catch((error) => {
+            console.log(error);
+            makeSnackbar(true, "error", error.response.data.message);
+        });
+    getEducationInfo();
     closeEditEducationDialog();
 }
 
@@ -648,10 +667,23 @@ function openEditExperienceDialog(item) {
 }
 
 function closeEditExperienceDialog() {
+    experienceChatHistory = []; 
     editExperienceDialog.value = false;
 }
 
-function saveEditExperience() {
+async function saveEditExperience() {
+    await ExperienceServices.updateExperience(editedItem.value.title,editedItem.value.description, editedItem.value.startDate, editedItem.value.endDate,
+                                            editedItem.value.city, editedItem.value.state, editedItem.value.organization,editedItem.value.chatHistory,
+                                            account.value.id, editedItem.value.id                                                                                       
+                                            )
+    .then(() => {
+            makeSnackbar(true, "green", "Experience Updated!");
+        })
+        .catch((error) => {
+            console.log(error);
+            makeSnackbar(true, "error", error.response.data.message);
+        }); 
+    getExperiences();                                  
     closeEditExperienceDialog();
 }
 
@@ -664,10 +696,21 @@ function openEditSkillsDialog(item) {
 }
 
 function closeEditSkillsDialog() {
+    skillHistory  = []
     editSkillsDialog.value = false;
 }
 
-function saveEditSkills() {
+async function saveEditSkills() {
+    await SkillServices.updateSkill(editedItem.value.id, editedItem.value.title, editedItem.value.description, editedItem.value.chatHistory, account.value.id)
+    .then(() => {
+            makeSnackbar(true, "green", "Skill Updated!");
+        })
+        .catch((error) => {
+            console.log(error);
+            makeSnackbar(true, "error", error.response.data.message);
+        }); 
+    getSkills();                                
+    closeEditExperienceDialog();
     closeEditSkillsDialog();
 }
 
@@ -713,16 +756,11 @@ async function deleteItem(){
 async function deleting(deleteItem){
     await deleteItem(deleteItemId, account.value.id)
     .then(() => {
-            snackbar.value.value = true;
-            snackbar.value.color = "green";
-            snackbar.value.text = "Item Deleted!";
-            
+            makeSnackbar(true, "green", "Item Deleted!");
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar(true, "error", error.response.data.message);
         });
     
 }
@@ -1613,7 +1651,7 @@ export default {
                                                             label="Brief Description/Proficientcy Level, click AI assist button along with your input to help create a better description">
                                                             <template #append-inner>
                                                                 <v-btn color="secondary" rounded="xl" value="Ai Assist"
-                                                                    @click="skillAiAssist()">
+                                                                    @click="skillAiAssist(true)">
                                                                     AI Assist
                                                                 </v-btn>
                                                             </template>
@@ -1920,8 +1958,8 @@ export default {
                                         <span class="headline">Edit Item</span>
                                     </v-card-title>
                                     <v-card-text>
-                                        <v-text-field v-model="editedItem.type" label="Description"></v-text-field>
-                                        <v-text-field v-model="editedItem.url" label="URL"></v-text-field>
+                                        <v-text-field v-model="editedItem.title" label="Title"></v-text-field>
+                                        <v-textarea v-model="editedItem.description" label="Description"></v-textarea>
                                     </v-card-text>
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
@@ -2057,7 +2095,7 @@ export default {
                                                 <v-textarea v-model="editedItem.description" label="Work Summary">
                                                     <template #append-inner>
                                                         <v-btn color="secondary" rounded="xl" value="Ai Assist"
-                                                            @click="experienceAIAssist()">
+                                                            @click="experienceAIAssist(true)">
                                                             AI Assist
                                                         </v-btn>
                                                     </template>

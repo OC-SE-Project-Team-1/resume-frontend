@@ -116,7 +116,7 @@ export default {
             <td class="text-left">{{ item.title }}</td>
             <td class="text-right">
               <v-btn rounded variant="text" @click="navigateToView(item.id)"> View </v-btn>
-              <v-btn rounded variant="text" @click="compareToJobDesc(item.id)"> Job Feedback </v-btn>
+              <v-btn rounded variant="text" @click="compareToJobDesc(item.id)"> AI Feedback </v-btn>
               <v-btn rounded variant="text" @click="openDelete(item.id)"> Delete </v-btn>
             </td>
           </tr>

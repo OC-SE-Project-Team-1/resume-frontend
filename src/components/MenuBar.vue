@@ -80,7 +80,9 @@ function logout() {
       console.log(error);
     });
   localStorage.removeItem("account");
-  localStorage.removeItem("storyId");
+  localStorage.removeItem("resumeId");
+  localStorage.removeItem("selectedUser");
+  localStorage.removeItem("previousPage");
   account.value = null;
   router.push({ name: "home" });
   location.reload();

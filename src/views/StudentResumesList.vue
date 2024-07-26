@@ -73,10 +73,10 @@ function closeSnackBar() {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in titles" :key="item.id">
-            <td class="text-left">{{ item.title }}</td>
-            <td class="text-right">
-              <v-btn rounded variant="text" @click="navigateToView(item.id)"> View </v-btn>
+          <tr v-for="item in titles" :key="item.id" >
+            <td v-if="item.editing" class="text-left">{{ item.title }}</td>
+            <td v-if="item.editing" class="text-right">
+              <v-btn v-if="item.editing" rounded variant="text" @click="navigateToView(item.id)"> View </v-btn>
             </td>
           </tr>
         </tbody>

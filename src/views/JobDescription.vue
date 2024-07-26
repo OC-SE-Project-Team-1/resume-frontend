@@ -4,6 +4,10 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import JobDescriptionServices from "../services/JobDescriptionServices.js";
 import ResumeServices from "../services/ResumeServices.js";
+import template1 from "../components/Template1.vue";
+import template2 from "../components/Template2.vue";
+import template3 from "../components/Template3.vue";
+import template4 from "../components/Template4.vue";
 
 // Snackbar
 const snackbar = ref({
@@ -16,6 +20,7 @@ const snackbar = ref({
 const resumeId = ref();
 const resumeData = ref(null);
 const feedback = ref("");
+const templateId = ref(0);
 
 // Job Description Variables
 const account = ref(null);
@@ -41,7 +46,6 @@ async function getResume() {
   await ResumeServices.getResume(resumeId.value)
     .then((response) => {
       resumeData.value = response.data;
-      isEdit.value = response.data.editing; 
       templateId.value = resumeData.value.template;
     })
     .catch((error) => {
@@ -93,10 +97,10 @@ async function closeNewJobDesc() {
 }
 
 async function requestFeedback() {
-    let [key, value] = selectedJobDescription.value;
-    await ResumeServices.getFeedback(resumeId.value, value.id)
-        .then(feedback => {
-            feedback.value = response.data;
+    await ResumeServices.getFeedback(resumeId.value, selectedJobDescription.value[0])
+        .then((response) => {
+            console.log(response.data);
+            feedback.value = response.data.response;
         })
         .catch((error) => {
             console.log(error);

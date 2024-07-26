@@ -43,9 +43,10 @@ export default {
   });
   },
   getFeedback(resumeId, jobDescriptionId) {
-    return apiClient.post("resumes/jobFeedback", {
-      resumeId: resumeId,
-      jobDescriptionId: jobDescriptionId
+    console.log(jobDescriptionId);
+    return apiClient.post("/resumes/jobFeedback", {
+      "resumeId": resumeId,
+      "jobDescId": jobDescriptionId
     });
   }
 };

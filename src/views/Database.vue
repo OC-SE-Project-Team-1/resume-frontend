@@ -709,8 +709,7 @@ async function saveEditSkills() {
             console.log(error);
             makeSnackbar(true, "error", error.response.data.message);
         }); 
-    getSkills();                                
-    closeEditExperienceDialog();
+    getSkills();
     closeEditSkillsDialog();
 }
 

@@ -28,32 +28,7 @@ const tabs = ref();
 const tab = ref("1");
 const resumeTemplate = ref();
 const dialog = ref(false);
-
-
-const resumeSections = ref(
-    {
-        0: ["Personal Details",
-            "Professional Summary",
-            "Education",
-            "Experience",
-            "Skills"],
-        1: ["Personal Details",
-            "Professional Summary",
-            "Education",
-            "Experience"],
-        2: ["Personal Details",
-            "Professional Summary",
-            "Education",
-            "Experience",
-            "Skills"],
-        3: ["Personal Details",
-            "Professional Summary",
-            "Education",
-            "Experience",
-            "Skills",
-            "Others"]
-    }
-);
+const checkbox1 = ref(false);
 
 const personalInfo = ref();
 const firstName = ref();
@@ -133,7 +108,7 @@ const isCourses = ref(false);
 const isAttending = ref(false);
 
 const templateSelected = ref();
-const selectedResumeTemplate = ref();
+const selectedResumeTemplate = ref(0);
 
 const isSelectTemplate = ref(true);
 const isPreviewResume = ref(false);
@@ -170,15 +145,137 @@ const isExperience = ref(false);
 const isSkills = ref(false);
 const isOthers = ref(false);
 
+const displayLinks = computed(() => {
+    var linkArr = [];
+    if (selectedLinks.value !== null) {
+        for (let [key, value] of Object.entries(links.value)) {
+            for (let [key2, value2] of Object.entries(selectedLinks.value)) {
+            // console.log("Link Key: " + key + " Value: " + value.id);
+            // console.log("Selected Link Key: " + key2 + " Selected Value: " + value2);
+            if (value.id == value2) {
+                linkArr.push(value);
+            }}
+        }
+    }
+    return (
+        linkArr
+    )
+})
+
+const displayGoal = computed(() => {
+    var goalArr = [];
+    if (selectedGoals.value !== null) {
+        for (let [key, value] of Object.entries(goals.value)) {
+            for (let [key2, value2] of Object.entries(selectedGoals.value)) {
+            console.log("Link Key: " + key + " Value: " + value.id);
+            console.log("Selected Link Key: " + key2 + " Selected Value: " + value2);
+            if (value.id == value2) {
+                goalArr.push(value.description);
+                break;
+            }}
+        }
+    }
+    return (
+        goalArr.join("")
+    )
+})
+
+const displayEducation = computed(() => {
+    var eduArr = [];
+    if (selectedEducation.value !== null) {
+        for (let [key, value] of Object.entries(educationInfo.value)) {
+            for (let [key2, value2] of Object.entries(selectedEducation.value)) {
+            // console.log("Link Key: " + key + " Value: " + value.id);
+            // console.log("Selected Link Key: " + key2 + " Selected Value: " + value2);
+            if (value.id == value2) {
+                eduArr.push(value);
+            }}
+        }
+    }
+    return (
+        eduArr
+    )
+})
+const displayExperience = computed(() => {
+    var expArr = [];
+    if (experiences.value !== null) {
+    if (selectedWorkExperience.value !== null) {
+        for (let [key, value] of Object.entries(experiences.value)) {
+            for (let [key2, value2] of Object.entries(selectedWorkExperience.value)) {
+                if (value.id == value2) {
+                    expArr.push(value);
+                }}
+    }}
+    if (selectedLeadershipExperience.value !== null) {
+        for (let [key, value] of Object.entries(experiences.value)) {
+            for (let [key2, value2] of Object.entries(selectedLeadershipExperience.value)) {
+                if (value.id == value2) {
+                    expArr.push(value);
+                }}
+            }}
+    if (selectedActivitiesExperience.value !== null) {
+        for (let [key, value] of Object.entries(experiences.value)) {
+            for (let [key2, value2] of Object.entries(selectedActivitiesExperience.value)) {
+                if (value.id == value2) {
+                    expArr.push(value);
+                }}
+            }}
+    if (selectedVolunteerExperience.value !== null) {
+        for (let [key, value] of Object.entries(experiences.value)) {
+            for (let [key2, value2] of Object.entries(selectedVolunteerExperience.value)) {
+                if (value.id == value2) {
+                    expArr.push(value);
+                }}
+    }}
+    if (selectedHonorExperience.value !== null) {
+        for (let [key, value] of Object.entries(experiences.value)) {
+            for (let [key2, value2] of Object.entries(selectedHonorExperience.value)) {
+                if (value.id == value2) {
+                    expArr.push(value);
+                }}
+            }}
+    if (selectedAwardExperience.value !== null) {
+        for (let [key, value] of Object.entries(experiences.value)) {
+            for (let [key2, value2] of Object.entries(selectedAwardExperience.value)) {
+                if (value.id == value2) {
+                    expArr.push(value);
+                }}
+    }}
+    if (selectedProjectExperience.value !== null) {
+        for (let [key, value] of Object.entries(experiences.value)) {
+            for (let [key2, value2] of Object.entries(selectedProjectExperience.value)) {
+                if (value.id == value2) {
+                    expArr.push(value);
+                }}
+    }}
+    }
+    return (
+        expArr
+    )
+
+})
+
+const displaySkills = computed(() => {
+    var skillsArr = [];
+    if (selectedSkills.value !== null) {
+        for (let [key, value] of Object.entries(skills.value)) {
+            for (let [key2, value2] of Object.entries(selectedSkills.value)) {
+            // console.log("Link Key: " + key + " Value: " + value.id);
+            // console.log("Selected Link Key: " + key2 + " Selected Value: " + value2);
+            if (value.id == value2) {
+                skillsArr.push(value);
+            }}
+        }
+    }
+    return (
+        skillsArr
+    )
+})
 
 onMounted(() => {
     account.value = JSON.parse(localStorage.getItem("account"));
-    console.log(account.value);
     localStorage.removeItem("resumeTemplate");
-    // resumeSection.value = JSON.parse(localStorage.getItem("resumeSections"));
-    //resumeTemplate.value = JSON.parse(localStorage.getItem("resumeTemplate"));
     getPersonalInfo();
-    //console.log(resumeTemplate.value);
 });
 
 function closeSnackBar() {
@@ -264,7 +361,7 @@ async function resetNewInput() {
 }
 
 async function selectedTemplate(value) {
-    selectedResumeTemplate.value = value;
+    selectedResumeTemplate.value = parseInt(value);
     window.localStorage.setItem("resumeTemplate", JSON.stringify(value));
     toggleSelectPreview();
     console.log(value);
@@ -546,7 +643,7 @@ async function getExperiences() {
     await ExperienceServices.getExperiencesForUser(account.value.id)
         .then((response) => {
             experiences.value = response.data;
-            console.log(experiences.value);
+            // console.log(experiences.value);
         })
         .catch((error) => {
             console.log(error);
@@ -735,6 +832,11 @@ async function addResume() {
         // console.log("Award Exp Key: " + key + " Value: " + value);
         expArr.push(value);
     }}
+    if (selectedProjectExperience.value !== null) {
+    for (let [key, value] of Object.entries(selectedProjectExperience.value)) {
+        // console.log("Project Exp Key: " + key + " Value: " + value);
+        expArr.push(value);
+    }}
     console.log(expArr);
 
     if (selectedSkills.value !== null) {
@@ -803,6 +905,22 @@ async function experienceAIAssist(){
         experienceChatHistory.push(response.data.history[0])
         experienceChatHistory.push(response.data.history[1])         
     })
+}
+
+const editDialog = ref(false);
+const editedItem = ref(null);
+
+function openEditDialog(item) {
+    editedItem.value = {...item};
+    editDialog.value = true;
+}
+
+function closeEditDialog(item) {
+    editDialog.value = false;
+}
+
+function saveEdit() {
+    closeEditDialog();
 }
 
 </script>
@@ -879,8 +997,32 @@ export default {
             </v-row>
 
             <v-data-table v-model="selectedLinks" :items="links" item-value="id" :headers="[{ title: 'Description', value: 'type' },
-            { title: 'URL', value: 'url' }]" show-select hide-default-footer>
+            { title: 'URL', value: 'url' }, { title: 'Delete', value: 'delete' }]" show-select hide-default-footer>
+            <template v-slot:item.delete = "{ item }">
+                <v-btn  variant="text" @click="" icon>
+                    <v-icon>mdi-delete</v-icon>
+                </v-btn>
+            </template>
+
             </v-data-table>
+
+            <v-dialog v-model="editDialog" persistent>
+                <v-card>
+                    <v-card-title>
+                        <span class="headline">Edit Item</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-text-field v-model="editedItem.type" label="Description"></v-text-field>
+                        <v-text-field v-model="editedItem.url" label="URL"></v-text-field>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="blue darken-1" text @click="closeEditDialog">Cancel</v-btn>
+                        <v-btn color="blue darken-1" text @click="saveEdit">Save</v-btn>
+                    </v-card-actions>
+                </v-card>
+              </v-dialog>
+
 
             <v-btn variant="text" @click="setNewLinkVisible()">
                 + Add New link
@@ -922,7 +1064,12 @@ export default {
             <div align="left">
                 <v-text class="headline mb-2">Select Summary: </v-text>
                 <v-data-table v-model="selectedGoals" :items="goals" item-value="id" :headers="[{ title: 'Title', value: 'title' },
-                { title: 'Summary', value: 'description' }]" show-select hide-default-footer select-strategy="single">
+                { title: 'Summary', value: 'description' }, { title: 'Delete', value: 'delete' }]" show-select hide-default-footer select-strategy="single">
+                            <template v-slot:item.delete = "{ item }">
+                                <v-btn  variant="text" @click="" icon>
+                                    <v-icon>mdi-delete</v-icon>
+                                </v-btn>
+                            </template>
                 </v-data-table>
 
                 <div class="mb-10">
@@ -1020,8 +1167,13 @@ export default {
                 <v-container>
                     <v-data-table v-model="selectedEducation" :items="educationInfo" item-value="id"
                         :headers="[{ title: 'Organization', value: 'organization' }, { title: 'Degree', value: 'description' },
-                        { title: 'Start Date', value: 'startDate' }, { title: 'Grad Date', value: 'gradDate' }]"
+                        { title: 'Start Date', value: 'startDate' }, { title: 'Grad Date', value: 'gradDate' }, { title: 'Delete', value: 'delete' }]"
                         show-select hide-default-footer>
+                        <template v-slot:item.delete = "{ item }">
+                            <v-btn  variant="text" @click="" icon>
+                                <v-icon>mdi-delete</v-icon>
+                            </v-btn>
+                        </template>
                     </v-data-table>
                 </v-container>
 
@@ -1181,8 +1333,13 @@ export default {
                     <v-data-table v-model="selectedWorkExperience" :items="experiences"
                         item-value="id" :search="'1'"
                         :custom-filter="filterPerfectMatch"
-                        :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' },]"
+                        :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Delete', value: 'delete' } ]"
                         show-select hide-default-footer>
+                        <template v-slot:item.delete = "{ item }">
+                <v-btn  variant="text" @click="" icon>
+                    <v-icon>mdi-delete</v-icon>
+                </v-btn>
+            </template>
                     </v-data-table>
                 </v-container>
 
@@ -1271,8 +1428,13 @@ export default {
                     <v-data-table v-model="selectedLeadershipExperience" :items="experiences"
                         item-value="id" :search="'2'"
                         :custom-filter="filterPerfectMatch"
-                        :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' },]"
+                        :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Delete', value: 'delete' }]"
                         show-select hide-default-footer>
+                        <template v-slot:item.delete = "{ item }">
+                <v-btn  variant="text" @click="" icon>
+                    <v-icon>mdi-delete</v-icon>
+                </v-btn>
+            </template>
                     </v-data-table>
                 </v-container>
 
@@ -1361,8 +1523,13 @@ export default {
                     <v-data-table v-model="selectedActivitiesExperience" :items="experiences"
                         item-value="id" :search="'3'"
                         :custom-filter="filterPerfectMatch"
-                        :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' },]"
+                        :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Delete', value: 'delete' }]"
                         show-select hide-default-footer>
+                        <template v-slot:item.delete = "{ item }">
+                <v-btn  variant="text" @click="" icon>
+                    <v-icon>mdi-delete</v-icon>
+                </v-btn>
+            </template>
                     </v-data-table>
                 </v-container>
 
@@ -1450,8 +1617,13 @@ export default {
                     <v-data-table v-model="selectedVolunteerExperience" :items="experiences"
                         item-value="id" :search="'4'"
                         :custom-filter="filterPerfectMatch"
-                        :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' },]"
+                        :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Delete', value: 'delete' }]"
                         show-select hide-default-footer>
+                        <template v-slot:item.delete = "{ item }">
+                <v-btn  variant="text" @click="" icon>
+                    <v-icon>mdi-delete</v-icon>
+                </v-btn>
+            </template>
                     </v-data-table>
                 </v-container>
 
@@ -1539,8 +1711,13 @@ export default {
                 <v-container>
                     <v-data-table v-model="selectedSkills" :items="skills"
                         item-value="id"
-                        :headers="[{ title: 'Title', value: 'title'}, { title: 'Description', value: 'description' },]"
+                        :headers="[{ title: 'Title', value: 'title'}, { title: 'Description', value: 'description' }, { title: 'Delete', value: 'delete' }]"
                         show-select hide-default-footer>
+                        <template v-slot:item.delete = "{ item }">
+                <v-btn  variant="text" @click="" icon>
+                    <v-icon>mdi-delete</v-icon>
+                </v-btn>
+            </template>
                     </v-data-table>
                 </v-container>
             </div>
@@ -1612,8 +1789,13 @@ export default {
                     <v-data-table v-model="selectedHonorExperience" :items="experiences"
                         item-value="id" :search="'5'"
                         :custom-filter="filterPerfectMatch"
-                        :headers="[{ title: 'experienceTypeId', text: 'experienceTypeId',  value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' },]"
+                        :headers="[{ title: 'experienceTypeId', text: 'experienceTypeId',  value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Delete', value: 'delete' }]"
                         show-select hide-default-footer>
+                        <template v-slot:item.delete = "{ item }">
+                <v-btn  variant="text" @click="" icon>
+                    <v-icon>mdi-delete</v-icon>
+                </v-btn>
+            </template>
                     </v-data-table>
                 </v-container>
 
@@ -1678,8 +1860,13 @@ export default {
                     <v-data-table v-model="selectedAwardExperience" :items="experiences"
                         item-value="id" :search="'6'"
                         :custom-filter="filterPerfectMatch"
-                        :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' },]"
+                        :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Delete', value: 'delete' }]"
                         show-select hide-default-footer>
+                        <template v-slot:item.delete = "{ item }">
+                <v-btn  variant="text" @click="" icon>
+                    <v-icon>mdi-delete</v-icon>
+                </v-btn>
+            </template>
                     </v-data-table>
                 </v-container>
 
@@ -1744,8 +1931,13 @@ export default {
                     <v-data-table v-model="selectedProjectExperience" :items="experiences"
                         item-value="id" :search="'7'"
                         :custom-filter="filterPerfectMatch"
-                        :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' },]"
+                        :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Delete', value: 'delete' }]"
                         show-select hide-default-footer>
+                        <template v-slot:item.delete = "{ item }">
+                <v-btn  variant="text" @click="" icon>
+                    <v-icon>mdi-delete</v-icon>
+                </v-btn>
+            </template>
                     </v-data-table>
                 </v-container>
 
@@ -1868,22 +2060,41 @@ export default {
                     </div>
                 </v-card>
 
-                <v-card align="center" v-if="isPreviewResume">
+                <v-card  v-if="isPreviewResume">
 
                     <div style="padding: 3%;">
-                        <v-btn variant="tonal" @click="clearTemplateSelecton()">
-                            Select different template
-                        </v-btn>
+                        <div align="center">
+                            <v-btn variant="tonal" @click="clearTemplateSelecton()">
+                                Select different template
+                            </v-btn>
 
-                        <div class="mb-3">
-                            <v-spacer></v-spacer>
+                            <div class="mb-3">
+                                <v-spacer></v-spacer>
+                            </div>
+
+                            <v-text> Preview Resume </v-text>
+                            <!-- <v-skeleton-loader type="card"></v-skeleton-loader> -->
                         </div>
-
-                        <v-text> Preview Resume </v-text>
-
-                        <v-container>
-                            <v-skeleton-loader type="card"></v-skeleton-loader>
-                        </v-container>
+                        <div v-if="selectedResumeTemplate == 1">
+                            <v-container>
+                                <PreviewTemplate1 :links="displayLinks" :goal="displayGoal" :education="displayEducation" :experience="displayExperience" :skills="displaySkills"></PreviewTemplate1>
+                            </v-container>
+                        </div>
+                        <div v-if="selectedResumeTemplate == 2">
+                            <v-container>
+                                <PreviewTemplate2 :links="displayLinks" :goal="displayGoal" :education="displayEducation" :experience="displayExperience" :skills="displaySkills"></PreviewTemplate2>
+                            </v-container>
+                        </div>
+                        <div v-if="selectedResumeTemplate == 3">
+                            <v-container>
+                                <PreviewTemplate3 :links="displayLinks" :goal="displayGoal" :education="displayEducation" :experience="displayExperience" :skills="displaySkills"></PreviewTemplate3>
+                            </v-container>
+                        </div>
+                        <div v-if="selectedResumeTemplate == 4">
+                            <v-container>
+                                <PreviewTemplate4 :links="displayLinks" :goal="displayGoal" :education="displayEducation" :experience="displayExperience" :skills="displaySkills"></PreviewTemplate4>
+                            </v-container>
+                        </div>
                     </div>
 
                 </v-card>
@@ -1891,6 +2102,10 @@ export default {
                     <v-spacer></v-spacer>
                 </div>
                 <div align="center">
+                            <v-checkbox
+                                v-model="checkbox1"
+                                :label="'Allow Feedback on this resume'"
+                            ></v-checkbox>
                     <v-btn :disabled="!isGenerated" @click="addResume()">Generate Resume</v-btn>
                 </div>
                 <div align="center">

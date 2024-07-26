@@ -28,7 +28,7 @@ const templateId = ref(0);
 // Job Description Variables
 const account = ref(null);
 const jobDescriptionInfo = ref();
-const selectedJobDescription = ref(null);
+const selectedJobDescription = ref([]);
 const jobDescriptionTitle = ref("");
 const jobDescription = ref("");
 const isNewJobDescVisible = ref(false);
@@ -208,7 +208,7 @@ export default {
                         </v-card-text>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn variant="flat" color="primary" @click="requestFeedback()">Request Feedback</v-btn>
+                            <v-btn :disabled="selectedJobDescription.length == 0" variant="flat" color="primary" @click="requestFeedback()">Request Feedback</v-btn>
                         </v-card-actions>
                     </v-card>
                 

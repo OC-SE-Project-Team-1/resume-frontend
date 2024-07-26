@@ -15,6 +15,7 @@ const account = ref(null);
 const resumeData = ref(null);
 const resumeId = ref(null);
 const isExport = ref(false);
+const isEdit = ref(false);;
 const isDownloaded = ref(false);
 const isFeedback = ref(false);
 const templateId = ref(0);
@@ -23,7 +24,7 @@ const snackbar = ref({
   color: "",
   text: "",
 });
-
+const theme = useTheme();
 
 onMounted(async () => {
   account.value = JSON.parse(localStorage.getItem("account"));
@@ -91,6 +92,16 @@ function closeExport() {
 
 function closeSnackBar() {
   snackbar.value.value = false;
+}
+
+async function updateEditing(){
+  isEdit.value = !isEdit.value
+  await ResumeServices.updateResumeEditing(resumeId.value, isEdit.value, account.value.id )
+}
+
+function refreshPage(){
+  isDownloaded.value = false;
+  window.location.reload(true);
 }
 </script>
 

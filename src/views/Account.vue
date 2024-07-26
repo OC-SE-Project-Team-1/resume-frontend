@@ -807,7 +807,7 @@ export default {
                         <v-row margin="align-center">
                           <v-col md="8"><v-list-item-title>{{ exp.title }}</v-list-item-title> </v-col>
                           <v-col cols="1">
-                            <v-icon icon="mdi-trash-can" @click="openExpEdit(exp.id)"></v-icon>
+                            <v-icon icon="mdi-note-edit-outline" @click="openExpEdit(exp.id)"></v-icon>
                           </v-col>
                           <v-col cols="2">
                             <v-icon icon="mdi-trash-can" @click="deleteExpValue(exp)"></v-icon>
@@ -908,7 +908,7 @@ export default {
                         <v-row>
                           <v-col md="8"><v-list-item-title>{{ edu.description }}</v-list-item-title> </v-col>
                           <v-col cols="1">
-                            <v-icon icon="mdi-trash-can" @click="openEduEdit(edu)"></v-icon>
+                            <v-icon icon="mdi-note-edit-outline" @click="openEduEdit(edu)"></v-icon>
                           </v-col>
                           <v-col cols="2">
                             <v-icon icon="mdi-trash-can" @click="deleteEducation(edu)"></v-icon>
@@ -1021,7 +1021,7 @@ export default {
                         <v-row>
                           <v-col md="8"><v-list-item-title>{{ s.title }}</v-list-item-title> </v-col>
                           <v-col cols="1">
-                            <v-icon icon="mdi-trash-can" @click="openSkillEdit(s)"></v-icon>
+                            <v-icon icon="mdi-note-edit-outline" @click="openSkillEdit(s)"></v-icon>
                           </v-col>
                           <v-col cols="2">
                             <v-icon icon="mdi-trash-can" @click="deleteSkill(s)"></v-icon>

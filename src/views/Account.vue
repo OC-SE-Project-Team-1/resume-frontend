@@ -1,20 +1,11 @@
 <script setup>
-import { onMounted } from "vue";
+import { computed, onMounted } from "vue";
 import { ref, toRaw, getCurrentInstance } from "vue";
 import { useRouter } from "vue-router";
 import { useTheme } from 'vuetify'
 import UserServices from "../services/UserServices";
 
-import CharacterNameServices from "../services/CharacterNameServices.js";
-import CharacterRoleServices from "../services/CharacterRoleServices.js";
-import GenreServices from "../services/GenreServices.js";
-import TimeServices from "../services/TimePeriodServices.js";
-import LocationServices from "../services/LocationServices.js";
-import ExperienceServices from "../services/ExperienceServices.js";
-import EducationServices from "../services/EducationServices.js";
-import SkillServices from "../services/SkillServices.js";
 
-const router = useRouter();
 const account = ref(null);
 const snackbar = ref({
   value: false,
@@ -22,590 +13,61 @@ const snackbar = ref({
   text: "",
 });
 
-const id = ref(null);
 const isAccountEditable = ref(false);
-const isDark = ref();
 
-const newUsername = ref();
-const newEmail = ref();
+const accountData = ref(null);
 
-const characterName = ref();
-const characterRole = ref();
-const genre = ref();
-const time = ref();
-const selectedTime = ref(null);
-const location = ref();
-const selectedLocation = ref(null);
-
-const selectedExperience = ref(null);
-const experience = ref(null);
-const expExperienceTitle = ref(null);
-const expCompany = ref(null);
-const expCity = ref(null);
-const expState = ref(null);
-const expStart = ref(null);
-const expEnd = ref(null);
-const expDescription = ref(null);
-
-const selectedEducation = ref(null);
-const education = ref();
-const eduDescription = ref(null);
-const eduStart = ref(null);
-const eduEnd = ref(null);
-const eduGrad = ref(null);
-const eduGPA = ref(null);
-const eduOrganization = ref(null);
-const eduCity = ref(null);
-const eduState = ref(null);
-const eduCourse = ref(null);
-const eduMinor = ref(null);
-const eduTotalGPA = ref(null);
-
-const selectedSkill = ref(null);
-const skill = ref();
-const skillTitle = ref(null);
-const skillDescription = ref(null);
-
-const isExpEdit = ref(false);
-const isEduEdit = ref(false);
-const isSkillEdit = ref(false);
+const changePasswordDialog = ref(false);
+const checkbox1 = ref(false);
 
 onMounted(async () => {
-  account.value = JSON.parse(localStorage.getItem("account"));
-  theme.global.name.value = JSON.parse(localStorage.getItem("darkMode"));
-  newUsername.value = account.value.userName;
-  newEmail.value = account.value.email;
 
-  await getTheme();
-  /*
-  await getCharacterNames();
-  await getCharacterRoles();
-  await getGenres();
-  await getTimes();
-  await getLocations();
-  */
-  await getExperiences();
-  await getEducations();
-  await getSkills();
+  account.value = JSON.parse(localStorage.getItem("account"));
+  await getAccount();
+  await populateAccount();
+
+
 });
 
-//Open/Close Pop Ups
-function openExpEdit(itemId) {
-  window.localStorage.setItem("id", JSON.stringify(itemId));
-  id.value = JSON.parse(localStorage.getItem("id"));
-  getExperienceById(id.value);
-  
-  isExpEdit.value = true;
+async function populateAccount(){
+  newUsername.value = accountData.value.userName;
+  newPassword.value = "";
+  newEmail.value = accountData.value.email;
+  newFirstName.value = accountData.value.firstName;
+  newLastName.value = accountData.value.lastName;
+  newAddress.value = accountData.value.address;
+  newPhoneNumber.value = accountData.value.phoneNumber;
 }
 
-function openEduEdit(itemId) {
-  window.localStorage.setItem("id", JSON.stringify(itemId));
-  id.value = JSON.parse(localStorage.getItem("id"));
-  getEducationById(id.value);
-  
-  isEduEdit.value = true;
-}
-
-function openSkillEdit(itemId) {
-  window.localStorage.setItem("id", JSON.stringify(itemId));
-  id.value = JSON.parse(localStorage.getItem("id"));
-  getSkillById(id.value);
-  
-  isSkillEdit.value = true;
+async function getAccount() {
+  await UserServices.getUser(account.value.id)
+    .then((response) => {
+      accountData.value = response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
 }
 
 function closeSnackBar() {
   snackbar.value.value = false;
 }
 
-function closeEdit() {
-  isExpEdit.value = false;
-  isEduEdit.value = false;
-  isSkillEdit.value = false;
-}
-/*
-//Grab all Characacter Names 
-async function getCharacterNames() {
-  await CharacterNameServices.getcharacterNameForUser(account.value.id)
-    .then((response) => {
-      characterName.value = response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-//Grab all Characacter Roles 
-async function getCharacterRoles() {
-  await CharacterRoleServices.getcharacterRoleForUser(account.value.id)
-    .then((response) => {
-      characterRole.value = response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-//Grab all Genres 
-async function getGenres() {
-  await GenreServices.getgenreForUser(account.value.id)
-    .then((response) => {
-      genre.value = response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-//Grab all Times 
-async function getTimes() {
-  await TimeServices.gettimePeriodForUser(account.value.id)
-    .then((response) => {
-      time.value = response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-//Grab all Locations
-async function getLocations() {
-  await LocationServices.getlocationForUser(account.value.id)
-    .then((response) => {
-      location.value = response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-*/
-//Grab all Experiences
-async function getExperiences() {
-  await ExperienceServices.getExperiencesForUser(account.value.id)
-    .then((response) => {
-      experience.value = response.data;
-      console.log(experience.value);
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-async function getExperienceById() {
-  await ExperienceServices.getExperiences(id.value, account.value.id)
-    .then((response) => {
-      expExperienceTitle.value = response.data.title;
-      expCompany.value = response.data.company;
-      expCity.value = response.data.city;
-      expState.value = response.data.state;
-      expStart.value = response.data.startDate;
-      expEnd.value = response.data.endDate;
-      expDescription.value = response.data.description;
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-//Grab all Educations
-async function getEducations() {
-  await EducationServices.getEducationsForUser(account.value.id)
-    .then((response) => {
-      education.value = response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-async function getEducationById() {
-  await EducationServices.getEducations(id.value, account.value.id)
-    .then((response) => {
-      eduDescription.value = response.data.description;
-      eduStart.value = response.data.startDate;
-      eduEnd.value = response.data.endDate;
-      eduGrad.value = response.data.gradDate;
-      eduGPA.value = response.data.gpa;
-      eduOrganization.value = response.data.orgnization;
-      eduCity.value = response.data.city;
-      eduState.value = response.data.state;
-      eduCourse.value = response.data.course;
-      eduMinor.value = response.data.minor;
-      eduTotalGPA.value = response.data.totalGPA;
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-//Grab all Skills
-async function getSkills() {
-  await SkillServices.getSkillsForUser(account.value.id)
-    .then((response) => {
-      skill.value = response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-async function getSkillById() {
-  await SkillServices.getSkill(id.value, account.value.id)
-    .then((response) => {
-      skillTitle.value = response.data.title;
-      skillDescription.value = response.data.description;
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-async function getPersonalInfo() {
-    resetNewInput()
-    await UserServices.getUser(parseInt(account.value.id))
-        .then((response) => {
-            personalInfo.value = response.data;
-            firstName.value = personalInfo.value.firstName;
-            lastName.value = personalInfo.value.lastName;
-            address.value = personalInfo.value.address;
-            phoneNumber.value = personalInfo.value.phoneNumber;
-            email.value = personalInfo.value.email;
-            getLinks();
-        })
-        .catch((error) => {
-            console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
-        });
-}
-
-// Edit Experience
-async function editExperience() {
-  await ExperienceServices.updateExperience(input.id, account.value.id)
-    .then(() => {
-      closeEdit();
-      localStorage.removeItem("id");
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "Experience Editted!";
-      router.push({ name: "library" });
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-
-}
-
-//Delete Selected Experience
-async function deleteExpValue(input) {
-  if (!isDefault(input)) {
-    await ExperienceServices.deleteExperience(input.id, account.value.id)
-      .then(() => {
-        getExperiences();
-        snackbar.value.value = true;
-        snackbar.value.color = "green";
-        snackbar.value.text = "Experience Deleted";
-        router.push({ name: "account" });
-      })
-      .catch((error) => {
-        console.log(error);
-        snackbar.value.value = true;
-        snackbar.value.color = "error";
-        snackbar.value.text = error.response.data.message;
-      });
-  }
-
-}
-
-// Edit Education
-async function editEducation() {
-  await EducationServices.updateEducation(input.id, account.value.id)
-    .then(() => {
-      closeEdit();
-      localStorage.removeItem("id");
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "Education Editted!";
-      router.push({ name: "library" });
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-
-}
-
-//Delete Selected Education
-async function deleteEducation(input) {
-  if (!isDefault(input)) {
-    await EducationServices.deleteEducation(input.id, account.value.id)
-      .then(() => {
-        getEducations();
-        snackbar.value.value = true;
-        snackbar.value.color = "green";
-        snackbar.value.text = "Education Deleted";
-        router.push({ name: "account" });
-      })
-      .catch((error) => {
-        console.log(error);
-        snackbar.value.value = true;
-        snackbar.value.color = "error";
-        snackbar.value.text = error.response.data.message;
-      });
-  }
-
-}
-
-// Edit Skill
-async function editSkill() {
-  await SkillServices.updateSkill(input.id, account.value.id)
-    .then(() => {
-      closeEdit();
-      localStorage.removeItem("id");
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "Skill Editted!";
-      router.push({ name: "library" });
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-
-}
-
-//Delete Selected Skill
-async function deleteSkill(input) {
-  if (!isDefault(input)) {
-    await SkillServices.deleteSkill(input.id, account.value.id)
-      .then(() => {
-        getSkills();
-        snackbar.value.value = true;
-        snackbar.value.color = "green";
-        snackbar.value.text = "Skill Deleted";
-        router.push({ name: "account" });
-      })
-      .catch((error) => {
-        console.log(error);
-        snackbar.value.value = true;
-        snackbar.value.color = "error";
-        snackbar.value.text = error.response.data.message;
-      });
-  }
-
-}
-
-//Delete Selected Time
-async function deleteTime(input) {
-  if (!isDefault(input)) {
-    await TimeServices.deletetimePeriod(input.id, account.value.id)
-      .then(() => {
-        getTimes();
-        snackbar.value.value = true;
-        snackbar.value.color = "green";
-        snackbar.value.text = "Time Deleted";
-        router.push({ name: "account" });
-      })
-      .catch((error) => {
-        console.log(error);
-        snackbar.value.value = true;
-        snackbar.value.color = "error";
-        snackbar.value.text = error.response.data.message;
-      });
-  }
-
-}
-
-//Delete Selected Location
-async function deleteLocation(input) {
-  if (!isDefault(input)) {
-    console.log(account.value.id);
-    console.log(input.id);
-    await LocationServices.deletelocation(input.id, account.value.id)
-      .then(() => {
-        getLocations();
-        snackbar.value.value = true;
-        snackbar.value.color = "green";
-        snackbar.value.text = "Location Deleted";
-        router.push({ name: "account" });
-      })
-      .catch((error) => {
-        console.log(error);
-        snackbar.value.value = true;
-        snackbar.value.color = "error";
-        snackbar.value.text = error.response.data.message;
-      });
-  }
-}
-
-//Add Experience
-async function addExpValue() {
-  await ExperienceServices.addExpValue(selectedExperience.value, account.value.id)
-    .then(() => {
-      getExperiences();
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "Experience Added";
-      router.push({ name: "account" });
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-
-}
-
-//Add Education
-async function addEducation() {
-  await EducationServices.addEducation(selectedEducation.value, account.value.id)
-    .then(() => {
-      getEducations();
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "Education Added";
-      router.push({ name: "account" });
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-//Add Skill
-async function addSkill() {
-  await SkillServices.addSkill(selectedSkill.value, account.value.id)
-    .then(() => {
-      getSkills();
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "Skill Added";
-      router.push({ name: "account" });
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-//Add Time
-async function addTime() {
-  await TimeServices.addtimePeriod(selectedTime.value, account.value.id)
-    .then(() => {
-      getTimes();
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "Time Added";
-      router.push({ name: "account" });
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-//Add Location
-async function addLocation() {
-  await LocationServices.addlocation(selectedLocation.value, account.value.id)
-    .then(() => {
-      getLocations();
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "Location Added";
-      router.push({ name: "account" });
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-//Check if Value is Default
-function isDefault(input) {
-
-  if (input.userId === null) {
-    snackbar.value.value = true;
-    snackbar.value.color = "error";
-    snackbar.value.text = "Selected Value is a Default Value";
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
 //Edit Account Name or Email
 function editAccount() {
   isAccountEditable.value = !isAccountEditable.value;
 
-  if (isAccountEditable.value == false &&
-    newUsername.value !== account.value.userName &&
-    newEmail.value !== account.value.email) {
+  if (isAccountEditable.value == false) {
 
-    updateAccountUserEmail();
+    updateAccount();
   }
-  else if (isAccountEditable.value == false &&
-    newUsername.value !== account.value.userName) {
-
-    updateAccountUsername();
-  }
-  else if (isAccountEditable.value == false &&
-    newEmail.value !== account.value.email) {
-
-    updateAccountEmail();
-  }
+  
 }
 
+/*
 //Edit Account Username and Email
 async function updateAccountUserEmail() {
   await UserServices.updateAccount(account.value.id, newUsername.value, newEmail.value)
@@ -682,17 +144,77 @@ async function updateAccount() {
       console.log(error);
     });
 }
+    */
 
 
-const theme = useTheme();
-async function getTheme() {
-  if (theme.global.name.value == 'LightTheme') {
-    isDark.value = false;
-  }
-  else {
-    isDark.value = true;
-  }
+
+
+// disables/enable save button when changing password
+const isReadPass = computed(() => {
+  return (
+    checkbox1.value === true &&
+    newPassword.value !== "" &&
+    confirmPassword.value !== ""
+  )
+});
+
+//Password Rules for length of password
+const passwordRules = [
+  v => !!v || 'Password is required',
+  v => (v && v.length >= 8 && v.length <= 16) || 'Password must be between 8-16 characters'
+];
+
+// checks if both textboxes match each other to confirm password
+const confirmPasswordRules = computed(() => [
+  v => !!v || 'Confirm Password is required',
+  v => v === newPassword.value || 'Passwords must match'
+]);
+
+
+// LIN'S SECTION AND VARIABLES THAT IS PROB WHAT HE NEEDS
+
+const newUsername = ref();
+const newPassword = ref();
+const newEmail = ref();
+const newFirstName = ref();
+const newLastName = ref();
+const newAddress = ref();
+const newPhoneNumber = ref();
+
+//dw about this one
+const confirmPassword = ref();
+
+// opens change password dialog
+function openChangePasswordDialog() {
+  changePasswordDialog.value = true;
 }
+
+//closes change password dialog
+function closeChangePasswordDialog() {
+  changePasswordDialog.value = false;
+  newPassword.value = null;
+  checkbox1.value = false;
+}
+
+function changePassword() {
+
+  TODO: //ADD IN THE LOGICS FOR CHANGE PASSWORD FUNCTION
+  closeChangePasswordDialog();
+}
+
+function updateAccount() {
+
+
+  TODO: //ADD IN LOGICS FOR UPDATED ACCOUNT
+
+  closeChangePasswordDialog();
+}
+
+
+
+
+
+
 </script>
 
 <script>
@@ -718,7 +240,6 @@ export default {
 <style>
 .panel-wrapper {
   margin-bottom: 1rem;
-  /* Adjust the value as needed */
 }
 </style>
 
@@ -733,16 +254,16 @@ export default {
   </v-container>
   <div id="body" align="center">
 
-    <v-expansion-panels style="width: 50%;">
-      <v-expansion-panel>
-        <v-expansion-panel-title>
-          Account Settings
-        </v-expansion-panel-title>
+    <v-container>
+      <title>
+        Account Settings
+      </title>
 
-        <v-expansion-panel-text align="left" style="margin-left: 5%;">
-          <v-card-actions>
+      
+      <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" variant="text" @click="editAccount()">
+            <v-btn v-if="isAccountEditable" @click="isAccountEditable = false; populateAccount(); ">Cancel</v-btn>
+            <v-btn variant="text" @click="editAccount()">
               {{ isAccountEditable ? 'Save' : 'Edit' }}
             </v-btn>
           </v-card-actions>
@@ -757,6 +278,18 @@ export default {
           </v-row>
           <v-row>
             <v-col cols="2">
+              <v-text for="character" class="headline mb-2">Password: </v-text>
+            </v-col>
+            <v-col>
+              <v-row>
+                <v-btn 
+                variant="tonal" v-if="isAccountEditable" @click="openChangePasswordDialog"> Change Password </v-btn>
+              </v-row>
+
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="2">
               <v-text for="character" class="headline mb-2">Email: </v-text>
             </v-col>
             <v-col>
@@ -765,458 +298,38 @@ export default {
           </v-row>
           <v-row>
             <v-col cols="2">
+              <v-text for="character" class="headline mb-2">First Name: </v-text>
+            </v-col>
+            <v-col>
+              <v-text-field v-model="newFirstName" :readonly="!isAccountEditable"></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="2">
+              <v-text for="character" class="headline mb-2">Last Name: </v-text>
+            </v-col>
+            <v-col>
+              <v-text-field v-model="newLastName" :readonly="!isAccountEditable"></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="2">
+              <v-text for="character" class="headline mb-2">Address: </v-text>
+            </v-col>
+            <v-col>
+              <v-text-field v-model="newAddress" :readonly="!isAccountEditable"></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="2">
               <v-text for="character" class="headline mb-2">Phone Number: </v-text>
             </v-col>
             <v-col>
-              <v-text-field v-model="newEmail" :readonly="!isAccountEditable"></v-text-field>
+              <v-text-field v-model="newPhoneNumber" :readonly="!isAccountEditable"></v-text-field>
             </v-col>
           </v-row>
-        </v-expansion-panel-text>
-      </v-expansion-panel>
-    </v-expansion-panels>
 
-    <div class="mb-10">
-      <v-spacer></v-spacer>
-    </div>
-
-    <v-expansion-panels style="width:50%;">
-
-      <v-expansion-panel>
-        <v-expansion-panel-title>
-          Database Settings
-        </v-expansion-panel-title>
-
-        <v-expansion-panel-text>
-
-          <v-expansion-panels style="width: 75%;">
-
-            <v-expansion-panel>
-
-              <v-expansion-panel-title>
-                Experience:
-              </v-expansion-panel-title>
-
-
-              <v-expansion-panel-text>
-                <v-row>
-                  <v-col>
-
-                    <v-list>
-                      <v-list-item v-for="exp in experience" :key="exp.id">
-
-                        <v-row margin="align-center">
-                          <v-col md="8"><v-list-item-title>{{ exp.title }}</v-list-item-title> </v-col>
-                          <v-col cols="1">
-                            <v-icon icon="mdi-note-edit-outline" @click="openExpEdit(exp.id)"></v-icon>
-                          </v-col>
-                          <v-col cols="2">
-                            <v-icon icon="mdi-trash-can" @click="deleteExpValue(exp)"></v-icon>
-                          </v-col>
-                        </v-row>
-
-                      </v-list-item>
-
-                    </v-list>
-
-                  </v-col>
-                </v-row>
-
-                <v-dialog persistent v-model="isExpEdit" width="800">
-                  <v-card class="rounded-lg elevation-5">
-                    <v-card-title class="text-center headline mb-2">Edit Experience</v-card-title>
-              <v-container>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="expExperienceTitle" label="Position Title"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="expCompany" label="Company Name"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-mmodel="expCity" label="City"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="expState" label="State"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="expStart" label="Start Date"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="expEnd" label="End Date"></v-text-field>
-                        <v-switch label="Present Job" color="primary"></v-switch>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-textarea v-model="expDescription" label="Work Summary">
-                        <template #append-inner>
-                            <v-btn color="secondary" rounded="xl" value="Ai Assist">
-                                AI Assist
-                            </v-btn>
-                        </template>
-                    </v-textarea>
-                </v-row>
-            </v-container>
-                    <v-card-actions>
-                      <v-btn variant="flat" color="primary" @click="editExperience()">Edit Experience</v-btn>
-                      <v-spacer></v-spacer>
-                      <v-btn variant="flat" color="secondary" @click="closeEdit()">Close</v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-
-                <v-row style="width: 75%;">
-                  <v-text-field label="New Experience" v-model="selectedExperience">
-
-                  </v-text-field>
-                </v-row>
-                <v-row>
-                  <v-col align="right">
-                    <v-btn color="primary" variant="text" @click="addExpValue()">
-                      Add
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-expansion-panel-text>
-
-
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-expansion-panel-text>
-
-        <v-expansion-panel-text>
-
-          <v-expansion-panels style="width: 75%;">
-
-            <v-expansion-panel>
-
-              <v-expansion-panel-title>
-                Education:
-              </v-expansion-panel-title>
-
-
-              <v-expansion-panel-text>
-                <v-row>
-                  <v-col>
-
-                    <v-list>
-                      <v-list-item v-for="edu in education" :key="edu.id">
-
-                        <v-row>
-                          <v-col md="8"><v-list-item-title>{{ edu.description }}</v-list-item-title> </v-col>
-                          <v-col cols="1">
-                            <v-icon icon="mdi-note-edit-outline" @click="openEduEdit(edu)"></v-icon>
-                          </v-col>
-                          <v-col cols="2">
-                            <v-icon icon="mdi-trash-can" @click="deleteEducation(edu)"></v-icon>
-                          </v-col>
-                        </v-row>
-
-                      </v-list-item>
-
-                    </v-list>
-
-
-                  </v-col>
-                </v-row>
-
-              <v-dialog persistent v-model="isEduEdit" width="800">
-                  <v-card class="rounded-lg elevation-5">
-                    <v-card-title class="text-center headline mb-2">Edit Education</v-card-title>
-              <v-container>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="eduDescription" label="Major"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="eduStart" label="Start Date"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-mmodel="eduEnd" label="End Date"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="eduGrad" label="Grad Date"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="eduGPA" label="GPA"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="eduOrganization" label="Organization"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="eduCity" label="City"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="eduState" label="State"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="eduCourse" label="Courses"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="eduMinor" label="Minor"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="eduTotalGPA" label="Total GPA"></v-text-field>
-                    </v-col>
-                </v-row>
-            </v-container>
-                    <v-card-actions>
-                      <v-btn variant="flat" color="primary" @click="editEducation()">Edit Education</v-btn>
-                      <v-spacer></v-spacer>
-                      <v-btn variant="flat" color="secondary" @click="closeEdit()">Close</v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-
-                <v-row style="width: 75%;">
-                  <v-text-field label="New Education" v-model="selectedEducation">
-
-                  </v-text-field>
-                </v-row>
-                <v-row>
-                  <v-col align="right">
-                    <v-btn color="primary" variant="text" @click="addEducation()">
-                      Add
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-expansion-panel-text>
-
-
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-expansion-panel-text>
-
-        <v-expansion-panel-text>
-
-          <v-expansion-panels style="width: 75%;">
-
-            <v-expansion-panel>
-
-              <v-expansion-panel-title>
-                Skills:
-              </v-expansion-panel-title>
-
-
-              <v-expansion-panel-text>
-                <v-row>
-                  <v-col>
-
-                    <v-list>
-                      <v-list-item v-for="s in skill" :key="s.id">
-
-                        <v-row>
-                          <v-col md="8"><v-list-item-title>{{ s.title }}</v-list-item-title> </v-col>
-                          <v-col cols="1">
-                            <v-icon icon="mdi-note-edit-outline" @click="openSkillEdit(s)"></v-icon>
-                          </v-col>
-                          <v-col cols="2">
-                            <v-icon icon="mdi-trash-can" @click="deleteSkill(s)"></v-icon>
-                          </v-col>
-                        </v-row>
-
-                      </v-list-item>
-
-                    </v-list>
-
-
-                  </v-col>
-                </v-row>
-
-
-                <v-row style="width: 75%;">
-                  <v-text-field label="New Skill" v-model="selectedSkill">
-
-                  </v-text-field>
-                </v-row>
-
-                <v-dialog persistent v-model="isSkillEdit" width="800">
-                  <v-card class="rounded-lg elevation-5">
-                    <v-card-title class="text-center headline mb-2">Edit Skill</v-card-title>
-                <v-container>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="skillTitle" label="Title"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="skillDescription" label="Description"></v-text-field>
-                    </v-col>
-                </v-row>
-            </v-container>
-                    <v-card-actions>
-                      <v-btn variant="flat" color="primary" @click="editSkill()">Edit Skill</v-btn>
-                      <v-spacer></v-spacer>
-                      <v-btn variant="flat" color="secondary" @click="closeEdit()">Close</v-btn>
-                    </v-card-actions>
-                 </v-card>
-              </v-dialog>
-                <v-row>
-                  <v-col align="right">
-                    <v-btn color="primary" variant="text" @click="addSkill()">
-                      Add
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-expansion-panel-text>
-
-
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-expansion-panel-text>
-
-
-<!--
-        <v-expansion-panel-text>
-
-          <v-expansion-panels style="width: 75%;">
-
-            <v-expansion-panel>
-
-              <v-expansion-panel-title>
-                Time:
-              </v-expansion-panel-title>
-
-
-              <v-expansion-panel-text>
-                <v-row>
-                  <v-col>
-
-                    <v-list>
-                      <v-list-item v-for="t in time" :key="t.id">
-
-                        <v-row>
-                          <v-col md="8"><v-list-item-title>{{ t.name }}</v-list-item-title> </v-col>
-                          <v-col cols="1">
-                            <v-icon icon="mdi-trash-can" @click="deleteTime(t)"></v-icon>
-                          </v-col>
-                        </v-row>
-
-                      </v-list-item>
-
-                    </v-list>
-
-                  </v-col>
-                </v-row>
-
-
-                <v-row style="width: 75%;">
-                  <v-text-field label="New Time" v-model="selectedTime">
-
-                  </v-text-field>
-                </v-row>
-                <v-row>
-                  <v-col align="right">
-                    <v-btn color="primary" variant="text" @click="addTime()">
-                      Add
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-expansion-panel-text>
-
-
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-expansion-panel-text>
-
-
-        <v-expansion-panel-text>
-
-          <v-expansion-panels style="width: 75%;">
-
-            <v-expansion-panel>
-
-              <v-expansion-panel-title>
-                Location:
-              </v-expansion-panel-title>
-
-
-              <v-expansion-panel-text>
-                <v-row>
-                  <v-col>
-
-                    <v-list>
-                      <v-list-item v-for="l in location" :key="l.id">
-
-                        <v-row>
-                          <v-col md="8"><v-list-item-title>{{ l.location }}</v-list-item-title> </v-col>
-                          <v-col cols="1">
-                            <v-icon icon="mdi-trash-can" @click="deleteLocation(l)"></v-icon>
-                          </v-col>
-                        </v-row>
-
-                      </v-list-item>
-
-                    </v-list>
-
-
-                  </v-col>
-                </v-row>
-
-
-                <v-row style="width: 75%;">
-                  <v-text-field label="New Location" v-model="selectedLocation">
-
-                  </v-text-field>
-                </v-row>
-                <v-row>
-                  <v-col align="right">
-                    <v-btn color="primary" variant="text" @click="addLocation()">
-                      Add
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-expansion-panel-text>
-            
-
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-expansion-panel-text>
-      -->
-
-
-      </v-expansion-panel>
-    </v-expansion-panels>
-
-    <div class="mb-10">
-      <v-spacer></v-spacer>
-    </div>
-
-
-    <v-expansion-panels style="width: 50%;">
-      <v-expansion-panel>
-        <v-expansion-panel-title>
-          Personal Settings
-        </v-expansion-panel-title>
-        <v-expansion-panel-text>
-
-          <v-row>
-          <v-col>
-            <v-switch
-              color="primary"
-              label="Dark mode"
-              hide-details
-            ></v-switch>
-          </v-col>
-        </v-row>
-
-        </v-expansion-panel-text>
-       
-        
-        </v-expansion-panel>
-    </v-expansion-panels>
+    </v-container>
 
   </div>
 
@@ -1229,4 +342,42 @@ export default {
       </v-btn>
     </template>
   </v-snackbar>
+
+  <v-dialog v-model="changePasswordDialog" persistent>
+
+    <v-card>
+      <v-card-title>
+        <span class="headline">Change Password?</span>
+      </v-card-title>
+      <v-card-text>
+        <div class="mb-3">
+          <label for="password">Password: </label>
+          <v-text-field v-model="newPassword" :rules="passwordRules" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+            :type="show1 ? 'text' : 'password'" label="Password" hint="8-16 characters" required
+            @click:append="show1 = !show1">
+            <template v-slot:message>
+              <div class="custom-hint">
+                8-16 characters<br>
+              </div>
+            </template>
+          </v-text-field>
+        </div>
+
+        <div class="mb-3">
+          <label for="password">Confirm Password: </label>
+          <v-text-field v-model="confirmPassword" :rules="confirmPasswordRules"
+            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :type="show1 ? 'text' : 'password'" label="Password"
+            required @click:append="show1 = !show1"></v-text-field>
+        </div>
+        <v-checkbox v-model="checkbox1" required
+          :label="`I understand that I will be changing the password`"></v-checkbox>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="blue darken-1" text @click="closeChangePasswordDialog">Cancel</v-btn>
+        <v-btn color="blue darken-1" text @click="changePassword" :disabled="!isReadPass">Save</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
 </template>

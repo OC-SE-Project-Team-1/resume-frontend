@@ -8,14 +8,8 @@ import GoalServices from "../services/GoalServices.js";
 import SkillServices from "../services/SkillServices.js";
 import EducationServices from "../services/EducationServices.js";
 import ExperienceServices from "../services/ExperienceServices.js";
-import ResumeServices from "../services/ResumeServices.js";
-import template1 from "/Template1.png";
-import template2 from "/Template2.png";
-import template3 from "/Template3.png";
-import template4 from "/Template4.png";
 
 const account = ref();
-const title = ref("");
 //Snackbar to display errors
 const snackbar = ref({
     value: false,
@@ -27,8 +21,6 @@ const isNewEduVisible = ref(false);
 const tabs = ref();
 const tab = ref("1");
 const dialog = ref(false);
-
-
 
 const personalInfo = ref();
 const firstName = ref();
@@ -107,11 +99,7 @@ const isCourses = ref(false);
 
 const isAttending = ref(false);
 
-const selectedResumeTemplate = ref();
-
-const isSelectTemplate = ref(true);
-const isPreviewResume = ref(false);
-
+let deleteItemId = 0;
 const isLinked = computed(() => {
     return (
         link.value !== "" &&
@@ -130,14 +118,6 @@ const isSkilled = computed(() => {
         skillDescription.value !== ""
     )
 });
-
-const isPersonalDetails = ref(false);
-const isProfSum = ref(false);
-const isEducation = ref(false);
-const isExperience = ref(false);
-const isSkills = ref(false);
-const isOthers = ref(false);
-
 
 onMounted(() => {
     account.value = JSON.parse(localStorage.getItem("account"));
@@ -226,20 +206,12 @@ async function resetNewInput() {
     closeNewProject();
 }
 
-async function toggleSelectPreview() {
-    isSelectTemplate.value = !isSelectTemplate.value;
-    isPreviewResume.value = !isPreviewResume.value;
-}
-
 function toggleIsAttending() {
     isAttending.value = !isAttending.value;
 
     if (isAttending.value == false) {
         schoolGrad.value = null;
     }
-    // else {
-    //     schoolEnd.value = schoolGrad.value;
-    // }
 }
 
 function toggleExperience(value) {
@@ -378,8 +350,6 @@ async function getGoals() {
 }
 
 async function addNewGoal() {
-    console.log(goalTitle.value);
-    console.log(goalDescription.value);
     await GoalServices.addGoal(goalTitle.value, goalDescription.value, parseInt(account.value.id), goalChatHistory)
         .then(() => {
             snackbar.value.value = true;
@@ -421,9 +391,6 @@ async function addNewEducation() {
     if (schoolGrad.value !== null) {
         schoolEnd.value = schoolGrad.value;
     }
-    // else {
-    //     schoolGrad.value = schoolEnd.value;
-    // }
 
     await EducationServices.addEducation(tempTitle, tempDegree, account.value.id,
         schoolStart.value, schoolEnd.value, schoolGrad.value, gpa.value, schoolName.value,
@@ -583,7 +550,6 @@ async function addNewSkill() {
 }
 
 function filterPerfectMatch(value, search) {
-    // console.log("value: " + value + ", search: " + search);
     return value != null && String(value) === search
 }
 
@@ -595,116 +561,6 @@ async function skillAiAssist() {
             skillHistory.push(response.data.history[1])
         })
 
-}
-
-async function addResume() {
-    var linkArr = [];
-    var goalArr = [];
-    var eduArr = [];
-    var expArr = [];
-    var skillArr = [];
-
-    if (selectedLinks.value !== null) {
-        for (let [key, value] of Object.entries(selectedLinks.value)) {
-            // console.log("Link Key: " + key + " Value: " + value);
-            linkArr.push(value);
-        }
-        console.log(linkArr);
-    }
-
-    if (selectedGoals.value !== null) {
-        for (let [key, value] of Object.entries(selectedGoals.value)) {
-            // console.log("Goal Key: " + key + " Value: " + value);
-            goalArr.push(value);
-        }
-        console.log(goalArr);
-    }
-
-    if (selectedEducation.value !== null) {
-        for (let [key, value] of Object.entries(selectedEducation.value)) {
-            // console.log("Education Key: " + key + " Value: " + value);
-            eduArr.push(value);
-        }
-        console.log(eduArr);
-    }
-
-    if (selectedWorkExperience.value !== null) {
-        for (let [key, value] of Object.entries(selectedWorkExperience.value)) {
-            // console.log("Work Exp Key: " + key + " Value: " + value);
-            expArr.push(value);
-        }
-    }
-    if (selectedLeadershipExperience.value !== null) {
-        for (let [key, value] of Object.entries(selectedLeadershipExperience.value)) {
-            // console.log("Leadership Exp Key: " + key + " Value: " + value);
-            expArr.push(value);
-        }
-    }
-    if (selectedActivitiesExperience.value !== null) {
-        for (let [key, value] of Object.entries(selectedActivitiesExperience.value)) {
-            // console.log("Activities Exp Key: " + key + " Value: " + value);
-            expArr.push(value);
-        }
-    }
-    if (selectedVolunteerExperience.value !== null) {
-        for (let [key, value] of Object.entries(selectedVolunteerExperience.value)) {
-            // console.log("Volunteer Exp Key: " + key + " Value: " + value);
-            expArr.push(value);
-        }
-    }
-    if (selectedHonorExperience.value !== null) {
-        for (let [key, value] of Object.entries(selectedHonorExperience.value)) {
-            // console.log("Honor Exp Key: " + key + " Value: " + value);
-            expArr.push(value);
-        }
-    }
-    if (selectedAwardExperience.value !== null) {
-        for (let [key, value] of Object.entries(selectedAwardExperience.value)) {
-            // console.log("Award Exp Key: " + key + " Value: " + value);
-            expArr.push(value);
-        }
-    }
-    console.log(expArr);
-
-    if (selectedSkills.value !== null) {
-        for (let [key, value] of Object.entries(selectedSkills.value)) {
-            // console.log("Skills Key: " + key + " Value: " + value);
-            skillArr.push(value);
-        }
-        console.log(skillArr);
-    }
-    //TODO: Get isEdit working and Content Working (currently hardcoded)
-    await ResumeServices.addResume(title.value, goalArr, expArr, skillArr,
-        eduArr, linkArr, false, selectedResumeTemplate.value,
-        parseInt(account.value.id))
-        .then(() => {
-            snackbar.value.value = true;
-            snackbar.value.color = "green";
-            snackbar.value.text = "Resume Created!";
-            clearAllSelected();
-        })
-        .catch((error) => {
-            console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
-        });
-}
-
-function clearAllSelected() {
-    selectedLinks.value = null;
-    selectedGoals.value = null;
-    selectedEducation.value = null;
-    selectedWorkExperience.value = null;
-    selectedLeadershipExperience.value = null;
-    selectedActivitiesExperience.value = null;
-    selectedVolunteerExperience.value = null;
-    selectedHonorExperience.value = null;
-    selectedAwardExperience.value = null;
-    selectedSkills.value = null;
-    tab.value = "1";
-    title.value = "";
-    toggleSelectPreview();
 }
 
 function clearGoalAiAssist() {
@@ -818,7 +674,8 @@ function saveEditSkills() {
 // delete dialog stuff
 const isDeleted = ref(null);
 
-function openDelete() {
+function openDelete(item) {
+    deleteItemId = item.id
     isDeleted.value = true;
 }
 
@@ -826,6 +683,49 @@ function closeDelete() {
     isDeleted.value = false;
 }
 
+async function deleteItem(){
+    switch(parseInt(tab.value)){
+        case 1: 
+            await deleting(LinkServices.deleteLink);
+            getLinks();
+            break;
+        case 2: 
+            await deleting(GoalServices.deleteGoal);
+            getGoals();
+            break;
+        case 3: 
+            await deleting(EducationServices.deleteEducation);
+            getEducationInfo();
+            break;
+        case 4: case 5: case 6: case 7: case 9: case 10: case 11: 
+            await deleting(ExperienceServices.deleteExperience);
+            getExperiences();
+            break;
+        case 8: 
+            await deleting(SkillServices.deleteSkill);
+            getSkills();
+            break;
+    }
+    
+    closeDelete();
+}
+
+async function deleting(deleteItem){
+    await deleteItem(deleteItemId, account.value.id)
+    .then(() => {
+            snackbar.value.value = true;
+            snackbar.value.color = "green";
+            snackbar.value.text = "Item Deleted!";
+            
+        })
+        .catch((error) => {
+            console.log(error);
+            snackbar.value.value = true;
+            snackbar.value.color = "error";
+            snackbar.value.text = error.response.data.message;
+        });
+    
+}
 
 </script>
 
@@ -872,7 +772,7 @@ export default {
                                         </v-btn>
                                     </template>
                                     <template v-slot:item.delete="{ item }">
-                                        <v-btn variant="text" @click="openDelete()" icon>
+                                        <v-btn variant="text" @click="openDelete(item)" icon>
                                             <v-icon>mdi-delete</v-icon>
                                         </v-btn>
                                     </template>
@@ -927,7 +827,7 @@ export default {
                                             </v-btn>
                                         </template>
                                         <template v-slot:item.delete="{ item }">
-                                            <v-btn variant="text" @click="openDelete()" icon>
+                                            <v-btn variant="text" @click="openDelete(item)" icon>
                                                 <v-icon>mdi-delete</v-icon>
                                             </v-btn>
                                         </template>
@@ -1047,7 +947,7 @@ export default {
                                                 </v-btn>
                                             </template>
                                             <template v-slot:item.delete="{ item }">
-                                                <v-btn variant="text" @click="openDelete()" icon>
+                                                <v-btn variant="text" @click="openDelete(item)" icon>
                                                     <v-icon>mdi-delete</v-icon>
                                                 </v-btn>
                                             </template>
@@ -1220,7 +1120,7 @@ export default {
                                                 </v-btn>
                                             </template>
                                             <template v-slot:item.delete="{ item }">
-                                                <v-btn variant="text" @click="openDelete()" icon>
+                                                <v-btn variant="text" @click="openDelete(item)" icon>
                                                     <v-icon>mdi-delete</v-icon>
                                                 </v-btn>
                                             </template>
@@ -1335,7 +1235,7 @@ export default {
                                                 </v-btn>
                                             </template>
                                             <template v-slot:item.delete="{ item }">
-                                                <v-btn variant="text" @click="openDelete()" icon>
+                                                <v-btn variant="text" @click="openDelete(item)" icon>
                                                     <v-icon>mdi-delete</v-icon>
                                                 </v-btn>
                                             </template>
@@ -1438,7 +1338,7 @@ export default {
                                                 </v-btn>
                                             </template>
                                             <template v-slot:item.delete="{ item }">
-                                                <v-btn variant="text" @click="openDelete()" icon>
+                                                <v-btn variant="text" @click="openDelete(item)" icon>
                                                     <v-icon>mdi-delete</v-icon>
                                                 </v-btn>
                                             </template>
@@ -1539,7 +1439,7 @@ export default {
                                                 </v-btn>
                                             </template>
                                             <template v-slot:item.delete="{ item }">
-                                                <v-btn variant="text" @click="openDelete()" icon>
+                                                <v-btn variant="text" @click="openDelete(item)" icon>
                                                     <v-icon>mdi-delete</v-icon>
                                                 </v-btn>
                                             </template>
@@ -1637,7 +1537,7 @@ export default {
                                                 </v-btn>
                                             </template>
                                             <template v-slot:item.delete="{ item }">
-                                                <v-btn variant="text" @click="openDelete()" icon>
+                                                <v-btn variant="text" @click="openDelete(item)" icon>
                                                     <v-icon>mdi-delete</v-icon>
                                                 </v-btn>
                                             </template>
@@ -1755,7 +1655,7 @@ export default {
                                                 </v-btn>
                                             </template>
                                             <template v-slot:item.delete="{ item }">
-                                                <v-btn variant="text" @click="openDelete()" icon>
+                                                <v-btn variant="text" @click="openDelete(item)" icon>
                                                     <v-icon>mdi-delete</v-icon>
                                                 </v-btn>
                                             </template>
@@ -1833,7 +1733,7 @@ export default {
                                                 </v-btn>
                                             </template>
                                             <template v-slot:item.delete="{ item }">
-                                                <v-btn variant="text" @click="openDelete()" icon>
+                                                <v-btn variant="text" @click="openDelete(item)" icon>
                                                     <v-icon>mdi-delete</v-icon>
                                                 </v-btn>
                                             </template>
@@ -1918,7 +1818,7 @@ export default {
                                                 </v-btn>
                                             </template>
                                             <template v-slot:item.delete="{ item }">
-                                                <v-btn variant="text" @click="openDelete()" icon>
+                                                <v-btn variant="text" @click="openDelete(item)" icon>
                                                     <v-icon>mdi-delete</v-icon>
                                                 </v-btn>
                                             </template>
@@ -1972,7 +1872,8 @@ export default {
                                     <v-row>
                                         <v-textarea label="Project Summary" v-model="jobDescription">
                                             <template #append-inner>
-                                                <v-btn color="secondary" rounded="xl" value="Ai Assist">
+                                                <v-btn color="secondary" rounded="xl" value="Ai Assist"
+                                                @click="experienceAIAssist()">
                                                     AI Assist
                                                 </v-btn>
                                             </template>
@@ -2180,12 +2081,12 @@ export default {
                             <!-- DELETE DIALOG -->
                             <v-dialog persistent v-model="isDeleted" width="800">
                                 <v-card class="rounded-lg elevation-5">
-                                    <v-card-title class="text-center headline mb-2">Delete Resume?</v-card-title>
-                                    <v-text align="center">You will be unable to retrieve this resume once
+                                    <v-card-title class="text-center headline mb-2">Delete Item?</v-card-title>
+                                    <v-text align="center">You will be unable to retrieve this item once
                                         deleted!</v-text>
 
                                     <v-card-actions>
-                                        <v-btn variant="flat" color="primary" @click="closeDelete()">Delete</v-btn>
+                                        <v-btn variant="flat" color="primary" @click="deleteItem()">Delete</v-btn>
                                         <v-spacer></v-spacer>
                                         <v-btn variant="flat" color="secondary" @click="closeDelete()">Close</v-btn>
                                     </v-card-actions>

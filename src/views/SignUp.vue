@@ -24,7 +24,7 @@ const account = ref({
   phoneNumber: "",
   address: "",
   roleId: userRole,
-  darkMode: "1" //TODO: Get Dark Mode working Properly
+  darkMode: true //TODO: Get Dark Mode working Properly
 });
 
 const allFilled = computed(() => {

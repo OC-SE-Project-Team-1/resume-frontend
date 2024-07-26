@@ -38,6 +38,12 @@ export default {
       "userId": parseInt(accountID)
     });
   },
+  updateDarkMode(accountID, isDark) {
+    return apiClient.put("account/" + accountID, {
+      "darkMode": String(isDark),
+      "userId": accountID
+    });
+  },
   updateAccount(accountID, username, email) {
     return apiClient.put("account/" + accountID, {
       "userName": String(username),

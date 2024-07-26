@@ -10,6 +10,7 @@ const title = ref();
 const storyId = ref();
 const account = ref();
 const isFeedback = ref(false);
+const feedback = ref("");
 const snackbar = ref({
   value: false,
   color: "",

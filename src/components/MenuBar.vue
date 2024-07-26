@@ -75,6 +75,7 @@ function logout() {
   UserServices.logoutUser()
     .then((data) => {
       console.log(data);
+      router.push({ name: "home" });
     })
     .catch((error) => {
       console.log(error);
@@ -84,7 +85,6 @@ function logout() {
   localStorage.removeItem("selectedUser");
   localStorage.removeItem("previousPage");
   account.value = null;
-  router.push({ name: "home" });
   location.reload();
 
 }

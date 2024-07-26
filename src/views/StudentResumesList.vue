@@ -8,7 +8,6 @@ const router = useRouter();
 const account = ref(null);
 const titles = ref(null);
 const selectedUser = ref(null);
-const isExport = ref(false);
 const snackbar = ref({
   value: false,
   color: "",

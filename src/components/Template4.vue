@@ -99,7 +99,7 @@ async function sortData() {
 
 <template>
   <v-container>
-    <v-sheet style="width: calc(90vh * 8.5 / 11);
+    <v-sheet :elevation="4" style="width: calc(90vh * 8.5 / 11);
           margin: 0 auto; 
           position: relative;">
       <div class="resume">

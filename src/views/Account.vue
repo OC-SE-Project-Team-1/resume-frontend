@@ -1,17 +1,11 @@
 <script setup>
-import { onMounted } from "vue";
+import { computed, onMounted } from "vue";
 import { ref, toRaw, getCurrentInstance } from "vue";
 import { useRouter } from "vue-router";
 import { useTheme } from 'vuetify'
 import UserServices from "../services/UserServices";
 
-import CharacterNameServices from "../services/CharacterNameServices.js";
-import CharacterRoleServices from "../services/CharacterRoleServices.js";
-import GenreServices from "../services/GenreServices.js";
-import TimeServices from "../services/TimePeriodServices.js";
-import LocationServices from "../services/LocationServices.js";
 
-const router = useRouter();
 const account = ref(null);
 const snackbar = ref({
   value: false,
@@ -20,343 +14,60 @@ const snackbar = ref({
 });
 
 const isAccountEditable = ref(false);
-const isDark = ref();
 
-const newUsername = ref();
-const newEmail = ref();
+const accountData = ref(null);
 
-const characterName = ref();
-const selectedcharName = ref(null);
-const characterRole = ref();
-const selectedCharRole = ref(null);
-const genre = ref();
-const selectedGenre = ref(null);
-const time = ref();
-const selectedTime = ref(null);
-const location = ref();
-const selectedLocation = ref(null);
+const changePasswordDialog = ref(false);
+const checkbox1 = ref(false);
 
 onMounted(async () => {
-  account.value = JSON.parse(localStorage.getItem("account"));
-  theme.global.name.value = JSON.parse(localStorage.getItem("darkMode"));
-  newUsername.value = account.value.userName;
-  newEmail.value = account.value.email;
 
-  await getTheme();
-  await getCharacterNames();
-  await getCharacterRoles();
-  await getGenres();
-  await getTimes();
-  await getLocations();
+  account.value = JSON.parse(localStorage.getItem("account"));
+  await getAccount();
+  await populateAccount();
+
+
 });
+
+async function populateAccount(){
+  newUsername.value = accountData.value.userName;
+  newPassword.value = "";
+  newEmail.value = accountData.value.email;
+  newFirstName.value = accountData.value.firstName;
+  newLastName.value = accountData.value.lastName;
+  newAddress.value = accountData.value.address;
+  newPhoneNumber.value = accountData.value.phoneNumber;
+}
+
+async function getAccount() {
+  await UserServices.getUser(account.value.id)
+    .then((response) => {
+      accountData.value = response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+}
 
 function closeSnackBar() {
   snackbar.value.value = false;
-}
-
-//Grab all Characacter Names 
-async function getCharacterNames() {
-  await CharacterNameServices.getcharacterNameForUser(account.value.id)
-    .then((response) => {
-      characterName.value = response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-//Grab all Characacter Roles 
-async function getCharacterRoles() {
-  await CharacterRoleServices.getcharacterRoleForUser(account.value.id)
-    .then((response) => {
-      characterRole.value = response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-//Grab all Genres 
-async function getGenres() {
-  await GenreServices.getgenreForUser(account.value.id)
-    .then((response) => {
-      genre.value = response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-//Grab all Times 
-async function getTimes() {
-  await TimeServices.gettimePeriodForUser(account.value.id)
-    .then((response) => {
-      time.value = response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-//Grab all Locations
-async function getLocations() {
-  await LocationServices.getlocationForUser(account.value.id)
-    .then((response) => {
-      location.value = response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-//Delete Selected Character Name
-async function deleteCharaValue(input) {
-  if (!isDefault(input)) {
-    await CharacterNameServices.deletecharacterName(input.id, account.value.id)
-      .then(() => {
-        getCharacterNames();
-        snackbar.value.value = true;
-        snackbar.value.color = "green";
-        snackbar.value.text = "Name Deleted";
-        router.push({ name: "account" });
-      })
-      .catch((error) => {
-        console.log(error);
-        snackbar.value.value = true;
-        snackbar.value.color = "error";
-        snackbar.value.text = error.response.data.message;
-      });
-  }
-
-}
-
-//Delete Selected Character Role
-async function deleteCharaRole(input) {
-  if (!isDefault(input)) {
-    await CharacterRoleServices.deletecharacterRole(input.id, account.value.id)
-      .then(() => {
-        getCharacterRoles();
-        snackbar.value.value = true;
-        snackbar.value.color = "green";
-        snackbar.value.text = "Name Deleted";
-        router.push({ name: "account" });
-      })
-      .catch((error) => {
-        console.log(error);
-        snackbar.value.value = true;
-        snackbar.value.color = "error";
-        snackbar.value.text = error.response.data.message;
-      });
-  }
-
-}
-
-//Delete Selected Genre
-async function deleteGenre(input) {
-  if (!isDefault(input)) {
-    await GenreServices.deletegenre(input.id, account.value.id)
-      .then(() => {
-        getGenres();
-        snackbar.value.value = true;
-        snackbar.value.color = "green";
-        snackbar.value.text = "Genre Deleted";
-        router.push({ name: "account" });
-      })
-      .catch((error) => {
-        console.log(error);
-        snackbar.value.value = true;
-        snackbar.value.color = "error";
-        snackbar.value.text = error.response.data.message;
-      });
-  }
-
-}
-
-//Delete Selected Time
-async function deleteTime(input) {
-  if (!isDefault(input)) {
-    await TimeServices.deletetimePeriod(input.id, account.value.id)
-      .then(() => {
-        getTimes();
-        snackbar.value.value = true;
-        snackbar.value.color = "green";
-        snackbar.value.text = "Time Deleted";
-        router.push({ name: "account" });
-      })
-      .catch((error) => {
-        console.log(error);
-        snackbar.value.value = true;
-        snackbar.value.color = "error";
-        snackbar.value.text = error.response.data.message;
-      });
-  }
-
-}
-
-//Delete Selected Location
-async function deleteLocation(input) {
-  if (!isDefault(input)) {
-    console.log(account.value.id);
-    console.log(input.id);
-    await LocationServices.deletelocation(input.id, account.value.id)
-      .then(() => {
-        getLocations();
-        snackbar.value.value = true;
-        snackbar.value.color = "green";
-        snackbar.value.text = "Location Deleted";
-        router.push({ name: "account" });
-      })
-      .catch((error) => {
-        console.log(error);
-        snackbar.value.value = true;
-        snackbar.value.color = "error";
-        snackbar.value.text = error.response.data.message;
-      });
-  }
-}
-
-//Add Character Name
-async function addCharacterName() {
-  await CharacterNameServices.addcharacterName(selectedcharName.value, account.value.id)
-    .then(() => {
-      getCharacterNames();
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "Name Added";
-      router.push({ name: "account" });
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-
-}
-
-//Add Character Role
-async function addCharacterRole() {
-  await CharacterRoleServices.addcharacterRole(selectedCharRole.value, account.value.id)
-    .then(() => {
-      getCharacterRoles();
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "Role Added";
-      router.push({ name: "account" });
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-//Add Genre
-async function addGenre() {
-  await GenreServices.addgenre(selectedGenre.value, account.value.id)
-    .then(() => {
-      getGenres();
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "Genre Added";
-      router.push({ name: "account" });
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-//Add Time
-async function addTime() {
-  await TimeServices.addtimePeriod(selectedTime.value, account.value.id)
-    .then(() => {
-      getTimes();
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "Time Added";
-      router.push({ name: "account" });
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-//Add Location
-async function addLocation() {
-  await LocationServices.addlocation(selectedLocation.value, account.value.id)
-    .then(() => {
-      getLocations();
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "Location Added";
-      router.push({ name: "account" });
-    })
-    .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-//Check if Value is Default
-function isDefault(input) {
-
-  if (input.userId === null) {
-    snackbar.value.value = true;
-    snackbar.value.color = "error";
-    snackbar.value.text = "Selected Value is a Default Value";
-    return true;
-  }
-  else {
-    return false;
-  }
 }
 
 //Edit Account Name or Email
 function editAccount() {
   isAccountEditable.value = !isAccountEditable.value;
 
-  if (isAccountEditable.value == false &&
-    newUsername.value !== account.value.userName &&
-    newEmail.value !== account.value.email) {
+  if (isAccountEditable.value == false) {
 
-    updateAccountUserEmail();
+    updateAccount();
   }
-  else if (isAccountEditable.value == false &&
-    newUsername.value !== account.value.userName) {
-
-    updateAccountUsername();
-  }
-  else if (isAccountEditable.value == false &&
-    newEmail.value !== account.value.email) {
-
-    updateAccountEmail();
-  }
+  
 }
 
+/*
 //Edit Account Username and Email
 async function updateAccountUserEmail() {
   await UserServices.updateAccount(account.value.id, newUsername.value, newEmail.value)
@@ -433,17 +144,77 @@ async function updateAccount() {
       console.log(error);
     });
 }
+    */
 
 
-const theme = useTheme();
-async function getTheme() {
-  if (theme.global.name.value == 'LightTheme') {
-    isDark.value = false;
-  }
-  else {
-    isDark.value = true;
-  }
+
+
+// disables/enable save button when changing password
+const isReadPass = computed(() => {
+  return (
+    checkbox1.value === true &&
+    newPassword.value !== "" &&
+    confirmPassword.value !== ""
+  )
+});
+
+//Password Rules for length of password
+const passwordRules = [
+  v => !!v || 'Password is required',
+  v => (v && v.length >= 8 && v.length <= 16) || 'Password must be between 8-16 characters'
+];
+
+// checks if both textboxes match each other to confirm password
+const confirmPasswordRules = computed(() => [
+  v => !!v || 'Confirm Password is required',
+  v => v === newPassword.value || 'Passwords must match'
+]);
+
+
+// LIN'S SECTION AND VARIABLES THAT IS PROB WHAT HE NEEDS
+
+const newUsername = ref();
+const newPassword = ref();
+const newEmail = ref();
+const newFirstName = ref();
+const newLastName = ref();
+const newAddress = ref();
+const newPhoneNumber = ref();
+
+//dw about this one
+const confirmPassword = ref();
+
+// opens change password dialog
+function openChangePasswordDialog() {
+  changePasswordDialog.value = true;
 }
+
+//closes change password dialog
+function closeChangePasswordDialog() {
+  changePasswordDialog.value = false;
+  newPassword.value = null;
+  checkbox1.value = false;
+}
+
+function changePassword() {
+
+  TODO: //ADD IN THE LOGICS FOR CHANGE PASSWORD FUNCTION
+  closeChangePasswordDialog();
+}
+
+function updateAccount() {
+
+
+  TODO: //ADD IN LOGICS FOR UPDATED ACCOUNT
+
+  closeChangePasswordDialog();
+}
+
+
+
+
+
+
 </script>
 
 <script>
@@ -469,7 +240,6 @@ export default {
 <style>
 .panel-wrapper {
   margin-bottom: 1rem;
-  /* Adjust the value as needed */
 }
 </style>
 
@@ -484,16 +254,16 @@ export default {
   </v-container>
   <div id="body" align="center">
 
-    <v-expansion-panels style="width: 50%;">
-      <v-expansion-panel>
-        <v-expansion-panel-title>
-          Account Settings
-        </v-expansion-panel-title>
+    <v-container>
+      <title>
+        Account Settings
+      </title>
 
-        <v-expansion-panel-text align="left" style="margin-left: 5%;">
-          <v-card-actions>
+      
+      <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" variant="text" @click="editAccount()">
+            <v-btn v-if="isAccountEditable" @click="isAccountEditable = false; populateAccount(); ">Cancel</v-btn>
+            <v-btn variant="text" @click="editAccount()">
               {{ isAccountEditable ? 'Save' : 'Edit' }}
             </v-btn>
           </v-card-actions>
@@ -508,6 +278,18 @@ export default {
           </v-row>
           <v-row>
             <v-col cols="2">
+              <v-text for="character" class="headline mb-2">Password: </v-text>
+            </v-col>
+            <v-col>
+              <v-row>
+                <v-btn 
+                variant="tonal" v-if="isAccountEditable" @click="openChangePasswordDialog"> Change Password </v-btn>
+              </v-row>
+
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="2">
               <v-text for="character" class="headline mb-2">Email: </v-text>
             </v-col>
             <v-col>
@@ -516,325 +298,38 @@ export default {
           </v-row>
           <v-row>
             <v-col cols="2">
+              <v-text for="character" class="headline mb-2">First Name: </v-text>
+            </v-col>
+            <v-col>
+              <v-text-field v-model="newFirstName" :readonly="!isAccountEditable"></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="2">
+              <v-text for="character" class="headline mb-2">Last Name: </v-text>
+            </v-col>
+            <v-col>
+              <v-text-field v-model="newLastName" :readonly="!isAccountEditable"></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="2">
+              <v-text for="character" class="headline mb-2">Address: </v-text>
+            </v-col>
+            <v-col>
+              <v-text-field v-model="newAddress" :readonly="!isAccountEditable"></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="2">
               <v-text for="character" class="headline mb-2">Phone Number: </v-text>
             </v-col>
             <v-col>
-              <v-text-field v-model="newEmail" :readonly="!isAccountEditable"></v-text-field>
+              <v-text-field v-model="newPhoneNumber" :readonly="!isAccountEditable"></v-text-field>
             </v-col>
           </v-row>
-        </v-expansion-panel-text>
-      </v-expansion-panel>
-    </v-expansion-panels>
 
-    <div class="mb-10">
-      <v-spacer></v-spacer>
-    </div>
-
-    <v-expansion-panels style="width:50%;">
-
-      <v-expansion-panel>
-        <v-expansion-panel-title>
-          Database Settings
-        </v-expansion-panel-title>
-
-        <v-expansion-panel-text>
-
-          <v-expansion-panels style="width: 75%;">
-
-            <v-expansion-panel>
-
-              <v-expansion-panel-title>
-                Experience:
-              </v-expansion-panel-title>
-
-
-              <v-expansion-panel-text>
-                <v-row>
-                  <v-col>
-
-                    <v-list>
-                      <v-list-item v-for="name in characterName" :key="name.id">
-
-                        <v-row margin="align-center">
-                          <v-col md="8"><v-list-item-title>{{ name.name }}</v-list-item-title> </v-col>
-                          <v-col cols="1">
-                            <v-icon icon="mdi-trash-can" @click="deleteCharaValue(name)"></v-icon>
-                          </v-col>
-                        </v-row>
-
-                      </v-list-item>
-
-                    </v-list>
-
-                  </v-col>
-                </v-row>
-
-
-                <v-row style="width: 75%;">
-                  <v-text-field label="New Name" v-model="selectedcharName">
-
-                  </v-text-field>
-                </v-row>
-                <v-row>
-                  <v-col align="right">
-                    <v-btn color="primary" variant="text" @click="addCharacterName()">
-                      Add
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-expansion-panel-text>
-
-
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-expansion-panel-text>
-
-        <v-expansion-panel-text>
-
-          <v-expansion-panels style="width: 75%;">
-
-            <v-expansion-panel>
-
-              <v-expansion-panel-title>
-                Education:
-              </v-expansion-panel-title>
-
-
-              <v-expansion-panel-text>
-                <v-row>
-                  <v-col>
-
-                    <v-list>
-                      <v-list-item v-for="role in characterRole" :key="role.id">
-
-                        <v-row>
-                          <v-col md="8"><v-list-item-title>{{ role.name }}</v-list-item-title> </v-col>
-                          <v-col cols="1">
-                            <v-icon icon="mdi-trash-can" @click="deleteCharaRole(role)"></v-icon>
-                          </v-col>
-                        </v-row>
-
-                      </v-list-item>
-
-                    </v-list>
-
-
-                  </v-col>
-                </v-row>
-
-
-                <v-row style="width: 75%;">
-                  <v-text-field label="New Role" v-model="selectedCharRole">
-
-                  </v-text-field>
-                </v-row>
-                <v-row>
-                  <v-col align="right">
-                    <v-btn color="primary" variant="text" @click="addCharacterRole()">
-                      Add
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-expansion-panel-text>
-
-
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-expansion-panel-text>
-
-        <v-expansion-panel-text>
-
-          <v-expansion-panels style="width: 75%;">
-
-            <v-expansion-panel>
-
-              <v-expansion-panel-title>
-                Skills:
-              </v-expansion-panel-title>
-
-
-              <v-expansion-panel-text>
-                <v-row>
-                  <v-col>
-
-                    <v-list>
-                      <v-list-item v-for="g in genre" :key="g.id">
-
-                        <v-row>
-                          <v-col md="8"><v-list-item-title>{{ g.name }}</v-list-item-title> </v-col>
-                          <v-col cols="1">
-                            <v-icon icon="mdi-trash-can" @click="deleteGenre(g)"></v-icon>
-                          </v-col>
-                        </v-row>
-
-                      </v-list-item>
-
-                    </v-list>
-
-
-                  </v-col>
-                </v-row>
-
-
-                <v-row style="width: 75%;">
-                  <v-text-field label="New Genre" v-model="selectedGenre">
-
-                  </v-text-field>
-                </v-row>
-                <v-row>
-                  <v-col align="right">
-                    <v-btn color="primary" variant="text" @click="addGenre()">
-                      Add
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-expansion-panel-text>
-
-
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-expansion-panel-text>
-
-
-<!--
-        <v-expansion-panel-text>
-
-          <v-expansion-panels style="width: 75%;">
-
-            <v-expansion-panel>
-
-              <v-expansion-panel-title>
-                Time:
-              </v-expansion-panel-title>
-
-
-              <v-expansion-panel-text>
-                <v-row>
-                  <v-col>
-
-                    <v-list>
-                      <v-list-item v-for="t in time" :key="t.id">
-
-                        <v-row>
-                          <v-col md="8"><v-list-item-title>{{ t.name }}</v-list-item-title> </v-col>
-                          <v-col cols="1">
-                            <v-icon icon="mdi-trash-can" @click="deleteTime(t)"></v-icon>
-                          </v-col>
-                        </v-row>
-
-                      </v-list-item>
-
-                    </v-list>
-
-                  </v-col>
-                </v-row>
-
-
-                <v-row style="width: 75%;">
-                  <v-text-field label="New Time" v-model="selectedTime">
-
-                  </v-text-field>
-                </v-row>
-                <v-row>
-                  <v-col align="right">
-                    <v-btn color="primary" variant="text" @click="addTime()">
-                      Add
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-expansion-panel-text>
-
-
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-expansion-panel-text>
-
-
-        <v-expansion-panel-text>
-
-          <v-expansion-panels style="width: 75%;">
-
-            <v-expansion-panel>
-
-              <v-expansion-panel-title>
-                Location:
-              </v-expansion-panel-title>
-
-
-              <v-expansion-panel-text>
-                <v-row>
-                  <v-col>
-
-                    <v-list>
-                      <v-list-item v-for="l in location" :key="l.id">
-
-                        <v-row>
-                          <v-col md="8"><v-list-item-title>{{ l.location }}</v-list-item-title> </v-col>
-                          <v-col cols="1">
-                            <v-icon icon="mdi-trash-can" @click="deleteLocation(l)"></v-icon>
-                          </v-col>
-                        </v-row>
-
-                      </v-list-item>
-
-                    </v-list>
-
-
-                  </v-col>
-                </v-row>
-
-
-                <v-row style="width: 75%;">
-                  <v-text-field label="New Location" v-model="selectedLocation">
-
-                  </v-text-field>
-                </v-row>
-                <v-row>
-                  <v-col align="right">
-                    <v-btn color="primary" variant="text" @click="addLocation()">
-                      Add
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-expansion-panel-text>
-            
-
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-expansion-panel-text>
-      -->
-
-
-      </v-expansion-panel>
-    </v-expansion-panels>
-
-    <div class="mb-10">
-      <v-spacer></v-spacer>
-    </div>
-
-
-    <v-expansion-panels style="width: 50%;">
-      <v-expansion-panel>
-        <v-expansion-panel-title>
-          Personal Settings
-        </v-expansion-panel-title>
-        <v-expansion-panel-text>
-
-          <v-row>
-          <v-col>
-            <v-switch
-              color="primary"
-              label="Dark mode"
-              hide-details
-            ></v-switch>
-          </v-col>
-        </v-row>
-
-        </v-expansion-panel-text>
-       
-        
-        </v-expansion-panel>
-    </v-expansion-panels>
+    </v-container>
 
   </div>
 
@@ -847,4 +342,42 @@ export default {
       </v-btn>
     </template>
   </v-snackbar>
+
+  <v-dialog v-model="changePasswordDialog" persistent>
+
+    <v-card>
+      <v-card-title>
+        <span class="headline">Change Password?</span>
+      </v-card-title>
+      <v-card-text>
+        <div class="mb-3">
+          <label for="password">Password: </label>
+          <v-text-field v-model="newPassword" :rules="passwordRules" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+            :type="show1 ? 'text' : 'password'" label="Password" hint="8-16 characters" required
+            @click:append="show1 = !show1">
+            <template v-slot:message>
+              <div class="custom-hint">
+                8-16 characters<br>
+              </div>
+            </template>
+          </v-text-field>
+        </div>
+
+        <div class="mb-3">
+          <label for="password">Confirm Password: </label>
+          <v-text-field v-model="confirmPassword" :rules="confirmPasswordRules"
+            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :type="show1 ? 'text' : 'password'" label="Password"
+            required @click:append="show1 = !show1"></v-text-field>
+        </div>
+        <v-checkbox v-model="checkbox1" required
+          :label="`I understand that I will be changing the password`"></v-checkbox>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="blue darken-1" text @click="closeChangePasswordDialog">Cancel</v-btn>
+        <v-btn color="blue darken-1" text @click="changePassword" :disabled="!isReadPass">Save</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
 </template>

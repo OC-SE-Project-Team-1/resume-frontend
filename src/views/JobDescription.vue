@@ -157,10 +157,23 @@ export default {
                 <div id="body">
                     <v-card class="rounded-lg elevation-5 my-8">
                         <v-card-title class="text-center headline mb-2">Resume</v-card-title>
-                        <div style="padding: 3%;">
-                            <v-container>
-                                <!-- Resume preview goes here -->
-                            </v-container>
+                        <div>
+                            <v-row>
+                                <v-col>
+                                    <div v-if="templateId == 1">
+                                    <template1></template1>
+                                    </div>
+                                    <div v-if="templateId == 2">
+                                    <template2></template2>
+                                    </div>
+                                    <div v-if="templateId == 3">
+                                    <template3></template3>
+                                    </div>
+                                    <div v-if="templateId == 4">
+                                    <template4></template4>
+                                    </div>
+                                </v-col>
+                            </v-row>
                         </div>
                     </v-card>
                     <v-card class="rounded-lg elevation-5 my-8">

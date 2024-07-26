@@ -9,6 +9,8 @@ import template2 from "../components/Template2.vue";
 import template3 from "../components/Template3.vue";
 import template4 from "../components/Template4.vue";
 
+const router = useRouter();
+
 // Snackbar
 const snackbar = ref({
     value: false,
@@ -109,6 +111,10 @@ async function requestFeedback() {
             snackbar.value.text = error.response.data.message;
         });;
 }
+
+function navigateToLibrary() {
+  router.push({ name: "library" });
+}
 </script>
 
 <script>
@@ -120,11 +126,18 @@ export default {
 
 <template>
     <v-container>
+        <v-col cols="10">
+            <v-card-title class="pl-0 text-h4 font-weight-bold">Select Job Description</v-card-title>
+        </v-col>
+        <v-row>
+            <v-col class="text-right">
+                <v-btn  class="ml-auto" variant="flat" color="secondary" @click="navigateToLibrary()"> Back </v-btn>
+            </v-col>
+        </v-row>
         <!-- Select Job Description -->
         <v-row>
             <v-col>
                 <div id="body">
-                    <v-text class="headline mb-10">Select Job Description: </v-text>
                     <v-container>
                         <v-data-table v-model="selectedJobDescription" :items="jobDescriptionInfo" item-value="id"
                             :headers="[{ title: 'Job Name', value: 'title' }, { title: 'Description', value: 'description' }]"
@@ -163,7 +176,6 @@ export default {
                 </div>
             </v-col>
         </v-row>
-
         <!-- Add New Job Description -->
         <v-row>
             <v-btn variant="tonal" @click="setNewJobDescVisible">

@@ -29,6 +29,12 @@ onMounted(async () => {
 
 });
 
+function makeSnackbar(value, color, text){
+    snackbar.value.value = value;
+    snackbar.value.color = color;
+    snackbar.value.text = text;
+}
+
 async function populateAccount(){
   newUsername.value = accountData.value.userName;
   newPassword.value = "";
@@ -46,9 +52,7 @@ async function getAccount() {
     })
     .catch((error) => {
       console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
+      makeSnackbar(true, "error", error.response.data.message)
     });
 }
 
@@ -64,90 +68,7 @@ function editAccount() {
 
     updateAccount();
   }
-  
 }
-
-/*
-//Edit Account Username and Email
-async function updateAccountUserEmail() {
-  await UserServices.updateAccount(account.value.id, newUsername.value, newEmail.value)
-    .then((response) => {
-      updateAccount();
-      console.log(response);
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "Username and Email Updated";
-      router.push({ name: "account" });
-    })
-    .catch((error) => {
-
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-//Edit Account Username
-async function updateAccountUsername() {
-  await UserServices.updateUsername(account.value.id, newUsername.value)
-    .then((response) => {
-      updateAccount();
-      console.log(response);
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "Username Updated";
-      router.push({ name: "account" });
-    })
-    .catch((error) => {
-
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-//Edit Account Email
-async function updateAccountEmail() {
-  await UserServices.updateEmail(account.value.id, newEmail.value)
-    .then((response) => {
-      updateAccount();
-      console.log(response);
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "Email Updated";
-      router.push({ name: "account" });
-    })
-    .catch((error) => {
-
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
-    });
-}
-
-//Save Account Changes and Update Visuals
-async function updateAccount() {
-  await UserServices.getUser(account.value.id)
-    .then((response) => {
-      response.data.token = JSON.parse(localStorage.getItem("account")).token
-      console.log(JSON.parse(localStorage.getItem("account")).token)
-
-      window.localStorage.setItem("account", JSON.stringify(response.data));
-      account.value = JSON.parse(localStorage.getItem("account"));
-      window.location.reload();
-    })
-    .catch((error) => {
-
-      console.log(error);
-    });
-}
-    */
-
-
-
 
 // disables/enable save button when changing password
 const isReadPass = computed(() => {
@@ -196,24 +117,33 @@ function closeChangePasswordDialog() {
   checkbox1.value = false;
 }
 
-function changePassword() {
-
-  TODO: //ADD IN THE LOGICS FOR CHANGE PASSWORD FUNCTION
+async function changePassword() {
+  await UserServices.updatePassword(account.value.id,newPassword.value)
+  .then(() => {
+      makeSnackbar(true, "green", "Password Updated!")
+    })
+    .catch((error) => {
+      console.log(error);
+      makeSnackbar(true, "error", error.response.data.message)
+    });
   closeChangePasswordDialog();
 }
 
-function updateAccount() {
-
-
-  TODO: //ADD IN LOGICS FOR UPDATED ACCOUNT
-
+async function updateAccount() {
+  await UserServices.updateAccount(account.value.id, newUsername.value, newEmail.value, newFirstName.value, newLastName.value, newAddress.value, newPhoneNumber.value)
+  .then((response) => {
+      makeSnackbar(true, "green", response)
+      accountData.value.token = JSON.parse(localStorage.getItem("account")).token //keep token
+      window.localStorage.setItem("account", JSON.stringify(accountData.value));
+      account.value = JSON.parse(localStorage.getItem("account"));
+      window.location.reload(true)
+    })
+    .catch((error) => {
+      console.log(error);
+      makeSnackbar(true, "error", error.response.data.message)
+    });
   closeChangePasswordDialog();
 }
-
-
-
-
-
 
 </script>
 

@@ -7,6 +7,7 @@ import UserServices from "../services/UserServices";
 
 
 const account = ref(null);
+const valid = ref(false);
 const snackbar = ref({
   value: false,
   color: "",
@@ -75,7 +76,8 @@ const isReadPass = computed(() => {
   return (
     checkbox1.value === true &&
     newPassword.value !== "" &&
-    confirmPassword.value !== ""
+    confirmPassword.value !== "" &&
+    valid.value === true
   )
 });
 
@@ -119,15 +121,22 @@ function closeChangePasswordDialog() {
 }
 
 async function changePassword() {
-  await UserServices.updatePassword(account.value.id,newPassword.value)
+  if (newPassword.value !== confirmPassword.value) {
+  makeSnackbar(true, "error", "Passwords do not match")
+  }
+  else {
+      await UserServices.updatePassword(account.value.id,newPassword.value)
   .then(() => {
       makeSnackbar(true, "green", "Password Updated!")
     })
     .catch((error) => {
       console.log(error);
       makeSnackbar(true, "error", error.response.data.message)
-    });
-  closeChangePasswordDialog();
+    });  
+    closeChangePasswordDialog();
+  }
+
+
 }
 
 async function updateAccount() {
@@ -275,6 +284,7 @@ export default {
   </v-snackbar>
 
   <v-dialog v-model="changePasswordDialog" persistent>
+<v-form ref="form" v-model="valid">
 
     <v-card>
       <v-card-title>
@@ -309,6 +319,7 @@ export default {
         <v-btn color="blue darken-1" text @click="changePassword" :disabled="!isReadPass">Save</v-btn>
       </v-card-actions>
     </v-card>
+</v-form>
   </v-dialog>
 
 </template>

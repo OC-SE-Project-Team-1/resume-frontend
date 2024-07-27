@@ -114,6 +114,7 @@ function openChangePasswordDialog() {
 function closeChangePasswordDialog() {
   changePasswordDialog.value = false;
   newPassword.value = null;
+  confirmPassword.value = null;
   checkbox1.value = false;
 }
 

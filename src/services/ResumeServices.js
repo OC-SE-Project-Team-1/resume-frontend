@@ -30,6 +30,13 @@ export default {
       "userId": accountID
     });
   },
+
+  updateResumeEditing(resumeId, editing, accountID) {
+    return apiClient.put("resumes/" + resumeId, {
+      "editing": editing,
+      "userId": accountID
+    });
+  },
   deleteResume(resumeId, accountID) {
     return apiClient.delete("resumes/" + resumeId, {
       data: {"userId": parseInt(accountID)}

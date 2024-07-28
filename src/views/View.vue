@@ -7,12 +7,16 @@ import template2 from "../components/Template2.vue";
 import template3 from "../components/Template3.vue";
 import template4 from "../components/Template4.vue";
 import ResumeServices from "../services/ResumeServices";
+import ResumeExport from "../reports/ResumeExport";
+import { useTheme } from 'vuetify'
 
 const router = useRouter();
 const account = ref(null);
 const resumeData = ref(null);
 const resumeId = ref(null);
 const isExport = ref(false);
+const isEdit = ref(false);;
+const isDownloaded = ref(false);
 const isFeedback = ref(false);
 const templateId = ref(0);
 const snackbar = ref({
@@ -20,7 +24,7 @@ const snackbar = ref({
   color: "",
   text: "",
 });
-
+const theme = useTheme();
 
 onMounted(async () => {
   account.value = JSON.parse(localStorage.getItem("account"));
@@ -32,6 +36,7 @@ async function getResume() {
   await ResumeServices.getResume(resumeId.value)
     .then((response) => {
       resumeData.value = response.data;
+      isEdit.value = response.data.editing; 
       templateId.value = resumeData.value.template;
     })
     .catch((error) => {
@@ -52,21 +57,26 @@ function navigateToLibrary() {
 }
 
 //Export Resume
-// async function exportStory() {
-//   await StoryExport.exportStory(resumeId.value)
-//     .then(() => {
-//       closeExport();
-//       snackbar.value.value = true;
-//       snackbar.value.color = "green";
-//       snackbar.value.text = "Story Exported!";
-//     })
-//     .catch((error) => {
-//       console.log(error);
-//       snackbar.value.value = true;
-//       snackbar.value.color = "error";
-//       snackbar.value.text = error.response.data.message;
-//     });
-// }
+async function exportResume() {
+
+    theme.global.name.value = 'LightTheme';
+  
+    const html = document.getElementsByClassName("resume")
+    await ResumeExport.exportResume(html[0])
+    .then(() => {
+      isDownloaded.value = true;
+      closeExport();
+      snackbar.value.value = true;
+      snackbar.value.color = "green";
+      snackbar.value.text = "Resume Exported!";
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+  }
 
 function openExport() {
   isExport.value = true;
@@ -83,6 +93,16 @@ function closeExport() {
 function closeSnackBar() {
   snackbar.value.value = false;
 }
+
+async function updateEditing(){
+  isEdit.value = !isEdit.value
+  await ResumeServices.updateResumeEditing(resumeId.value, isEdit.value, account.value.id )
+}
+
+function refreshPage(){
+  isDownloaded.value = false;
+  window.location.reload(true);
+}
 </script>
 
 <template>
@@ -95,6 +115,9 @@ function closeSnackBar() {
           <v-btn variant="flat" color="secondary" @click="toggleFeedback()">Toggle Feedback</v-btn>
           <v-btn class="ml-auto" variant="flat" color="secondary" @click="navigateToLibrary()"> Back </v-btn>
         </v-card-actions>
+
+        <v-checkbox  id="editingCheckBox" v-model="isEdit" :label="'Allow Feedback on this resume'"
+                        @click = "updateEditing()"></v-checkbox>
       </v-card>
       <v-card-title class="text-center headline mb-2">View</v-card-title>
 
@@ -149,13 +172,21 @@ function closeSnackBar() {
           <v-card-title class="text-center headline mb-2">Export Resume?</v-card-title>
 
           <v-card-actions>
-            <v-btn variant="flat" color="primary" @click="exportStory()">Export PDF</v-btn>
+            <v-btn variant="flat" color="primary" @click="exportResume()">Export PDF</v-btn>
             <v-spacer></v-spacer>
             <v-btn variant="flat" color="secondary" @click="closeExport()">Close</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
 
+      <v-dialog persistent v-model="isDownloaded" width="400">
+        <v-card class="rounded-lg elevation-5">
+          <v-card-title class="text-center headline mb-2">Finish Download?</v-card-title>
+          
+            <v-btn variant="flat" color="primary" @click="refreshPage()">confirm</v-btn>
+          
+        </v-card>
+      </v-dialog>
 
       <v-snackbar v-model="snackbar.value" rounded="pill">
         {{ snackbar.text }}

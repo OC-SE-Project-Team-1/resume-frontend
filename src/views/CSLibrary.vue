@@ -16,6 +16,7 @@ const snackbar = ref({
 
 onMounted(async () => {
   localStorage.removeItem("selectedUser");
+  localStorage.removeItem("previousPage");
   account.value = JSON.parse(localStorage.getItem("account"));
   await getUsers();
 });
@@ -37,6 +38,7 @@ async function getUsers() {
 //Navigate to View Page
 function navigateToView(itemId) {
   window.localStorage.setItem("selectedUser", JSON.stringify(itemId));
+  window.localStorage.setItem("previousPage", "cslibrary");
   router.push({ name: "studentresumeslist" });
 }
 

@@ -63,12 +63,6 @@ function navigateToView(itemId) {
   router.push({ name: "view" });
 }
 
-//Open/Close Pop Ups
-function openExport(itemId) {
-  window.localStorage.setItem("resumeId", JSON.stringify(itemId));
-  resumeId.value = JSON.parse(localStorage.getItem("resumeId"));
-  isExport.value = true;
-}
 function openDelete(itemId) {
   window.localStorage.setItem("resumeId", JSON.stringify(itemId));
   resumeId.value = JSON.parse(localStorage.getItem("resumeId"));
@@ -77,33 +71,12 @@ function openDelete(itemId) {
 function closeSnackBar() {
   snackbar.value.value = false;
 }
-function closeExport() {
-  isExport.value = false;
-}
+
 function closeDelete() {
   window.localStorage.removeItem("resumeId");
   isDeleted.value = false;
 }
 
-//Export Resume
-// async function exportResume() {
-//   await StoryExport.exportResume(resumeId.value)
-//     .then(() => {
-//       closeExport();
-//       localStorage.removeItem("resumeId");
-//       snackbar.value.value = true;
-//       snackbar.value.color = "green";
-//       snackbar.value.text = "Resume Exported!";
-//       router.push({ name: "library" });
-//     })
-//     .catch((error) => {
-//       console.log(error);
-//       snackbar.value.value = true;
-//       snackbar.value.color = "error";
-//       snackbar.value.text = error.response.data.message;
-//     });
-
-// }
 </script>
 <script>
 export default {
@@ -138,24 +111,11 @@ export default {
             <td class="text-left">{{ item.title }}</td>
             <td class="text-right">
               <v-btn rounded variant="text" @click="navigateToView(item.id)"> View </v-btn>
-              <v-btn rounded variant="text" @click="openExport(item.id)"> Export </v-btn>
               <v-btn rounded variant="text" @click="openDelete(item.id)"> Delete </v-btn>
             </td>
           </tr>
         </tbody>
       </v-table>
-
-      <v-dialog persistent v-model="isExport" width="800">
-        <v-card class="rounded-lg elevation-5">
-          <v-card-title class="text-center headline mb-2">Export Resume?</v-card-title>
-
-          <v-card-actions>
-            <v-btn variant="flat" color="primary" @click="exportResume()">Export PDF</v-btn>
-            <v-spacer></v-spacer>
-            <v-btn variant="flat" color="secondary" @click="closeExport()">Close</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
 
       <v-dialog persistent v-model="isDeleted" width="800">
         <v-card class="rounded-lg elevation-5">

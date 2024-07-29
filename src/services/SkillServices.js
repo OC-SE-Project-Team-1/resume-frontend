@@ -18,9 +18,11 @@ export default {
       "userId": accountID
     });
   },
-  updateSkill(skillId, skill, accountID) {
+  updateSkill(skillId, title, skill, chatHistory, accountID) {
     return apiClient.put("skill/" + skillId, {
+      "title": title,
       "description": String(skill),
+      "chatHistory" : chatHistory,
       "userId": accountID
     });
   },

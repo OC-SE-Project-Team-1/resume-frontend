@@ -10,22 +10,69 @@ const account = ref(null);
 const title = ref("The R.A.I.N.");
 const logoURL = ref("");
 const theme = useTheme();
+const accountData = ref(null);
+const isDark = ref(null);
+
+const snackbar = ref({
+  value: false,
+  color: "",
+  text: "",
+});
 
 onMounted(async () => {
   logoURL.value = ftLogo;
   account.value = JSON.parse(localStorage.getItem("account"));
-  if (JSON.parse(localStorage.getItem("darkMode") === null)) {
-    theme.global.name.value = 'LightTheme';
-    window.localStorage.setItem("darkMode", JSON.stringify(theme.global.name.value));
+  
+
+  if (account.value !== null) {
+    await getAccount();
+    console.log("Account is logged in");
+    console.log(accountData.value);
+    console.log(isDark.value);
+
+    if (accountData.value.darkMode === true) {
+      theme.global.name.value = 'DarkTheme';
+    }
+    else {
+      theme.global.name.value = 'LightTheme';
+    }
   }
   else {
-    theme.global.name.value = JSON.parse(localStorage.getItem("darkMode"));
+    
+    console.log("Account isn't logged in");
+    console.log(accountData.value);
+
+    if (JSON.parse(localStorage.getItem("darkMode") === null)) {
+    theme.global.name.value = 'LightTheme';
+    window.localStorage.setItem("darkMode", JSON.stringify(theme.global.name.value));
+    }
+    else {
+      theme.global.name.value = JSON.parse(localStorage.getItem("darkMode"));
+    }
   }
 
 });
 
+async function getAccount() {
+  await UserServices.getUser(account.value.id)
+  .then((response) => {
+      accountData.value = response.data;
+      isDark.value = response.data.darkMode; 
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+}
+
 function navigateToAccountSettings() {
   router.push({ name: "account" });
+}
+
+function navigateToDatabase() {
+  router.push({ name: "database" });
 }
 
 function logout() {
@@ -40,14 +87,46 @@ function logout() {
   localStorage.removeItem("storyId");
   account.value = null;
   router.push({ name: "home" });
-
+  location.reload();
 
 }
 
 function toggleTheme() {
+
   theme.global.name.value = theme.global.current.value.dark ? 'LightTheme' : 'DarkTheme';
-  window.localStorage.setItem("darkMode", JSON.stringify(theme.global.name.value));
+
+  if (account.value !== null) {
+
+    if (theme.global.name.value === 'LightTheme') {
+      isDark.value = false;
+    }
+    else {
+      isDark.value = true;
+    }
+
+    updateDarkMode();
+
+  }
+  else {
+  
+    window.localStorage.setItem("darkMode", JSON.stringify(theme.global.name.value));
+
+  }
+
 }
+
+async function updateDarkMode() {
+  await UserServices.updateDarkMode(account.value.id, isDark.value)
+  .then ((response) => {
+    })
+    .catch((error) => {
+      console.log(error);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = error.response.data.message;
+    });
+}
+
 </script>
 
 <template>
@@ -84,6 +163,8 @@ function toggleTheme() {
               </p>
               <v-divider class="my-3"></v-divider>
               <v-btn rounded variant="text" @click="navigateToAccountSettings()"> Account Settings </v-btn>
+              <v-divider class="my-3"></v-divider>
+              <v-btn rounded variant="text" @click="navigateToDatabase()"> Manage Database </v-btn>
               <v-divider class="my-3"></v-divider>
               <v-btn rounded variant="text" @click="logout()"> Logout </v-btn>
             </div>

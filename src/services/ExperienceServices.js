@@ -25,8 +25,19 @@ export default {
             "chatHistory": chatHistory,
         })
     },
-    updateExperience() {
-
+    updateExperience(title, description, startDate, endDate, 
+                city, state, organization, chatHistory, userID, id ) {
+            return apiClient.put("/experience/" + id, {
+                "title": String(title),
+                "description": String(description),
+                "startDate": String(startDate),
+                "endDate": endDate,
+                "userId": userID,
+                "city": city,
+                "state": state,
+                "organization": organization,
+                "chatHistory": chatHistory,
+            })
     },
     deleteExperience(experienceID, accountID) {
         return apiClient.delete("experience/" + experienceID, {

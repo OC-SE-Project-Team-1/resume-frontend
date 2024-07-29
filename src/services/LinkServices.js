@@ -17,8 +17,9 @@ export default {
       "userId": accountID
     });
   },
-  updateLink(linkId, link, accountID) {
+  updateLink(linkId,type, link, accountID) {
     return apiClient.put("link/" + linkId, {
+      "type" : String(type),
       "url": String(link),
       "userId": accountID
     });

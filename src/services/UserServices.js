@@ -26,25 +26,32 @@ export default {
   logoutUser() {
     return apiClient.post("logout");
   },
-  updateUsername(accountID, username) {
-    return apiClient.put("account/" + accountID, {
-      "userName": String(username),
-      "userId": parseInt(accountID)
-    });
-  },
-  updateEmail(accountID, email) {
-    return apiClient.put("account/" + accountID, {
-      "email": String(email),
-      "userId": parseInt(accountID)
-    });
-  },
-  updateAccount(accountID, username, email) {
+
+  updateAccount(accountID, username, email, firstName, lastName, address, phoneNumber) {
     return apiClient.put("account/" + accountID, {
       "userName": String(username),
       "email": String(email),
+      "firstName": String(firstName),
+      "lastName": String(lastName),
+      "address": String(address),
+      "phoneNumber": String(phoneNumber),
       "userId": parseInt(accountID)
     });
   },
+  updateDarkMode(accountID, isDark) {
+    return apiClient.put("account/" + accountID, {
+      "darkMode": String(isDark),
+      "userId": accountID
+    });
+  },
+
+  updatePassword(accountID, password) {
+    return apiClient.put("account/" + accountID, {
+      "password": String(password),
+      "userId": parseInt(accountID)
+    });
+  },
+
   updateAccountRole(accountID, userId, role) {
     return apiClient.put("account/" + userId, {
       "roleId": parseInt(role),

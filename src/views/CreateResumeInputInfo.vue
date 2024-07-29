@@ -13,6 +13,10 @@ import template1 from "/Template1.png";
 import template2 from "/Template2.png";
 import template3 from "/Template3.png";
 import template4 from "/Template4.png";
+import PreviewTemplate1 from "../components/PreviewTemplate1.vue";
+import PreviewTemplate2 from "../components/PreviewTemplate2.vue";
+import PreviewTemplate3 from "../components/PreviewTemplate3.vue";
+import PreviewTemplate4 from "../components/PreviewTemplate4.vue";
 
 const account = ref();
 const title = ref("");
@@ -765,8 +769,8 @@ async function skillAiAssist(){
     await SkillServices.skillAiAssist(skillDescription.value)
         .then((response) => {
         skillDescription.value = response.data.description
-        skillHistory.push(response.data.history[0])
-        skillHistory.push(response.data.history[1])         
+        skillHistory.push(response.data.chatHistory[0])
+        skillHistory.push(response.data.chatHistory[1])         
         })
         
 }
@@ -891,8 +895,8 @@ async function aiGoalAssist(){
     await GoalServices.goalAiAssist(aiGoalTitle.value, aiGoalExperiences.value.split(","), aiGoalAchievements.value.split(",") )
         .then((response) =>{
             goalDescription.value = response.data.description
-            goalChatHistory.push(response.data.history[0])
-            goalChatHistory.push(response.data.history[1])
+            goalChatHistory.push(response.data.chatHistory[0])
+            goalChatHistory.push(response.data.chatHistory[1])
         })
         
     }
@@ -901,9 +905,8 @@ async function experienceAIAssist(){
     await ExperienceServices.experienceAiAssist(jobDescription.value)
         .then((response) => {
         jobDescription.value = response.data.description
-        console.log(response.data.history[0])
-        experienceChatHistory.push(response.data.history[0])
-        experienceChatHistory.push(response.data.history[1])         
+        experienceChatHistory.push(response.data.chatHistory[0])
+        experienceChatHistory.push(response.data.chatHistory[1])         
     })
 }
 

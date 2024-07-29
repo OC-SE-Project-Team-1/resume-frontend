@@ -24,7 +24,7 @@ const account = ref({
   phoneNumber: "",
   address: "",
   roleId: userRole,
-  darkMode: "1" //TODO: Get Dark Mode working Properly
+  darkMode: true //TODO: Get Dark Mode working Properly
 });
 
 const allFilled = computed(() => {
@@ -40,7 +40,8 @@ const allFilled = computed(() => {
     account.value.firstName !== "" &&
     account.value.lastName !== "" &&
     account.value.phoneNumber !== "" &&
-    account.value.darkMode !== "" &&
+    account.value.darkMode !== ""  &&
+    valid.value === true &&
     (userRole.value === '3' || 
     (userRole.value === '2' && 
       verifyRoleCode.value === "services")|| 
@@ -69,9 +70,18 @@ function navigateToLogin() {
   router.push({ name: "login" });
 }
 
+
+const message = ref("Passwords do not match");
 //Create Account
 async function createAccount() {
   console.log(account.value);
+
+  if (account.value.password !== confirmPassword.value) {
+    console.log(message);
+      snackbar.value.value = true;
+      snackbar.value.color = "error";
+      snackbar.value.text = "Passwords do not match";
+  } else {
   await UserServices.addUser(account.value)
     .then((data) => {
       window.localStorage.setItem("account", JSON.stringify(data.data));
@@ -86,6 +96,9 @@ async function createAccount() {
       snackbar.value.color = "error";
       snackbar.value.text = error.response.data.message;
     });
+  }
+
+
 }
 
 function closeSnackBar() {

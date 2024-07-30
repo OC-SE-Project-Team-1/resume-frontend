@@ -563,8 +563,6 @@ async function aiGoalAssist() {
 }
 
 async function experienceAIAssist(edit) {
-    console.log("THIS IS CHAT HISTORY");
-        console.log(editedItem.value.chatHistory);
     if (edit){
         await ExperienceServices.experienceAiAssist(editedItem.value.description, editedItem.value.chatHistory )
         .then((response) => {

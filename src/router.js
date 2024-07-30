@@ -35,6 +35,11 @@ const router = createRouter({
       component: () => import("./views/Library.vue"),
     },
     {
+      path: "/library/jobDesc",
+      name: "jobDescription",
+      component: () => import("./views/JobDescription.vue"),
+    },
+    {
       path: "/library/view",
       name: "view",
       component: () => import("./views/View.vue"),

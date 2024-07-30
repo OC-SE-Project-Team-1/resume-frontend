@@ -89,7 +89,7 @@ function logout() {
   localStorage.removeItem("selectedUser");
   localStorage.removeItem("previousPage");
   account.value = null;
-  location.reload();
+  router.push({ name: "home" });
 
 }
 

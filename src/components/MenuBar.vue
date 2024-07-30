@@ -71,6 +71,10 @@ function navigateToAccountSettings() {
   router.push({ name: "account" });
 }
 
+function navigateToDatabase() {
+  router.push({ name: "database" });
+}
+
 function logout() {
   UserServices.logoutUser()
     .then((data) => {
@@ -161,6 +165,8 @@ async function updateDarkMode() {
               </p>
               <v-divider class="my-3"></v-divider>
               <v-btn rounded variant="text" @click="navigateToAccountSettings()"> Account Settings </v-btn>
+              <v-divider class="my-3"></v-divider>
+              <v-btn rounded variant="text" @click="navigateToDatabase()"> Manage Database </v-btn>
               <v-divider class="my-3"></v-divider>
               <v-btn rounded variant="text" @click="logout()"> Logout </v-btn>
             </div>

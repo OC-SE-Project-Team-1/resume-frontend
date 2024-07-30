@@ -78,6 +78,10 @@ const router = createRouter({
       path: "/admin",
       name: "admin",
       component: () => import("./views/Admin.vue"),
+    },{
+      path: "/database",
+      name: "database",
+      component: () => import("./views/Database.vue"),
     },
   ],
 });

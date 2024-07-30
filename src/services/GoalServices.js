@@ -18,9 +18,10 @@ export default {
       "userId": accountID
     });
   },
-  updateGoal(goalId, goal, accountID) {
+  updateGoal(goalId, title, description, accountID) {
     return apiClient.put("goal/" + goalId, {
-      "description": String(goal),
+      "title" : String(title),
+      "description": String(description),
       "userId": accountID
     });
   },

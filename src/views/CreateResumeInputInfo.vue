@@ -634,6 +634,7 @@ async function closeEducation() {
     gpa.value = null;
     schoolName.value = null;
     schoolCity.value = null;
+    schoolState.value = null;
     courses.value = null;
     minors.value = null;
     maxGpa.value = null;
@@ -768,8 +769,8 @@ async function skillAiAssist(){
     await SkillServices.skillAiAssist(skillDescription.value)
         .then((response) => {
         skillDescription.value = response.data.description
-        skillHistory.push(response.data.history[0])
-        skillHistory.push(response.data.history[1])         
+        skillHistory.push(response.data.chatHistory[0])
+        skillHistory.push(response.data.chatHistory[1])         
         })
         
 }
@@ -894,8 +895,8 @@ async function aiGoalAssist(){
     await GoalServices.goalAiAssist(aiGoalTitle.value, aiGoalExperiences.value.split(","), aiGoalAchievements.value.split(",") )
         .then((response) =>{
             goalDescription.value = response.data.description
-            goalChatHistory.push(response.data.history[0])
-            goalChatHistory.push(response.data.history[1])
+            goalChatHistory.push(response.data.chatHistory[0])
+            goalChatHistory.push(response.data.chatHistory[1])
         })
         
     }
@@ -904,9 +905,8 @@ async function experienceAIAssist(){
     await ExperienceServices.experienceAiAssist(jobDescription.value)
         .then((response) => {
         jobDescription.value = response.data.description
-        console.log(response.data.history[0])
-        experienceChatHistory.push(response.data.history[0])
-        experienceChatHistory.push(response.data.history[1])         
+        experienceChatHistory.push(response.data.chatHistory[0])
+        experienceChatHistory.push(response.data.chatHistory[1])         
     })
 }
 

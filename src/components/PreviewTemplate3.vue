@@ -48,7 +48,7 @@ async function getUser() {
   <v-container>
     <v-sheet :elevation="4" style="width: calc(90vh * 8.5 / 11);
           margin: 0 auto; 
-          position: relative;">
+          position: relative;  background-color: white;">
 
       <div class="resume" >
       <header>
@@ -213,6 +213,7 @@ async function getUser() {
     padding-bottom: 8%;
     font-size:x-small;
     margin: 0 auto;
+    color: black;
   }
   
   header {

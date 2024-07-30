@@ -61,7 +61,7 @@ function navigateToLibrary() {
 //Export Resume
 async function exportResume() {
 
-    theme.global.name.value = 'LightTheme';
+    //theme.global.name.value = 'LightTheme';
   
     const html = document.getElementsByClassName("resume")
     await ResumeExport.exportResume(html[0])
@@ -103,7 +103,7 @@ async function updateEditing(){
 
 function refreshPage(){
   isDownloaded.value = false;
-  window.location.reload(true);
+ // window.location.reload(true);
 }
 </script>
 

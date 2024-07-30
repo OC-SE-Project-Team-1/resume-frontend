@@ -87,7 +87,6 @@ function logout() {
   localStorage.removeItem("storyId");
   account.value = null;
   router.push({ name: "home" });
-  location.reload();
 
 }
 

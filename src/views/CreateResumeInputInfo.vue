@@ -634,6 +634,7 @@ async function closeEducation() {
     gpa.value = null;
     schoolName.value = null;
     schoolCity.value = null;
+    schoolState.value = null;
     courses.value = null;
     minors.value = null;
     maxGpa.value = null;

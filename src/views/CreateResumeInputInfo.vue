@@ -910,6 +910,10 @@ async function experienceAIAssist(){
     })
 }
 
+async function projectAIAssist() {
+
+}
+
 </script>
 
 <script>
@@ -1901,7 +1905,7 @@ export default {
                 <v-row>
                     <v-textarea label="Project Summary" v-model="jobDescription">
                         <template #append-inner>
-                            <v-btn color="secondary" rounded="xl" value="Ai Assist">
+                            <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="experienceAIAssist()">
                                 AI Assist
                             </v-btn>
                         </template>

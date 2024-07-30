@@ -407,6 +407,7 @@ async function closeEducation() {
     gpa.value = null;
     schoolName.value = null;
     schoolCity.value = null;
+    schoolState.value = null;
     courses.value = null;
     minors.value = null;
     maxGpa.value = null;
@@ -563,7 +564,7 @@ async function aiGoalAssist() {
 
 async function experienceAIAssist(edit) {
     if (edit){
-        await ExperienceServices.experienceAiAssist(editedItem.value.description, JSON.parse(editedItem.value.chatHistory) )
+        await ExperienceServices.experienceAiAssist(editedItem.value.description, editedItem.value.chatHistory )
         .then((response) => {
                 editedItem.value.description = response.data.description
                 editedItem.value.chatHistory = response.data.chatHistory

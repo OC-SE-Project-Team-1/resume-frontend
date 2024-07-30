@@ -641,6 +641,7 @@ async function closeEducation() {
     gpa.value = null;
     schoolName.value = null;
     schoolCity.value = null;
+    schoolState.value = null;
     courses.value = null;
     minors.value = null;
     maxGpa.value = null;
@@ -986,7 +987,6 @@ async function deleting(deleteItem){
         });
     
 }
-
 
 </script>
 
@@ -2067,7 +2067,7 @@ export default {
                 <v-row>
                     <v-textarea label="Project Summary" v-model="jobDescription">
                         <template #append-inner>
-                            <v-btn color="secondary" rounded="xl" value="Ai Assist">
+                            <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="experienceAIAssist()">
                                 AI Assist
                             </v-btn>
                         </template>

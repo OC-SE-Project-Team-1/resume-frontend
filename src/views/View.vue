@@ -8,7 +8,7 @@ import template3 from "../components/Template3.vue";
 import template4 from "../components/Template4.vue";
 import ResumeServices from "../services/ResumeServices";
 import ResumeExport from "../reports/ResumeExport";
-import { useTheme } from 'vuetify'
+import { useTheme } from 'vuetify';
 
 const router = useRouter();
 const account = ref(null);
@@ -18,6 +18,7 @@ const isExport = ref(false);
 const isEdit = ref(false);;
 const isDownloaded = ref(false);
 const isFeedback = ref(false);
+const feedback = ref("");
 const templateId = ref(0);
 const snackbar = ref({
   value: false,
@@ -38,6 +39,7 @@ async function getResume() {
       resumeData.value = response.data;
       isEdit.value = response.data.editing; 
       templateId.value = resumeData.value.template;
+      feedback.value = resumeData.value.comments;
     })
     .catch((error) => {
       console.log(error);
@@ -158,10 +160,6 @@ function refreshPage(){
               <v-card-text>
                 <v-textarea v-model="feedback" label="View Feedback" auto-grow readonly></v-textarea>
               </v-card-text>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn variant="flat" color="primary" @click="submitFeedback()">Submit</v-btn>
-              </v-card-actions>
             </v-card>
           </v-col>
         </v-row>

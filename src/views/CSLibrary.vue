@@ -17,6 +17,7 @@ const snackbar = ref({
 onMounted(async () => {
   localStorage.removeItem("selectedUser");
   localStorage.removeItem("previousPage");
+  localStorage.removeItem("resumeId");
   account.value = JSON.parse(localStorage.getItem("account"));
   await getUsers();
 });

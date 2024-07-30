@@ -75,14 +75,16 @@ function logout() {
   UserServices.logoutUser()
     .then((data) => {
       console.log(data);
+      router.push({ name: "home" });
     })
     .catch((error) => {
       console.log(error);
     });
   localStorage.removeItem("account");
-  localStorage.removeItem("storyId");
+  localStorage.removeItem("resumeId");
+  localStorage.removeItem("selectedUser");
+  localStorage.removeItem("previousPage");
   account.value = null;
-  router.push({ name: "home" });
   location.reload();
 
 }

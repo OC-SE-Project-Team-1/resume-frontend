@@ -2,16 +2,24 @@
 import { onMounted } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import CreateStoryServices from "../services/CreateStoryServices";
-import StoryExport from "../reports/StoryExport";
+import { useTheme } from 'vuetify';
+import template1 from "../components/Template1.vue";
+import template2 from "../components/Template2.vue";
+import template3 from "../components/Template3.vue";
+import template4 from "../components/Template4.vue";
+import ResumeServices from "../services/ResumeServices";
+import ResumeExport from "../reports/ResumeExport";
 
 const router = useRouter();
+const theme = useTheme();
 const account = ref(null);
-const content = ref(null);
-const title = ref(null);
-const storyId = ref(null);
+const resumeId = ref(null);
 const isExport = ref(false);
 const feedback = ref(null);
+const templateId = ref(0);
+const resumeData = ref(null);
+const isDownloaded = ref(false);
+const selectedUser = ref();
 
 const snackbar = ref({
   value: false,
@@ -19,18 +27,19 @@ const snackbar = ref({
   text: "",
 });
 
-
 onMounted(async () => {
   account.value = JSON.parse(localStorage.getItem("account"));
-  storyId.value = JSON.parse(localStorage.getItem("storyId"));
-  await getStory();
+  resumeId.value = JSON.parse(localStorage.getItem("resumeId"));
+  selectedUser.value = JSON.parse(localStorage.getItem("selectedUser"));
+  await getResume();
 });
 
-async function getStory() {
-  await CreateStoryServices.getOneStory(storyId.value)
+async function getResume() {
+  await ResumeServices.getResume(resumeId.value)
     .then((response) => {
-      title.value = response.data.title;
-      content.value = response.data.story;
+      resumeData.value = response.data;
+      templateId.value = resumeData.value.template;
+      feedback.value = response.data.comments;
     })
     .catch((error) => {
       console.log(error);
@@ -38,25 +47,43 @@ async function getStory() {
       snackbar.value.color = "error";
       snackbar.value.text = error.response.data.message;
     });
-}
-
-//Navigate to Different Pages
-function navigateToEdit() {
-  router.push({ name: "edit" });
 }
 
 function navigateToStudentResumes() {
   router.push({ name: "studentresumeslist" });
 }
 
-//Export Story
-async function exportStory() {
-  await StoryExport.exportStory(storyId.value)
+//Export Resume
+async function exportResume() {
+
+theme.global.name.value = 'LightTheme';
+
+const html = document.getElementsByClassName("resume")
+await ResumeExport.exportResume(html[0])
+.then(() => {
+  isDownloaded.value = true;
+  closeExport();
+  snackbar.value.value = true;
+  snackbar.value.color = "green";
+  snackbar.value.text = "Resume Exported!";
+})
+.catch((error) => {
+  console.log(error);
+  snackbar.value.value = true;
+  snackbar.value.color = "error";
+  snackbar.value.text = error.response.data.message;
+});
+}
+
+//Submit Feedback
+async function submitFeedback() {
+  console.log()
+  await ResumeServices.inputCSFeedback(resumeId.value, feedback.value, selectedUser.value.id)
     .then(() => {
-      closeExport();
+      console.log("Feedback Submitted!")
       snackbar.value.value = true;
       snackbar.value.color = "green";
-      snackbar.value.text = "Story Exported!";
+      snackbar.value.text = "Feedback Submitted!";
     })
     .catch((error) => {
       console.log(error);
@@ -64,23 +91,6 @@ async function exportStory() {
       snackbar.value.color = "error";
       snackbar.value.text = error.response.data.message;
     });
-}
-
-//Submit Feedback
-async function submitFeedback() {
-  // await StoryExport.exportStory(storyId.value)
-  //   .then(() => {
-  //     closeExport();
-  //     snackbar.value.value = true;
-  //     snackbar.value.color = "green";
-  //     snackbar.value.text = "Story Exported!";
-  //   })
-  //   .catch((error) => {
-  //     console.log(error);
-  //     snackbar.value.value = true;
-  //     snackbar.value.color = "error";
-  //     snackbar.value.text = error.response.data.message;
-  //   });
 }
 
 function openExport() {
@@ -93,6 +103,11 @@ function closeExport() {
 
 function closeSnackBar() {
   snackbar.value.value = false;
+}
+
+function refreshPage(){
+  isDownloaded.value = false;
+  window.location.reload(true);
 }
 </script>
 
@@ -110,9 +125,18 @@ function closeSnackBar() {
         <v-col>
       <v-card class="rounded-lg elevation-5 my-8">
         <v-card-title class="text-center headline mb-2">Resume</v-card-title>
-        <v-card-text>
-          <v-textarea v-model="content" label="RESUME FILLER FOR NOW" auto-grow readonly></v-textarea>
-        </v-card-text>
+        <div v-if="templateId == 1">
+          <template1></template1>
+        </div>
+        <div v-if="templateId == 2">
+          <template2></template2>
+        </div>
+        <div v-if="templateId == 3">
+          <template3></template3>
+        </div>
+        <div v-if="templateId == 4">
+          <template4></template4>
+        </div>
       </v-card>
     </v-col>
   <v-col>
@@ -129,15 +153,24 @@ function closeSnackBar() {
     </v-col>
     </v-row>
 
-      <v-dialog persistent v-model="isExport" width="800">
+    <v-dialog persistent v-model="isExport" width="800">
         <v-card class="rounded-lg elevation-5">
-          <v-card-title class="text-center headline mb-2">Export Story?</v-card-title>
+          <v-card-title class="text-center headline mb-2">Export Resume?</v-card-title>
 
           <v-card-actions>
-            <v-btn variant="flat" color="primary" @click="exportStory()">Export PDF</v-btn>
+            <v-btn variant="flat" color="primary" @click="exportResume()">Export PDF</v-btn>
             <v-spacer></v-spacer>
             <v-btn variant="flat" color="secondary" @click="closeExport()">Close</v-btn>
           </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog persistent v-model="isDownloaded" width="400">
+        <v-card class="rounded-lg elevation-5">
+          <v-card-title class="text-center headline mb-2">Finish Download?</v-card-title>
+          
+            <v-btn variant="flat" color="primary" @click="refreshPage()">Confirm</v-btn>
+          
         </v-card>
       </v-dialog>
 

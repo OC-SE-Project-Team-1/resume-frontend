@@ -43,6 +43,12 @@ export default {
       "userId": accountID
     });
   },
+  inputCSFeedback(resumeId, feedback, userID) {
+    return apiClient.put("resumes/" + resumeId, {
+      "comments": feedback,
+      "userId": userID
+    });
+  },
   deleteResume(resumeId, accountID) {
     return apiClient.delete("resumes/" + resumeId, {
       data: {"userId": parseInt(accountID)}

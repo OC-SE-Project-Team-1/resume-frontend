@@ -101,6 +101,8 @@ const isCourses = ref(false);
 const isAttending = ref(false);
 
 let deleteItemId = 0;
+
+//gray out submit button rules
 const isLinked = computed(() => {
     return (
         link.value !== "" &&
@@ -119,6 +121,36 @@ const isSkilled = computed(() => {
         skillDescription.value !== ""
     )
 });
+const isEducationFilled = computed(() =>{
+    return(
+        schoolName.value !== "" && schoolName.value !== null &&
+        schoolCity.value !== "" && schoolCity.value !== null &&
+        schoolState.value !== "" && schoolState.value !== null &&
+        schoolStart.value !== "" && schoolStart.value !== null &&
+        degree.value !== "" && degree.value !== null &&
+        degreeTitle.value !== "" && degreeTitle.value !== null &&
+        degreeType.value !== "" && degreeType.value !== null
+    )
+})
+
+const isExperienced = computed(() =>{
+    return(
+        jobExperienceTitle.value !== "" && jobExperienceTitle.value !== null &&
+        jobCompany.value !== "" && jobCompany.value !== null &&
+        jobCity.value !== "" && jobCity.value !== null &&
+        jobState.value !== "" && jobState.value !== null &&
+        jobStart.value !== "" && jobStart.value !== null &&
+        jobDescription.value !== "" && jobDescription.value !== null
+    )
+})
+
+const isOthered = computed(() =>{
+    return(
+        jobExperienceTitle.value !== "" && jobExperienceTitle.value !== null &&
+        jobStart.value !== "" && jobStart.value !== null &&
+        jobDescription.value !== "" && jobDescription.value !== null
+    )
+})
 
 onMounted(() => {
     account.value = JSON.parse(localStorage.getItem("account"));
@@ -1130,7 +1162,7 @@ export default {
                                         Cancel
                                     </v-btn>
                                     &nbsp;&nbsp;&nbsp;
-                                    <v-btn variant="tonal" @click="addNewEducation()">
+                                    <v-btn variant="tonal" :disabled="!isEducationFilled" @click="addNewEducation()">
                                         Submit
                                     </v-btn>
                                 </v-container>
@@ -1236,7 +1268,7 @@ export default {
                                         Cancel
                                     </v-btn>
                                     &nbsp;&nbsp;&nbsp;
-                                    <v-btn variant="tonal" @click="addNewExperience(1)">
+                                    <v-btn variant="tonal" :disabled="!isExperienced" @click="addNewExperience(1)">
                                         Submit
                                     </v-btn>
                                 </v-container>
@@ -1351,7 +1383,7 @@ export default {
                                         Cancel
                                     </v-btn>
                                     &nbsp;&nbsp;&nbsp;
-                                    <v-btn variant="tonal" @click="addNewExperience(2)">
+                                    <v-btn variant="tonal" :disabled="!isExperienced" @click="addNewExperience(2)">
                                         Submit
                                     </v-btn>
                                 </v-container>
@@ -1453,7 +1485,7 @@ export default {
                                         Cancel
                                     </v-btn>
                                     &nbsp;&nbsp;&nbsp;
-                                    <v-btn variant="tonal" @click="addNewExperience(3)">
+                                    <v-btn variant="tonal" :disabled="!isExperienced" @click="addNewExperience(3)">
                                         Submit
                                     </v-btn>
                                 </v-container>
@@ -1554,7 +1586,7 @@ export default {
                                         Cancel
                                     </v-btn>
                                     &nbsp;&nbsp;&nbsp;
-                                    <v-btn variant="tonal" @click="addNewExperience(4)">
+                                    <v-btn variant="tonal" :disabled="!isExperienced" @click="addNewExperience(4)">
                                         Submit
                                     </v-btn>
                                 </v-container>
@@ -1751,7 +1783,7 @@ export default {
                                         Cancel
                                     </v-btn>
                                     &nbsp;&nbsp;&nbsp;
-                                    <v-btn variant="tonal" @click="addNewExperience(5)">
+                                    <v-btn variant="tonal" :disabled="!isOthered" @click="addNewExperience(5)">
                                         Submit
                                     </v-btn>
 
@@ -1828,7 +1860,7 @@ export default {
                                         Cancel
                                     </v-btn>
                                     &nbsp;&nbsp;&nbsp;
-                                    <v-btn variant="tonal" @click="addNewExperience(6)">
+                                    <v-btn variant="tonal" :disabled="!isOthered" @click="addNewExperience(6)">
                                         Submit
                                     </v-btn>
 
@@ -1933,7 +1965,7 @@ export default {
                                         Cancel
                                     </v-btn>
                                     &nbsp;&nbsp;&nbsp;
-                                    <v-btn variant="tonal" @click="addNewExperience(7)">
+                                    <v-btn variant="tonal" :disabled="!isExperienced" @click="addNewExperience(7)">
                                         Submit
                                     </v-btn>
                                 </v-container>

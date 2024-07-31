@@ -19,6 +19,7 @@ const isEdit = ref(false);;
 const isDownloaded = ref(false);
 const isFeedback = ref(false);
 const feedback = ref("");
+const rating = ref("");
 const templateId = ref(0);
 const snackbar = ref({
   value: false,
@@ -40,6 +41,7 @@ async function getResume() {
       isEdit.value = response.data.editing; 
       templateId.value = resumeData.value.template;
       feedback.value = resumeData.value.comments;
+      rating.value = resumeData.value.rating;
     })
     .catch((error) => {
       console.log(error);
@@ -158,7 +160,10 @@ function refreshPage(){
             <v-card class="rounded-lg elevation-5 my-8">
               <v-card-title class="text-center headline mb-2">Feedback</v-card-title>
               <v-card-text>
-                <v-textarea v-model="feedback" label="View Feedback" auto-grow readonly></v-textarea>
+                <v-textarea v-model="feedback" label="Career Service Feedback" auto-grow readonly></v-textarea>
+              </v-card-text>
+              <v-card-text>
+                <v-textarea v-model="rating" label="AI Feedback" auto-grow readonly></v-textarea>
               </v-card-text>
             </v-card>
           </v-col>

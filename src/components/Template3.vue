@@ -142,7 +142,7 @@ async function sortData() {
             <p><strong>{{ project.organization }}</strong>, {{ project.city }}, {{ project.state }} </p>
           </div>
           <div>
-            <p>{{ date.format(project.startDate, 'monthAndYear') }} - {{ date.format(project.endDate, 'monthAndYear') }}</p>
+            <p>{{ date.format(project.startDate, 'monthAndYear') }} - <a v-if="project.current">Current</a><a v-else>{{ date.format(project.endDate, 'monthAndYear') }}</a></p>
           </div>
           </div>
 

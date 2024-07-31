@@ -79,6 +79,7 @@ const selectedVolunteerExperience = ref(null);
 const selectedHonorExperience = ref(null);
 const selectedAwardExperience = ref(null);
 const selectedProjectExperience = ref(null);
+const isCurrent = ref(false);
 
 const isJobExperience = ref(false);
 const jobExperienceTitle = ref(null);
@@ -664,8 +665,12 @@ async function getExperiences() {
 }
 
 async function addNewExperience(type) {
-    await ExperienceServices.addExperience(jobExperienceTitle.value, jobDescription.value, jobStart.value, jobEnd.value,
-        account.value.id, type, jobCity.value, jobState.value, jobCompany.value, experienceChatHistory)
+    if (isCurrent.value == true) {
+        jobEnd.value = null;
+    }
+    await ExperienceServices.addExperience(jobExperienceTitle.value, jobDescription.value, jobStart.value, 
+        jobEnd.value, isCurrent.value, account.value.id, type, jobCity.value, jobState.value, 
+        jobCompany.value, experienceChatHistory)
         .then(() => {
             snackbar.value.value = true;
             snackbar.value.color = "green";
@@ -695,6 +700,7 @@ async function clearExperienceData() {
     jobStart.value = null;
     jobEnd.value = null;
     jobDescription.value = null;
+    isCurrent.value = false;
 }
 
 async function closeNewJobExperience() {
@@ -1462,8 +1468,8 @@ export default {
                         <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
                     </v-col>
                     <v-col>
-                        <v-text-field v-model="jobEnd" label="End Date"></v-text-field>
-                        <v-switch label="Present Job" color="primary"></v-switch>
+                        <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date"></v-text-field>
+                        <v-switch v-model="isCurrent" label="Present Job" color="primary"></v-switch>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -1556,8 +1562,8 @@ export default {
                         <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
                     </v-col>
                     <v-col>
-                        <v-text-field v-model="jobEnd" label="End Date"></v-text-field>
-                        <v-switch label="Present Role" color="primary"></v-switch>
+                        <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date"></v-text-field>
+                        <v-switch v-model="isCurrent" label="Present Role" color="primary"></v-switch>
                     </v-col>
                 </v-row>
 
@@ -1651,8 +1657,8 @@ export default {
                         <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
                     </v-col>
                     <v-col>
-                        <v-text-field v-model="jobEnd" label="End Date"></v-text-field>
-                        <v-switch label="Present Role" color="primary"></v-switch>
+                        <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date"></v-text-field>
+                        <v-switch v-model="isCurrent" label="Present Role" color="primary"></v-switch>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -1745,8 +1751,8 @@ export default {
                         <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
                     </v-col>
                     <v-col>
-                        <v-text-field v-model="jobEnd" label="End Date"></v-text-field>
-                        <v-switch label="Present Role" color="primary"></v-switch>
+                        <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date"></v-text-field>
+                        <v-switch v-model="isCurrent" label="Present Role" color="primary"></v-switch>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -2059,8 +2065,8 @@ export default {
                         <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
                     </v-col>
                     <v-col>
-                        <v-text-field v-model="jobEnd" label="End Date"></v-text-field>
-                        <v-switch label="Present Role" color="primary"></v-switch>
+                        <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date"></v-text-field>
+                        <v-switch v-model="isCurrent" label="Present Role" color="primary"></v-switch>
                     </v-col>
                 </v-row>
                 <v-row>

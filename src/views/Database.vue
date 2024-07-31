@@ -85,6 +85,7 @@ const isVolunteerExperience = ref(false);
 const isHonorExperience = ref(false);
 const isAwardExperience = ref(false);
 const isProjectExperience = ref(false);
+const isCurrent = ref(false);
 
 const skillTitle = ref("");
 const skillDescription = ref("");
@@ -428,8 +429,11 @@ async function getExperiences() {
 }
 
 async function addNewExperience(type) {
+    if (isCurrent.value == true) {
+        jobEnd.value = null;
+    }
     await ExperienceServices.addExperience(jobExperienceTitle.value, jobDescription.value, jobStart.value, jobEnd.value,
-        account.value.id, type, jobCity.value, jobState.value, jobCompany.value, experienceChatHistory)
+        isCurrent.value, account.value.id, type, jobCity.value, jobState.value, jobCompany.value, experienceChatHistory)
         .then(() => {
             makeSnackbar(true, "green", "Experience Added!");
             getExperiences();
@@ -456,6 +460,7 @@ async function clearExperienceData() {
     jobEnd.value = null;
     jobDescription.value = null;
     experienceChatHistory = [];
+    isCurrent.value = false;
 }
 
 async function closeNewJobExperience() {
@@ -673,8 +678,11 @@ function closeEditExperienceDialog() {
 }
 
 async function saveEditExperience() {
+    if(editedItem.value.current == true) {
+        editedItem.value.endDate = null;
+    }
     await ExperienceServices.updateExperience(editedItem.value.title,editedItem.value.description, editedItem.value.startDate, editedItem.value.endDate,
-                                            editedItem.value.city, editedItem.value.state, editedItem.value.organization,editedItem.value.chatHistory,
+                                            editedItem.value.current, editedItem.value.city, editedItem.value.state, editedItem.value.organization,editedItem.value.chatHistory,
                                             account.value.id, editedItem.value.id                                                                                       
                                             )
     .then(() => {
@@ -803,7 +811,7 @@ export default {
 
                                 <v-data-table v-model="selectedLinks" :items="links" item-value="id" :headers="[{ title: 'Description', value: 'type' },
                                 { title: 'URL', value: 'url' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]"
-                                    show-select hide-default-footer>
+                                     hide-default-footer>
                                     <template v-slot:item.edit="{ item }">
                                         <v-btn variant="text" @click="openEditLinksDialog(item)" icon>
                                             <v-icon>mdi-pencil</v-icon>
@@ -857,7 +865,7 @@ export default {
                                     <v-text class="headline mb-2">Select Summary: </v-text>
                                     <v-data-table v-model="selectedGoals" :items="goals" item-value="id"
                                         :headers="[{ title: 'Title', value: 'title' },
-                                        { title: 'Summary', value: 'description' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]" show-select hide-default-footer
+                                        { title: 'Summary', value: 'description' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]"  hide-default-footer
                                         select-strategy="single">
                                         <template v-slot:item.edit="{ item }">
                                             <v-btn variant="text" @click="openEditProfSumDialog(item)" icon>
@@ -978,7 +986,7 @@ export default {
                                         <v-data-table v-model="selectedEducation" :items="educationInfo" item-value="id"
                                             :headers="[{ title: 'Organization', value: 'organization' }, { title: 'Degree', value: 'description' },
                                             { title: 'Start Date', value: 'startDate' }, { title: 'Grad Date', value: 'gradDate' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]"
-                                            show-select hide-default-footer>
+                                             hide-default-footer>
                                             <template v-slot:item.edit="{ item }">
                                                 <v-btn variant="text" @click="openEditEducationDialog(item)" icon>
                                                     <v-icon>mdi-pencil</v-icon>
@@ -1151,7 +1159,7 @@ export default {
                                         <v-data-table v-model="selectedWorkExperience" :items="experiences"
                                             item-value="id" :search="'1'" :custom-filter="filterPerfectMatch"
                                             :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]"
-                                            show-select hide-default-footer>
+                                             hide-default-footer>
                                             <template v-slot:item.edit="{ item }">
                                                 <v-btn variant="text" @click="openEditExperienceDialog(item)" icon>
                                                     <v-icon>mdi-pencil</v-icon>
@@ -1206,8 +1214,8 @@ export default {
                                             <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
                                         </v-col>
                                         <v-col>
-                                            <v-text-field v-model="jobEnd" label="End Date"></v-text-field>
-                                            <v-switch label="Present Job" color="primary"></v-switch>
+                                            <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date"></v-text-field>
+                                            <v-switch v-model="isCurrent" label="Present Job" color="primary"></v-switch>
                                         </v-col>
                                     </v-row>
                                     <v-row>
@@ -1266,7 +1274,7 @@ export default {
                                         <v-data-table v-model="selectedLeadershipExperience" :items="experiences"
                                             item-value="id" :search="'2'" :custom-filter="filterPerfectMatch"
                                             :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]"
-                                            show-select hide-default-footer>
+                                             hide-default-footer>
                                             <template v-slot:item.edit="{ item }">
                                                 <v-btn variant="text" @click="openEditExperienceDialog(item)" icon>
                                                     <v-icon>mdi-pencil</v-icon>
@@ -1320,8 +1328,8 @@ export default {
                                             <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
                                         </v-col>
                                         <v-col>
-                                            <v-text-field v-model="jobEnd" label="End Date"></v-text-field>
-                                            <v-switch label="Present Role" color="primary"></v-switch>
+                                            <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date"></v-text-field>
+                                            <v-switch v-model="isCurrent" label="Present Role" color="primary"></v-switch>
                                         </v-col>
                                     </v-row>
 
@@ -1369,7 +1377,7 @@ export default {
                                         <v-data-table v-model="selectedActivitiesExperience" :items="experiences"
                                             item-value="id" :search="'3'" :custom-filter="filterPerfectMatch"
                                             :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]"
-                                            show-select hide-default-footer>
+                                             hide-default-footer>
                                             <template v-slot:item.edit="{ item }">
                                                 <v-btn variant="text" @click="openEditExperienceDialog(item)" icon>
                                                     <v-icon>mdi-pencil</v-icon>
@@ -1423,8 +1431,8 @@ export default {
                                             <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
                                         </v-col>
                                         <v-col>
-                                            <v-text-field v-model="jobEnd" label="End Date"></v-text-field>
-                                            <v-switch label="Present Role" color="primary"></v-switch>
+                                            <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date"></v-text-field>
+                                            <v-switch v-model="isCurrent" label="Present Role" color="primary"></v-switch>
                                         </v-col>
                                     </v-row>
                                     <v-row>
@@ -1470,7 +1478,7 @@ export default {
                                         <v-data-table v-model="selectedVolunteerExperience" :items="experiences"
                                             item-value="id" :search="'4'" :custom-filter="filterPerfectMatch"
                                             :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]"
-                                            show-select hide-default-footer>
+                                             hide-default-footer>
                                             <template v-slot:item.edit="{ item }">
                                                 <v-btn variant="text" @click="openEditExperienceDialog(item)" icon>
                                                     <v-icon>mdi-pencil</v-icon>
@@ -1524,8 +1532,8 @@ export default {
                                             <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
                                         </v-col>
                                         <v-col>
-                                            <v-text-field v-model="jobEnd" label="End Date"></v-text-field>
-                                            <v-switch label="Present Role" color="primary"></v-switch>
+                                            <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date"></v-text-field>
+                                            <v-switch v-model="isCurrent" label="Present Role" color="primary"></v-switch>
                                         </v-col>
                                     </v-row>
                                     <v-row>
@@ -1568,7 +1576,7 @@ export default {
                                     <v-container>
                                         <v-data-table v-model="selectedSkills" :items="skills" item-value="id"
                                             :headers="[{ title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]"
-                                            show-select hide-default-footer>
+                                             hide-default-footer>
                                             <template v-slot:item.edit="{ item }">
                                                 <v-btn variant="text" @click="openEditSkillsDialog(item)" icon>
                                                     <v-icon>mdi-pencil</v-icon>
@@ -1686,7 +1694,7 @@ export default {
                                         <v-data-table v-model="selectedHonorExperience" :items="experiences"
                                             item-value="id" :search="'5'" :custom-filter="filterPerfectMatch"
                                             :headers="[{ title: 'experienceTypeId', text: 'experienceTypeId', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]"
-                                            show-select hide-default-footer>
+                                             hide-default-footer>
                                             <template v-slot:item.edit="{ item }">
                                                 <v-btn variant="text" @click="openEditExperienceDialog(item)" icon>
                                                     <v-icon>mdi-pencil</v-icon>
@@ -1764,7 +1772,7 @@ export default {
                                         <v-data-table v-model="selectedAwardExperience" :items="experiences"
                                             item-value="id" :search="'6'" :custom-filter="filterPerfectMatch"
                                             :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]"
-                                            show-select hide-default-footer>
+                                             hide-default-footer>
                                             <template v-slot:item.edit="{ item }">
                                                 <v-btn variant="text" @click="openEditExperienceDialog(item)" icon>
                                                     <v-icon>mdi-pencil</v-icon>
@@ -1849,7 +1857,7 @@ export default {
                                         <v-data-table v-model="selectedProjectExperience" :items="experiences"
                                             item-value="id" :search="'7'" :custom-filter="filterPerfectMatch"
                                             :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]"
-                                            show-select hide-default-footer>
+                                             hide-default-footer>
                                             <template v-slot:item.edit="{ item }">
                                                 <v-btn variant="text" @click="openEditExperienceDialog(item)" icon>
                                                     <v-icon>mdi-pencil</v-icon>
@@ -1903,8 +1911,8 @@ export default {
                                             <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
                                         </v-col>
                                         <v-col>
-                                            <v-text-field v-model="jobEnd" label="End Date"></v-text-field>
-                                            <v-switch label="Present Role" color="primary"></v-switch>
+                                            <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date"></v-text-field>
+                                            <v-switch v-model="isCurrent" label="Present Role" color="primary"></v-switch>
                                         </v-col>
                                     </v-row>
                                     <v-row>
@@ -2065,12 +2073,12 @@ export default {
                                                     <v-text-field v-model="editedItem.title"
                                                         label="Position Title"></v-text-field>
                                                 </v-col>
-                                                <v-col>
+                                                <v-col v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">
                                                     <v-text-field v-model="editedItem.organization"
                                                         label="Company Name"></v-text-field>
                                                 </v-col>
                                             </v-row>
-                                            <v-row>
+                                            <v-row v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">
                                                 <v-col>
                                                     <v-text-field v-model="editedItem.city" label="City"></v-text-field>
                                                 </v-col>
@@ -2084,20 +2092,22 @@ export default {
                                                     <v-text-field v-model="editedItem.startDate"
                                                         label="Start Date"></v-text-field>
                                                 </v-col>
-                                                <v-col>
-                                                    <v-text-field v-model="editedItem.endDate"
+                                                <v-col v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">
+                                                    <v-text-field :disabled="editedItem.current" v-model="editedItem.endDate"
                                                         label="End Date"></v-text-field>
                                                     <v-switch v-model="editedItem.current" label="Present Job"
                                                         color="primary"></v-switch>
                                                 </v-col>
                                             </v-row>
                                             <v-row>
-                                                <v-textarea v-model="editedItem.description" label="Work Summary">
+                                                <v-textarea v-model="editedItem.description" label="Summary/Description">
                                                     <template #append-inner>
+                                                        <div v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">
                                                         <v-btn color="secondary" rounded="xl" value="Ai Assist"
                                                             @click="experienceAIAssist(true)">
                                                             AI Assist
                                                         </v-btn>
+                                                    </div>
                                                     </template>
                                                 </v-textarea>
                                             </v-row>

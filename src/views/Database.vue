@@ -122,6 +122,8 @@ const isSkilled = computed(() => {
     )
 });
 const isEducationFilled = computed(() =>{
+    var endGrad = (!isAttending.value && schoolEnd.value !== "" && schoolEnd.value !== null) ||
+    (isAttending.value && schoolGrad.value !== "" && schoolGrad.value !== null);
     return(
         schoolName.value !== "" && schoolName.value !== null &&
         schoolCity.value !== "" && schoolCity.value !== null &&
@@ -129,7 +131,7 @@ const isEducationFilled = computed(() =>{
         schoolStart.value !== "" && schoolStart.value !== null &&
         degree.value !== "" && degree.value !== null &&
         degreeTitle.value !== "" && degreeTitle.value !== null &&
-        degreeType.value !== "" && degreeType.value !== null
+        degreeType.value !== "" && degreeType.value !== null && endGrad
     )
 })
 
@@ -1864,12 +1866,6 @@ export default {
                                         Submit
                                     </v-btn>
 
-                                    <div align="right">
-
-                                        <v-btn variant="tonal" @click="navigateNextTab(5)">
-                                            Next
-                                        </v-btn>
-                                    </div>
                                 </v-container>
 
 

@@ -117,6 +117,8 @@ const selectedResumeTemplate = ref(0);
 const isSelectTemplate = ref(true);
 const isPreviewResume = ref(false);
 
+const isRequestingAiAssist = ref(false);
+
 //gray out submit button rules
 const isLinked = computed(() => {
     return (
@@ -898,15 +900,18 @@ function clearGoalAiAssist(){
     aiGoalExperiences.value = null;
     aiGoalAchievements.value = null;
     aiGoalTitle.value = null;
+    isRequestingAiAssist.value = false;
 }
 
 async function aiGoalAssist(){
-    goalDescription.value = "Generating Description, please wait"
+    isRequestingAiAssist.value = true;
+    console.log(isRequestingAiAssist.value);
     await GoalServices.goalAiAssist(aiGoalTitle.value, aiGoalExperiences.value.split(","), aiGoalAchievements.value.split(",") )
         .then((response) =>{
             goalDescription.value = response.data.description
             goalChatHistory.push(response.data.chatHistory[0])
             goalChatHistory.push(response.data.chatHistory[1])
+            clearGoalAiAssist();
         })
         
     }
@@ -1167,11 +1172,14 @@ export default {
                 <v-container v-if="isNewGoalVisible">
                 <v-row>
                 <v-col>
-                    <v-text-field v-model="goalTitle" label="Title"></v-text-field>
+                    <v-skeleton-loader v-if="isRequestingAiAssist" type="paragraph"></v-skeleton-loader>
+                    <v-text-field v-if="!isRequestingAiAssist" v-model="goalTitle" label="Title">
+                    </v-text-field>
                 </v-col>
             </v-row>
+            <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
                 <v-row>
-                    <v-textarea v-model="goalDescription" label="A brief overview of your skills and experiences">
+                    <v-textarea v-if="!isRequestingAiAssist" v-model="goalDescription" label="A brief overview of your skills and experiences">
                         <template #append-inner>
                             <div class="text-center pa-4">
                                 <v-dialog v-model="dialog" persistent>
@@ -1208,7 +1216,7 @@ export default {
                                                     <v-btn @click="clearGoalAiAssist(), dialog = false"> Cancel </v-btn>
                                                 </v-col>
                                                 <v-col >
-                                                    <v-btn @click="aiGoalAssist(), clearGoalAiAssist(), dialog = false"> Confirm </v-btn>
+                                                    <v-btn @click="aiGoalAssist(), dialog = false"> Confirm </v-btn>
                                                 </v-col>
                                                                                     
                                             </v-row>                                            
@@ -1223,11 +1231,11 @@ export default {
                         </template>
                     </v-textarea>
                 </v-row>
-                <v-btn variant="tonal" @click="closeNewGoal()">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="closeNewGoal()">
                     Cancel
                 </v-btn>
                 &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" :disabled="!isGoals" @click="addNewGoal()">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isGoals" @click="addNewGoal()">
                     Submit
                 </v-btn>
             </v-container>

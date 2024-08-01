@@ -31,7 +31,7 @@ const account = ref();
 const resumeId = ref(null);
 const resumeData = ref(null);
 const templateId = ref(0);
-const isFeedback = ref(false);
+const isAttending = ref(false);
 const feedback = ref("");
 const snackbar = ref({
   value: false,
@@ -363,6 +363,7 @@ const editEducationDialog = ref(false);
 function openEditEducationDialog(item) {
     editedItem.value = { ...item };
     editEducationDialog.value = true;
+    isAttending.value = editedItem.value.gradDate !== null;
 }
 
 function closeEditEducationDialog() {
@@ -370,6 +371,9 @@ function closeEditEducationDialog() {
 }
 
 async function saveEditEducation() {
+  if (editedItem.value.gradDate !== null) {
+      editedItem.value.endDate = editedItem.value.gradDate;
+    } 
     await EducationServices.updateEducation(editedItem.value.title, editedItem.value.description, editedItem.value.startDate, editedItem.value.endDate,
                                             editedItem.value.gradDate, editedItem.value.gpa, editedItem.value.organization, editedItem.value.city, editedItem.value.state,
                                             editedItem.value.courses,editedItem.value.minor, editedItem.value.totalGPA, account.value.id, editedItem.value.id
@@ -388,6 +392,12 @@ async function saveEditEducation() {
     closeEditEducationDialog();
 }
 
+async function toggleIsAttending() {
+  isAttending.value = !isAttending.value;
+  if (isAttending.value == false) {
+    editedItem.value.gradDate = null;
+    }
+}
 
 // all types of experience dialog stuff
 const editExperienceDialog = ref(false);
@@ -803,7 +813,7 @@ function navigateToView() {
                                                         label="End Date" hint="Ex: Aug 2024"></v-text-field>
                                                     <v-text-field v-model="editedItem.gradDate" v-if="isAttending"
                                                         label="Grad Date" hint="Ex: Aug 2024"></v-text-field>
-                                                    <v-switch v-model="attending" label="Still Attending"
+                                                    <v-switch v-model="isAttending" label="Still Attending"
                                                         color="primary" @click="toggleIsAttending()"></v-switch>
                                                 </v-col>
                                             </v-row>
@@ -869,7 +879,7 @@ function navigateToView() {
                                                         label="Start Date"></v-text-field>
                                                 </v-col>
                                                 <v-col>
-                                                    <v-text-field v-model="editedItem.endDate"
+                                                    <v-text-field :disabled="editedItem.current" v-model="editedItem.endDate"
                                                         label="End Date"></v-text-field>
                                                     <v-switch v-model="editedItem.current" label="Present Job"
                                                         color="primary"></v-switch>

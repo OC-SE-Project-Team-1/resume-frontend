@@ -17,6 +17,11 @@ const snackbar = ref({
   color: "",
   text: "",
 });
+function makeSnackbar(color, text){
+    snackbar.value.value = true;
+    snackbar.value.color = color;
+    snackbar.value.text = text;
+}
 
 onMounted(async () => {
   account.value = JSON.parse(localStorage.getItem("account"));
@@ -31,9 +36,7 @@ async function getResumes() {
     })
     .catch((error) => {
       console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
+      makeSnackbar("error", error.response.data.message)
     });
 }
 
@@ -44,16 +47,12 @@ async function deleteResume() {
       getResumes();
       localStorage.removeItem("resumeId");
       isDeleted.value = false;
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "Resume Deleted!";
+      makeSnackbar("green", "Resume Deleted!")
       router.push({ name: "library" });
     })
     .catch((error) => {
       console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
+      makeSnackbar("error", error.response.data.message)
     });
 }
 

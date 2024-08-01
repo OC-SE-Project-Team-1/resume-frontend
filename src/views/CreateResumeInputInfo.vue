@@ -316,8 +316,8 @@ onMounted(() => {
     getPersonalInfo();
 });
 
-function makeSnackbar(value, color, text){
-    snackbar.value.value = value;
+function makeSnackbar(color, text){
+    snackbar.value.value = true;
     snackbar.value.color = color;
     snackbar.value.text = text;
 }
@@ -352,26 +352,20 @@ async function getLinks() {
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
 async function addNewLink() {
     await LinkServices.addLink(link.value, linkDescription.value, parseInt(account.value.id))
         .then(() => {
-            snackbar.value.value = true;
-            snackbar.value.color = "green";
-            snackbar.value.text = "Link Added!";
+            makeSnackbar("green", "Link Added!")
             closeNewLink();
             getLinks();
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
@@ -575,9 +569,7 @@ async function getPersonalInfo() {
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
@@ -589,9 +581,7 @@ async function getGoals() {
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
@@ -600,17 +590,13 @@ async function addNewGoal() {
     console.log(goalDescription.value);
     await GoalServices.addGoal(goalTitle.value, goalDescription.value, parseInt(account.value.id), goalChatHistory)
         .then(() => {
-            snackbar.value.value = true;
-            snackbar.value.color = "green";
-            snackbar.value.text = "Goal Added!";
+            makeSnackbar("green", "Goal Added!")
             closeNewGoal();
             getGoals();
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
@@ -622,9 +608,7 @@ async function getEducationInfo() {
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
@@ -647,17 +631,13 @@ async function addNewEducation() {
         schoolStart.value, schoolEnd.value, schoolGrad.value, gpa.value, schoolName.value,
         schoolCity.value, schoolState.value, courses.value, minors.value, maxGpa.value)
         .then(() => {
-            snackbar.value.value = true;
-            snackbar.value.color = "green";
-            snackbar.value.text = "Education Added!";
+            makeSnackbar("green", "Education Added")
             closeEducation();
             getEducationInfo();
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
@@ -692,9 +672,7 @@ async function getExperiences() {
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
@@ -706,9 +684,7 @@ async function addNewExperience(type) {
         jobEnd.value, isCurrent.value, account.value.id, type, jobCity.value, jobState.value, 
         jobCompany.value, experienceChatHistory)
         .then(() => {
-            snackbar.value.value = true;
-            snackbar.value.color = "green";
-            snackbar.value.text = "Experience Added!";
+            makeSnackbar("green", "Experience Added!")
             getExperiences();
             clearExperienceData();
             closeNewJobExperience();
@@ -720,9 +696,7 @@ async function addNewExperience(type) {
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
@@ -783,26 +757,20 @@ async function getSkills() {
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
 async function addNewSkill() {
     await SkillServices.addSkill(skillTitle.value, skillDescription.value, skillHistory, parseInt(account.value.id))
         .then(() => {
-            snackbar.value.value = true;
-            snackbar.value.color = "green";
-            snackbar.value.text = "Skill Added!";
+            makeSnackbar("green", "Skill Added!")
             closeNewSkill();
             getSkills();
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
@@ -901,16 +869,12 @@ async function addResume() {
                 eduArr, linkArr, false, selectedResumeTemplate.value, 
                 parseInt(account.value.id))
         .then(() => {
-            snackbar.value.value = true;
-            snackbar.value.color = "green";
-            snackbar.value.text = "Resume Created!";
+            makeSnackbar("green", "Resume Created!")
             clearAllSelected();
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 

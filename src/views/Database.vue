@@ -164,11 +164,12 @@ function closeSnackBar() {
     snackbar.value.value = false;
 }
 
-function makeSnackbar(value, color, text){
-    snackbar.value.value = value;
+function makeSnackbar(color, text){
+    snackbar.value.value = true;
     snackbar.value.color = color;
     snackbar.value.text = text;
 }
+
 async function setNewLinkVisible() {
     isNewLinkVisible.value = true;
 }
@@ -195,19 +196,19 @@ async function getLinks() {
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
 }
 
 async function addNewLink() {
     await LinkServices.addLink(link.value, linkDescription.value, parseInt(account.value.id))
         .then(() => {
-            makeSnackbar(true, "green", "Link Added!");
+            makeSnackbar("green", "Link Added!");
             closeNewLink();
             getLinks();
         })
         .catch((error) => {
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
 }
 
@@ -362,7 +363,7 @@ async function getPersonalInfo() {
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
 }
 
@@ -374,20 +375,20 @@ async function getGoals() {
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
 }
 
 async function addNewGoal() {
     await GoalServices.addGoal(goalTitle.value, goalDescription.value, parseInt(account.value.id), goalChatHistory)
         .then(() => {
-            makeSnackbar(true, "green", "Goal Added!");
+            makeSnackbar("green", "Goal Added!");
             closeNewGoal();
             getGoals();
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
 }
 
@@ -399,7 +400,7 @@ async function getEducationInfo() {
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
 }
 
@@ -419,13 +420,13 @@ async function addNewEducation() {
         schoolStart.value, schoolEnd.value, schoolGrad.value, gpa.value, schoolName.value,
         schoolCity.value, schoolState.value, courses.value, minors.value, maxGpa.value)
         .then(() => {
-            makeSnackbar(true, "green", "Education Added!");
+            makeSnackbar("green", "Education Added!");
             closeEducation();
             getEducationInfo();
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
 }
 
@@ -459,7 +460,7 @@ async function getExperiences() {
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
 }
 
@@ -470,7 +471,7 @@ async function addNewExperience(type) {
     await ExperienceServices.addExperience(jobExperienceTitle.value, jobDescription.value, jobStart.value, jobEnd.value,
         isCurrent.value, account.value.id, type, jobCity.value, jobState.value, jobCompany.value, experienceChatHistory)
         .then(() => {
-            makeSnackbar(true, "green", "Experience Added!");
+            makeSnackbar("green", "Experience Added!");
             getExperiences();
             clearExperienceData();
             closeNewJobExperience();
@@ -482,7 +483,7 @@ async function addNewExperience(type) {
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
 }
 
@@ -545,20 +546,20 @@ async function getSkills() {
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
 }
 
 async function addNewSkill() {
     await SkillServices.addSkill(skillTitle.value, skillDescription.value, skillHistory, parseInt(account.value.id))
         .then(() => {
-            makeSnackbar(true, "green", "Skill Added!");
+            makeSnackbar("green", "Skill Added!");
             closeNewSkill();
             getSkills();
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
 }
 
@@ -635,11 +636,11 @@ function closeEditLinksDialog() {
 async function saveEditLinks() {
     await LinkServices.updateLink(editedItem.value.id, editedItem.value.type, editedItem.value.url, account.value.id)
     .then(() => {
-            makeSnackbar(true, "green", "Link Updated!");
+            makeSnackbar("green", "Link Updated!");
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
     getLinks();
     closeEditLinksDialog();
@@ -661,11 +662,11 @@ async function saveEditProfSum() {
     console.log(editedItem.value)
     await GoalServices.updateGoal(editedItem.value.id, editedItem.value.title, editedItem.value.description, account.value.id)
     .then(() => {
-            makeSnackbar(true, "green", "Professional Summary Updated!");
+            makeSnackbar("green", "Professional Summary Updated!");
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
     getGoals();
     closeEditProfSumDialog();
@@ -689,11 +690,11 @@ async function saveEditEducation() {
                                             editedItem.value.courses,editedItem.value.minor, editedItem.value.totalGPA, account.value.id, editedItem.value.id
                                             )
     .then(() => {
-            makeSnackbar(true, "green", "Education Updated!");
+            makeSnackbar("green", "Education Updated!");
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
     getEducationInfo();
     closeEditEducationDialog();
@@ -721,11 +722,11 @@ async function saveEditExperience() {
                                             account.value.id, editedItem.value.id                                                                                       
                                             )
     .then(() => {
-            makeSnackbar(true, "green", "Experience Updated!");
+            makeSnackbar("green", "Experience Updated!");
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         }); 
     getExperiences();                                  
     closeEditExperienceDialog();
@@ -747,11 +748,11 @@ function closeEditSkillsDialog() {
 async function saveEditSkills() {
     await SkillServices.updateSkill(editedItem.value.id, editedItem.value.title, editedItem.value.description, editedItem.value.chatHistory, account.value.id)
     .then(() => {
-            makeSnackbar(true, "green", "Skill Updated!");
+            makeSnackbar("green", "Skill Updated!");
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         }); 
     getSkills();
     closeEditSkillsDialog();
@@ -799,11 +800,11 @@ async function deleteItem(){
 async function deleting(deleteItem){
     await deleteItem(deleteItemId, account.value.id)
     .then(() => {
-            makeSnackbar(true, "green", "Item Deleted!");
+            makeSnackbar("green", "Item Deleted!");
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
     
 }

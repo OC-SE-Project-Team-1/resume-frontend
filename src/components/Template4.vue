@@ -101,7 +101,8 @@ async function sortData() {
   <v-container>
     <v-sheet :elevation="4" style="width: calc(90vh * 8.5 / 11);
           margin: 0 auto; 
-          position: relative;">
+          position: relative;  
+          background-color: white;">
       <div class="resume">
         <header>
           <h1>{{ user.firstName }} {{ user.lastName }}</h1>
@@ -355,6 +356,7 @@ export default {
   padding-right: 12%;
   padding-bottom: 5%;
   font-size: x-small;
+  color: black;
 }
 
 header {

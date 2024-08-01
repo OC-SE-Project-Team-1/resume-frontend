@@ -56,8 +56,6 @@ function navigateToStudentResumes() {
 //Export Resume
 async function exportResume() {
 
-theme.global.name.value = 'LightTheme';
-
 const html = document.getElementsByClassName("resume")
 await ResumeExport.exportResume(html[0])
 .then(() => {
@@ -107,7 +105,6 @@ function closeSnackBar() {
 
 function refreshPage(){
   isDownloaded.value = false;
-  window.location.reload(true);
 }
 </script>
 

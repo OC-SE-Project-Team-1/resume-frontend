@@ -782,11 +782,13 @@ function filterPerfectMatch(value, search) {
     }
 
 async function skillAiAssist(){
+    isRequestingAiAssist.value = true;
     await SkillServices.skillAiAssist(skillDescription.value)
         .then((response) => {
         skillDescription.value = response.data.description
         skillHistory.push(response.data.chatHistory[0])
-        skillHistory.push(response.data.chatHistory[1])         
+        skillHistory.push(response.data.chatHistory[1]) 
+        isRequestingAiAssist.value = false;        
         })
         
 }
@@ -905,7 +907,6 @@ function clearGoalAiAssist(){
 
 async function aiGoalAssist(){
     isRequestingAiAssist.value = true;
-    console.log(isRequestingAiAssist.value);
     await GoalServices.goalAiAssist(aiGoalTitle.value, aiGoalExperiences.value.split(","), aiGoalAchievements.value.split(",") )
         .then((response) =>{
             goalDescription.value = response.data.description
@@ -917,11 +918,13 @@ async function aiGoalAssist(){
     }
         
 async function experienceAIAssist(){
+    isRequestingAiAssist.value = true;
     await ExperienceServices.experienceAiAssist(jobDescription.value)
         .then((response) => {
         jobDescription.value = response.data.description
         experienceChatHistory.push(response.data.chatHistory[0])
-        experienceChatHistory.push(response.data.chatHistory[1])         
+        experienceChatHistory.push(response.data.chatHistory[1])  
+        isRequestingAiAssist.value = false;       
     })
 }
 
@@ -1479,8 +1482,9 @@ export default {
                         <v-switch v-model="isCurrent" label="Present Job" color="primary"></v-switch>
                     </v-col>
                 </v-row>
+                <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
                 <v-row>
-                    <v-textarea v-model="jobDescription" label="Work Summary">
+                    <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription" label="Work Summary">
                         <template #append-inner>
                             <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="experienceAIAssist()">
                                 AI Assist
@@ -1574,8 +1578,9 @@ export default {
                     </v-col>
                 </v-row>
 
+                <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
                 <v-row>
-                    <v-textarea v-model="jobDescription" label="Role Summary">
+                    <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription" label="Role Summary">
                         <template #append-inner>
                             <v-btn color="secondary" rounded="xl" value="Ai Assist"  @click="experienceAIAssist()">
                                 AI Assist
@@ -1668,8 +1673,10 @@ export default {
                         <v-switch v-model="isCurrent" label="Present Role" color="primary"></v-switch>
                     </v-col>
                 </v-row>
+
+                <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
                 <v-row>
-                    <v-textarea v-model="jobDescription" label="Role Summary">
+                    <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription" label="Role Summary">
                         <template #append-inner>
                             <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="experienceAIAssist()">
                                 AI Assist
@@ -1762,8 +1769,10 @@ export default {
                         <v-switch v-model="isCurrent" label="Present Role" color="primary"></v-switch>
                     </v-col>
                 </v-row>
+                
+                <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
                 <v-row>
-                    <v-textarea v-model="jobDescription" label="Role Summary">
+                    <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription" label="Role Summary">
                         <template #append-inner>
                             <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="experienceAIAssist()">
                                 AI Assist
@@ -1830,14 +1839,17 @@ export default {
             </v-btn>
 
             <v-container v-if="isNewSkillVisible">
+                <v-skeleton-loader v-if="isRequestingAiAssist" type="paragraph"></v-skeleton-loader>
                 <v-row>
                     <v-col>
-                        <v-text-field v-model="skillTitle" label="Skill"></v-text-field>
+                        <v-text-field v-if="!isRequestingAiAssist" v-model="skillTitle" label="Skill"></v-text-field>
                     </v-col>
                 </v-row>
+                
+                <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
                 <v-row>
                     <v-col>
-                        <v-textarea v-model="skillDescription" label="Brief Description/Proficientcy Level, click AI assist button along with your input to help create a better description">
+                        <v-textarea v-if="!isRequestingAiAssist" v-model="skillDescription" label="Brief Description/Proficientcy Level, click AI assist button along with your input to help create a better description">
                         <template #append-inner>
                             <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="skillAiAssist()">
                                 AI Assist
@@ -2076,8 +2088,10 @@ export default {
                         <v-switch v-model="isCurrent" label="Present Role" color="primary"></v-switch>
                     </v-col>
                 </v-row>
+
+                <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
                 <v-row>
-                    <v-textarea label="Project Summary" v-model="jobDescription">
+                    <v-textarea v-if="!isRequestingAiAssist" label="Project Summary" v-model="jobDescription">
                         <template #append-inner>
                             <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="experienceAIAssist()">
                                 AI Assist

@@ -122,8 +122,8 @@ const isSkilled = computed(() => {
     )
 });
 const isEducationFilled = computed(() =>{
-    var endGrad = (!isAttending.value && schoolEnd.value !== "" && schoolEnd.value !== null) ||
-    (isAttending.value && schoolGrad.value !== "" && schoolGrad.value !== null);
+    var endGrad = isAttending.value ? (schoolGrad.value !== "" && schoolGrad.value !== null):
+    (schoolEnd.value !== "" && schoolEnd.value !== null)
     return(
         schoolName.value !== "" && schoolName.value !== null &&
         schoolCity.value !== "" && schoolCity.value !== null &&
@@ -136,13 +136,14 @@ const isEducationFilled = computed(() =>{
 })
 
 const isExperienced = computed(() =>{
+    var isEndDate = isCurrent.value ? true : (jobEnd.value !== "" && jobEnd.value !== null)
     return(
         jobExperienceTitle.value !== "" && jobExperienceTitle.value !== null &&
         jobCompany.value !== "" && jobCompany.value !== null &&
         jobCity.value !== "" && jobCity.value !== null &&
         jobState.value !== "" && jobState.value !== null &&
         jobStart.value !== "" && jobStart.value !== null &&
-        jobDescription.value !== "" && jobDescription.value !== null
+        jobDescription.value !== "" && jobDescription.value !== null && isEndDate
     )
 })
 

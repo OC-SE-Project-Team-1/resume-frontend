@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, computed } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import template1 from "../components/Template1.vue";
@@ -27,6 +27,27 @@ const snackbar = ref({
   text: "",
 });
 const theme = useTheme();
+
+const showFeedback = computed(() => {
+    if (isFeedback.value) {
+      return "Hide Feedback"
+    }
+    else {
+      return "Show Feedback"
+    }
+});
+
+const anyFeedback = computed(() => {
+    if (rating.value !== "") {
+      return true
+    }
+    else if (isEdit.value == false) {
+      return false
+    }
+    else {
+      return true
+    }
+});
 
 onMounted(async () => {
   account.value = JSON.parse(localStorage.getItem("account"));
@@ -116,7 +137,7 @@ function refreshPage(){
         <v-card-actions>
           <v-btn variant="flat" color="secondary" @click="navigateToEdit()">Edit</v-btn>
           <v-btn variant="flat" color="secondary" @click="openExport()">Export</v-btn>
-          <v-btn variant="flat" color="secondary" @click="toggleFeedback()">Toggle Feedback</v-btn>
+          <v-btn v-show="anyFeedback" variant="flat" color="secondary" @click="toggleFeedback()">{{ showFeedback }}</v-btn>
           <v-btn class="ml-auto" variant="flat" color="secondary" @click="navigateToLibrary()"> Back </v-btn>
         </v-card-actions>
 
@@ -159,10 +180,10 @@ function refreshPage(){
           <v-col>
             <v-card class="rounded-lg elevation-5 my-8">
               <v-card-title class="text-center headline mb-2">Feedback</v-card-title>
-              <v-card-text>
+              <v-card-text v-show="isEdit">
                 <v-textarea v-model="feedback" label="Career Service Feedback" auto-grow readonly></v-textarea>
               </v-card-text>
-              <v-card-text>
+              <v-card-text v-show="rating !== ''">
                 <v-textarea v-model="rating" label="AI Feedback" auto-grow readonly></v-textarea>
               </v-card-text>
             </v-card>

@@ -16,6 +16,12 @@ import template2 from "../components/Template2.vue";
 import template3 from "../components/Template3.vue";
 import template4 from "../components/Template4.vue";
 import ResumeServices from "../services/ResumeServices";
+import UserServices from "../services/UserServices.js";
+import LinkServices from "../services/LinkServices.js";
+import GoalServices from "../services/GoalServices.js";
+import SkillServices from "../services/SkillServices.js";
+import EducationServices from "../services/EducationServices.js";
+import ExperienceServices from "../services/ExperienceServices.js";
 
 const router = useRouter();
 const content = ref();
@@ -51,7 +57,8 @@ const honors = ref([]);
 const awards = ref([]);
 const projects = ref([]);
 
-
+let experienceChatHistory = [];
+let skillHistory = [];
 
 const selectedLinks = ref(null);
 const selectedGoals = ref(null);
@@ -113,6 +120,12 @@ async function getResume() {
     });
 }
 
+function makeSnackbar(value, color, text){
+    snackbar.value.value = value;
+    snackbar.value.color = color;
+    snackbar.value.text = text;
+}
+
 async function sortData() {
   links.value = resumeData.value.Link;
   goal.value = resumeData.value.Goal;
@@ -149,42 +162,9 @@ async function sortData() {
   skills.value = resumeData.value.Skill;
 }
 
-function navigateToView() {
-  router.push({ name: "view" });
-}
-
-//Save Changes And Navigate to View Page
-async function saveAndClose() {
-  // await CreateStoryServices.updateStory(storyId.value, title.value, content.value, account.value.id)
-  //   .then(() => {
-  //     snackbar.value.value = true;
-  //     snackbar.value.color = "green";
-  //     snackbar.value.text = "Story Updated!";
-  router.push({ name: "view" });
-  // })
-  // .catch((error) => {
-  //   console.log(error);
-  //   snackbar.value.value = true;
-  //   snackbar.value.color = "error";
-  //   snackbar.value.text = error.response.data.message;
-  // });
-}
-function toggleFeedback() {
-  isFeedback.value = !isFeedback.value;
-}
-function closeSnackBar() {
-  snackbar.value.value = false;
-}
 
 
 const isPreviewResume = ref(false);
-
-
-async function toggleSelectPreview() {
-  isSelectTemplate.value = !isSelectTemplate.value;
-  isPreviewResume.value = !isPreviewResume.value;
-
-}
 
 
 
@@ -312,138 +292,376 @@ const displaySkills = computed(() => {
         skillsArr
     )
 })
+
+
+
+// links dialog stuff
+const editLinksDialog = ref(false);
+const editedItem = ref(null);
+
+function openEditLinksDialog(item) {
+  console.log(editedItem);
+    editedItem.value = { ...item };
+    editLinksDialog.value = true;
+}
+
+function closeEditLinksDialog() {
+    editLinksDialog.value = false;
+}
+
+async function saveEditLinks() {
+    await LinkServices.updateLink(editedItem.value.id, editedItem.value.type, editedItem.value.url, account.value.id)
+    .then(() => {
+      const index = links.value.findIndex(link => link.id === editedItem.value.id);
+        if (index !== -1) {
+          links.value[index] = { ...editedItem.value };
+        }
+            makeSnackbar(true, "green", "Link Updated!");
+        })
+        .catch((error) => {
+            console.log(error);
+            makeSnackbar(true, "error", error.response.data.message);
+        });
+    getResume();
+    closeEditLinksDialog();
+}
+
+// professional summary dialog stuff
+const editProfSumDialog = ref(false);
+
+function openEditProfSumDialog(item) {
+    editedItem.value = { ...item };
+    editProfSumDialog.value = true;
+}
+
+function closeEditProfSumDialog() {
+    editProfSumDialog.value = false;
+}
+
+async function saveEditProfSum() {
+    console.log(editedItem.value)
+    await GoalServices.updateGoal(editedItem.value.id, editedItem.value.title, editedItem.value.description, account.value.id)
+    .then(() => {
+
+      const index = goal.value.findIndex(goal => goal.id === editedItem.value.id);
+        if (index !== -1) {
+          goal.value[index] = { ...editedItem.value };
+        }
+            makeSnackbar(true, "green", "Professional Summary Updated!");
+        })
+        .catch((error) => {
+            console.log(error);
+            makeSnackbar(true, "error", error.response.data.message);
+        });
+    closeEditProfSumDialog();
+}
+
+
+// education dialog stuff
+const editEducationDialog = ref(false);
+
+function openEditEducationDialog(item) {
+    editedItem.value = { ...item };
+    editEducationDialog.value = true;
+}
+
+function closeEditEducationDialog() {
+    editEducationDialog.value = false;
+}
+
+async function saveEditEducation() {
+    await EducationServices.updateEducation(editedItem.value.title, editedItem.value.description, editedItem.value.startDate, editedItem.value.endDate,
+                                            editedItem.value.gradDate, editedItem.value.gpa, editedItem.value.organization, editedItem.value.city, editedItem.value.state,
+                                            editedItem.value.courses,editedItem.value.minor, editedItem.value.totalGPA, account.value.id, editedItem.value.id
+                                            )
+    .then(() => {
+      const index = education.value.findIndex(education => education.id === editedItem.value.id);
+        if (index !== -1) {
+          education.value[index] = { ...editedItem.value };
+        }
+            makeSnackbar(true, "green", "Education Updated!");
+        })
+        .catch((error) => {
+            console.log(error);
+            makeSnackbar(true, "error", error.response.data.message);
+        });
+    closeEditEducationDialog();
+}
+
+
+// all types of experience dialog stuff
+const editExperienceDialog = ref(false);
+
+function openEditExperienceDialog(item) {
+    editedItem.value = { ...item };
+    editExperienceDialog.value = true;
+}
+
+function closeEditExperienceDialog() {
+    experienceChatHistory = []; 
+    editExperienceDialog.value = false;
+}
+
+async function saveEditExperience() {
+    await ExperienceServices.updateExperience(editedItem.value.title,editedItem.value.description, editedItem.value.startDate, editedItem.value.endDate,
+                                            editedItem.value.city, editedItem.value.state, editedItem.value.organization,editedItem.value.chatHistory,
+                                            account.value.id, editedItem.value.id                                                                                       
+                                            )
+    .then(() => {
+
+      
+    if (editedItem.value.experienceTypeId == 1) {
+      const index = work.value.findIndex(work => work.id === editedItem.value.id);
+       if (index !== -1) {
+          work.value[index] = { ...editedItem.value };
+        }
+      }
+      else if (editedItem.value.experienceTypeId == 2) {
+      const index = leadership.value.findIndex(leadership => leadership.id === editedItem.value.id);
+       if (index !== -1) {
+        leadership.value[index] = { ...editedItem.value };
+        }
+      }
+      else if (editedItem.value.experienceTypeId == 3) {
+      const index = activities.value.findIndex(activities => activities.id === editedItem.value.id);
+       if (index !== -1) {
+        activities.value[index] = { ...editedItem.value };
+        }
+      }
+      else if (editedItem.value.experienceTypeId == 4) {
+      const index = volunteer.value.findIndex(volunteer => volunteer.id === editedItem.value.id);
+       if (index !== -1) {
+        volunteer.value[index] = { ...editedItem.value };
+        }
+      }
+      else if (editedItem.value.experienceTypeId == 5) {
+      const index = honors.value.findIndex(honors => honors.id === editedItem.value.id);
+       if (index !== -1) {
+        honors.value[index] = { ...editedItem.value };
+        }
+      }
+      else if (editedItem.value.experienceTypeId == 6) {
+      const index = awards.value.findIndex(awards => awards.id === editedItem.value.id);
+       if (index !== -1) {
+        awards.value[index] = { ...editedItem.value };
+        }
+      }
+      else if (editedItem.value.experienceTypeId == 7) {
+      const index = projects.value.findIndex(projects => projects.id === editedItem.value.id);
+       if (index !== -1) {
+        projects.value[index] = { ...editedItem.value };
+        }
+      }
+     
+
+
+       
+            makeSnackbar(true, "green", "Experience Updated!");
+        })
+        .catch((error) => {
+            console.log(error);
+            makeSnackbar(true, "error", error.response.data.message);
+        });                               
+    closeEditExperienceDialog();
+}
+
+
+// skills dialog stuff
+const editSkillsDialog = ref(false);
+
+function openEditSkillsDialog(item) {
+    editedItem.value = { ...item };
+    editSkillsDialog.value = true;
+}
+
+function closeEditSkillsDialog() {
+    skillHistory  = []
+    editSkillsDialog.value = false;
+}
+
+async function saveEditSkills() {
+    await SkillServices.updateSkill(editedItem.value.id, editedItem.value.title, editedItem.value.description, editedItem.value.chatHistory, account.value.id)
+    .then(() => {
+            makeSnackbar(true, "green", "Skill Updated!");
+      const index = skills.value.findIndex(skills => skills.id === editedItem.value.id);
+       if (index !== -1) {
+        skills.value[index] = { ...editedItem.value };
+        }
+      
+        })
+        .catch((error) => {
+            console.log(error);
+            makeSnackbar(true, "error", error.response.data.message);
+        }); 
+    closeEditSkillsDialog();
+}
+
+
+function navigateToView() {
+  router.push({ name: "view" });
+}
+
+
+
 </script>
 
 <template>
+                                      <div class="mb-10">
+                                        <v-spacer></v-spacer>
+                                    </div>
+  <v-card-title class="text-center headline mb-2">Edit Resume</v-card-title>
+  <div class="d-flex justify-end" style="padding-right: 5%;">
+    <v-btn variant="flat" color="secondary" @click="navigateToView"> Back </v-btn>
+  </div>
   <v-row>
-    <v-col>
-      <v-container>
-        <v-card>
+    <v-col >
+      <v-container >
+        <v-card style="padding:5%">
           <v-card-title class="text-center headline mb-2">Edit Contents</v-card-title>
 
           <h3 v-if="links.length !== 0">Links</h3>
-          <v-data-table v-model="selectedLinks" v-if="links.length !== 0" :items="links" item-value="id" :headers="[{ title: 'Description', value: 'type' },
-          { title: 'URL', value: 'url' }, { title: 'Edit', value: 'edit' }]"  hide-default-footer>
+          <v-data-table  v-model="selectedLinks" v-if="links.length !== 0" :items="links" item-value="id" :headers="[{ title: 'Description', value: 'type' },
+          { title: 'URL', value: 'url', align:'center'  }, { title: 'Edit', value: 'edit', align:'end' }]"  hide-default-footer>
             <template v-slot:item.edit="{ item }">
-              <v-btn variant="text" @click="" icon>
+              <v-btn variant="text" @click="openEditLinksDialog(item)" icon>
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
             </template>
           </v-data-table>
-
+          <div class="mb-10">
+                                        <v-spacer></v-spacer>
+                                    </div>
           <h3 v-if="goal.length !== 0">Goal</h3>
           <v-data-table v-model="selectedGoals" v-if="goal.length !== 0" :items="goal" item-value="id" :headers="[{ title: 'Title', value: 'title' },
-          { title: 'Summary', value: 'description' }, { title: 'Edit', value: 'edit' }]" 
+          { title: 'Summary', value: 'description' }, { title: 'Edit', value: 'edit', align:'end'  }]" 
             hide-default-footer select-strategy="single">
             <template v-slot:item.edit="{ item }">
-              <v-btn variant="text" @click="" icon>
+              <v-btn variant="text" @click="openEditProfSumDialog(item)" icon>
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
             </template>
           </v-data-table>
-
+          <div class="mb-10">
+                                        <v-spacer></v-spacer>
+                                    </div>
 
           <h3 v-if="education.length !== 0">Education</h3>
           <v-data-table v-model="selectedEducation" v-if="education.length !== 0" :items="education" item-value="id"
             :headers="[{ title: 'Organization', value: 'organization' }, { title: 'Degree', value: 'description' },
-            { title: 'Start Date', value: 'startDate' }, { title: 'Grad Date', value: 'gradDate' }, { title: 'Edit', value: 'edit' }]"  hide-default-footer>
+            { title: 'Start Date', value: 'startDate' }, { title: 'Grad Date', value: 'gradDate' }, { title: 'Edit', value: 'edit', align:'end'  }]"  hide-default-footer>
             <template v-slot:item.edit="{ item }">
-              <v-btn variant="text" @click="" icon>
+              <v-btn variant="text" @click="openEditEducationDialog(item)" icon>
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
             </template>
           </v-data-table>
-
+          <div class="mb-10">
+                                        <v-spacer></v-spacer>
+                                    </div>
           <h3 v-if="work.length !== 0">Work</h3>
           <v-data-table v-model="selectedWorkExperience" v-if="work.length !== 0" :items="work" item-value="id" :search="'1'"
             :custom-filter="filterPerfectMatch"
-            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Edit', value: 'edit' }]"
+            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Edit', value: 'edit' , align:'end' }]"
              hide-default-footer>
             <template v-slot:item.edit="{ item }">
-              <v-btn variant="text" @click="" icon>
+              <v-btn variant="text" @click="openEditExperienceDialog(item)" icon>
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
             </template>
           </v-data-table>
-
+          <div class="mb-10">
+                                        <v-spacer></v-spacer>
+                                    </div>
           <h3 v-if="leadership.length !== 0">Leadership</h3>
           <v-data-table v-model="selectedLeadershipExperience" v-if="leadership.length !== 0" :items="leadership" item-value="id" :search="'2'"
             :custom-filter="filterPerfectMatch"
-            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Edit', value: 'edit' }]"
+            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Edit', value: 'edit' , align:'end' }]"
              hide-default-footer>
             <template v-slot:item.edit="{ item }">
-              <v-btn variant="text" @click="" icon>
+              <v-btn variant="text" @click="openEditExperienceDialog(item)" icon>
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
             </template>
           </v-data-table>
-
+          <div class="mb-10">
+                                        <v-spacer></v-spacer>
+                                    </div>
           <h3 v-if="activities.length !== 0">Activities</h3>
           <v-data-table v-model="selectedActivitiesExperience" v-if="activities.length !== 0" :items="activities" item-value="id" :search="'3'"
             :custom-filter="filterPerfectMatch"
-            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Edit', value: 'edit' }]"
+            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Edit', value: 'edit' , align:'end' }]"
              hide-default-footer>
             <template v-slot:item.edit="{ item }">
-              <v-btn variant="text" @click="" icon>
+              <v-btn variant="text" @click="openEditExperienceDialog(item)" icon>
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
             </template>
           </v-data-table>
-
+          <div class="mb-10">
+                                        <v-spacer></v-spacer>
+                                    </div>
           <h3 v-if="volunteer.length !== 0">Volunteer</h3>
           <v-data-table v-model="selectedVolunteerExperience" v-if="volunteer.length !== 0" :items="volunteer" item-value="id" :search="'4'"
             :custom-filter="filterPerfectMatch"
-            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Edit', value: 'edit' }]"
+            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Edit', value: 'edit' , align:'end' }]"
              hide-default-footer>
             <template v-slot:item.edit="{ item }">
-              <v-btn variant="text" @click="" icon>
+              <v-btn variant="text" @click="openEditExperienceDialog(item)" icon>
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
             </template>
           </v-data-table>
-
+          <div class="mb-10">
+                                        <v-spacer></v-spacer>
+                                    </div>
           <h3 v-if="skills.length !== 0">Skills</h3>
           <v-data-table v-model="selectedSkills" v-if="skills.length !== 0" :items="skills" item-value="id"
-            :headers="[{ title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Edit', value: 'edit' }]"
+            :headers="[{ title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Edit', value: 'edit' , align:'end' }]"
              hide-default-footer>
             <template v-slot:item.edit="{ item }">
-              <v-btn variant="text" @click="" icon>
+              <v-btn variant="text" @click="openEditSkillsDialog(item)" icon>
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
             </template>
           </v-data-table>
-
+          <div class="mb-10">
+                                        <v-spacer></v-spacer>
+                                    </div>
           <h3 v-if="honors.length !== 0">Honors</h3>
           <v-data-table v-model="selectedHonorExperience" v-if="honors.length !== 0" :items="honors" item-value="id" :search="'5'"
             :custom-filter="filterPerfectMatch"
-            :headers="[{ title: 'experienceTypeId', text: 'experienceTypeId', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Edit', value: 'edit' }]"
+            :headers="[{ title: 'experienceTypeId', text: 'experienceTypeId', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Edit', value: 'edit' , align:'end' }]"
              hide-default-footer>
             <template v-slot:item.edit="{ item }">
-              <v-btn variant="text" @click="" icon>
+              <v-btn variant="text" @click="openEditExperienceDialog(item)" icon>
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
             </template>
           </v-data-table>
-
+          <div class="mb-10">
+                                        <v-spacer></v-spacer>
+                                    </div>
           <h3 v-if="awards.length !== 0">Awards</h3>
           <v-data-table v-model="selectedAwardExperience" v-if="awards.length !== 0" :items="awards" item-value="id" :search="'6'"
             :custom-filter="filterPerfectMatch"
-            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Edit', value: 'edit' }]"
+            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Edit', value: 'edit' , align:'end' }]"
             hide-default-footer>
             <template v-slot:item.edit="{ item }">
-              <v-btn variant="text" @click="" icon>
+              <v-btn variant="text" @click="openEditExperienceDialog(item)" icon>
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
             </template>
           </v-data-table>
-
+          <div class="mb-10">
+                                        <v-spacer></v-spacer>
+                                    </div>
           <h3 v-if="projects.length !== 0">Projects</h3>
           <v-data-table v-model="selectedProjectExperience" v-if="projects.length !== 0" :items="projects" item-value="id" :search="'7'"
             :custom-filter="filterPerfectMatch"
-            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Edit', value: 'edit' }]"
+            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Edit', value: 'edit' , align:'end' }]"
              hide-default-footer>
             <template v-slot:item.edit="{ item }">
-              <v-btn variant="text" @click="" icon>
+              <v-btn variant="text" @click="openEditExperienceDialog(item)" icon>
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
             </template>
@@ -459,9 +677,17 @@ const displaySkills = computed(() => {
       </v-container>
     </v-col>
 
+
+
+
+
+
     <v-col>
       <v-container>
         <v-card>
+          <div class="mb-10">
+                                        <v-spacer></v-spacer>
+                                    </div>
           <v-card-title class="text-center headline mb-2">Preview</v-card-title>
 
         <div>
@@ -479,26 +705,9 @@ const displaySkills = computed(() => {
           </div>
         </div>
 
-<!--
-          <div v-show="!isFeedback">
-            <div v-if="templateId == 1">
-              <template1></template1>
-            </div>
-            <div v-if="templateId == 2">
-              <template2></template2>
-            </div>
-            <div v-if="templateId == 3">
-              <template3></template3>
-            </div>
-            <div v-if="templateId == 4">
-              <template4></template4>
-            </div>
-          </div>
-          -->
+
         </v-card>
         
-
-
       </v-container>
 
 
@@ -506,6 +715,217 @@ const displaySkills = computed(() => {
     </v-col>
   </v-row>
 
+  
+                            <!-- LINKS DIALOG -->
+                            <v-dialog v-model="editLinksDialog" persistent>
+                                <v-card>
+                                    <v-card-title>
+                                        <span class="headline">Edit Item</span>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-text-field v-model="editedItem.type" label="Description"></v-text-field>
+                                        <v-text-field v-model="editedItem.url" label="URL"></v-text-field>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="blue darken-1" text @click="closeEditLinksDialog">Cancel</v-btn>
+                                        <v-btn color="blue darken-1" text @click="saveEditLinks">Save</v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+
+                            <!-- PROFESSIONAL SUMMARY DIALOG -->
+
+                            <v-dialog v-model="editProfSumDialog" persistent>
+                                <v-card>
+                                    <v-card-title>
+                                        <span class="headline">Edit Item</span>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-text-field v-model="editedItem.title" label="Title"></v-text-field>
+                                        <v-textarea v-model="editedItem.description" label="Description"></v-textarea>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="blue darken-1" text @click="closeEditProfSumDialog">Cancel</v-btn>
+                                        <v-btn color="blue darken-1" text @click="saveEditProfSum">Save</v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+
+                            <!-- EDUCATION DIALOG -->
+                            <v-dialog v-model="editEducationDialog" persistent>
+                                <v-card>
+                                    <v-card-title>
+                                        <span class="headline">Edit Item</span>
+                                    </v-card-title>
+                                    <v-card-text>
+
+                                        <v-container>
+                                            <v-row>
+                                                <v-col>
+                                                    <v-text-field v-model="editedItem.organization"
+                                                        label="School Name"></v-text-field>
+                                                </v-col>
+
+                                            </v-row>
+                                            <v-row>
+                                                <v-col>
+                                                    <v-text-field v-model="editedItem.city" label="City"></v-text-field>
+                                                </v-col>
+                                                <v-col>
+                                                    <v-text-field v-model="editedItem.state"
+                                                        label="State"></v-text-field>
+                                                </v-col>
+                                            </v-row>
+                                            <v-row>
+                                                <v-col>
+                                                    <v-text-field v-model="editedItem.gpa" label="GPA"></v-text-field>
+                                                </v-col>
+                                                <v-col>
+                                                    <v-text-field v-model="editedItem.totalGPA"
+                                                        label="Max GPA"></v-text-field>
+                                                </v-col>
+                                            </v-row>
+                                            <v-row>
+                                                <v-col>
+                                                    <v-text-field v-model="editedItem.description"
+                                                        label="Title of Degree"></v-text-field>
+                                                </v-col>
+                                            </v-row>
+                                            <v-row>
+                                                <v-col>
+                                                    <v-text-field v-model="editedItem.startDate" label="Start Date"
+                                                        hint="Ex: Aug 2024"></v-text-field>
+                                                </v-col>
+                                                <v-col>
+                                                    <v-text-field v-model="editedItem.endDate" v-if="!isAttending"
+                                                        label="End Date" hint="Ex: Aug 2024"></v-text-field>
+                                                    <v-text-field v-model="editedItem.gradDate" v-if="isAttending"
+                                                        label="Grad Date" hint="Ex: Aug 2024"></v-text-field>
+                                                    <v-switch v-model="attending" label="Still Attending"
+                                                        color="primary" @click="toggleIsAttending()"></v-switch>
+                                                </v-col>
+                                            </v-row>
+                                            <v-row>
+                                                <v-col>
+                                                    <v-text-field v-model="editedItem.courses"
+                                                        label="Course(s)"></v-text-field>
+                                                </v-col>
+                                            </v-row>
+                                            <v-row>
+                                                <v-col>
+                                                    <v-text-field v-model="editedItem.minor"
+                                                        label="Minor(s)"></v-text-field>
+                                                </v-col>
+                                            </v-row>
+
+
+                                        </v-container>
+
+
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="blue darken-1" text
+                                            @click="closeEditEducationDialog">Cancel</v-btn>
+                                        <v-btn color="blue darken-1" text @click="saveEditEducation">Save</v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+
+                            <!-- EXPERIENCE DIALOG-->
+                            <v-dialog v-model="editExperienceDialog" persistent>
+                                <v-card>
+                                    <v-card-title>
+                                        <span class="headline">Edit Item</span>
+                                    </v-card-title>
+                                    <v-card-text>
+
+
+                                        <v-container>
+                                            <v-row>
+                                                <v-col>
+                                                    <v-text-field v-model="editedItem.title"
+                                                        label="Position Title"></v-text-field>
+                                                </v-col>
+                                                <v-col>
+                                                    <v-text-field v-model="editedItem.organization"
+                                                        label="Company Name"></v-text-field>
+                                                </v-col>
+                                            </v-row>
+                                            <v-row>
+                                                <v-col>
+                                                    <v-text-field v-model="editedItem.city" label="City"></v-text-field>
+                                                </v-col>
+                                                <v-col>
+                                                    <v-text-field v-model="editedItem.state"
+                                                        label="State"></v-text-field>
+                                                </v-col>
+                                            </v-row>
+                                            <v-row>
+                                                <v-col>
+                                                    <v-text-field v-model="editedItem.startDate"
+                                                        label="Start Date"></v-text-field>
+                                                </v-col>
+                                                <v-col>
+                                                    <v-text-field v-model="editedItem.endDate"
+                                                        label="End Date"></v-text-field>
+                                                    <v-switch v-model="editedItem.current" label="Present Job"
+                                                        color="primary"></v-switch>
+                                                </v-col>
+                                            </v-row>
+                                            <v-row>
+                                                <v-textarea v-model="editedItem.description" label="Work Summary">
+                                                </v-textarea>
+                                            </v-row>
+                                            <v-col>
+                                            </v-col>
+
+                                        </v-container>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="blue darken-1" text
+                                            @click="closeEditExperienceDialog">Cancel</v-btn>
+                                        <v-btn color="blue darken-1" text @click="saveEditExperience">Save</v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+
+                            <v-dialog v-model="editSkillsDialog" persistent>
+                                    <v-card>
+                                        <v-card-title>
+                                            <span class="headline">Edit Item</span>
+                                        </v-card-title>
+                                        <v-card-text>
+
+
+                                            <v-container>
+                                                <v-row>
+                                                    <v-col>
+                                                        <v-text-field v-model="editedItem.title"
+                                                            label="Skill"></v-text-field>
+                                                    </v-col>
+                                                </v-row>
+                                                <v-row>
+                                                    <v-col>
+                                                        <v-textarea v-model="editedItem.description"
+                                                          
+                                                        </v-textarea>
+                                                    </v-col>
+                                                </v-row>
+
+                                            </v-container>
+                                        </v-card-text>
+                                        <v-card-actions>
+                                            <v-spacer></v-spacer>
+                                            <v-btn color="blue darken-1" text
+                                                @click="closeEditSkillsDialog">Cancel</v-btn>
+                                            <v-btn color="blue darken-1" text @click="saveEditSkills">Save</v-btn>
+                                        </v-card-actions>
+                                    </v-card>
+                                </v-dialog>
 
 
 
@@ -513,3 +933,4 @@ const displaySkills = computed(() => {
 
 
 </template>
+

@@ -178,7 +178,7 @@ function refreshPage(){
             </div>
           </v-col>
           <v-col>
-            <v-card class="rounded-lg elevation-5 my-8">
+            <v-card v-show="isEdit || rating !== ''" class="rounded-lg elevation-5 my-8">
               <v-card-title class="text-center headline mb-2">Feedback</v-card-title>
               <v-card-text v-show="isEdit">
                 <v-textarea v-model="feedback" label="Career Service Feedback" auto-grow readonly></v-textarea>

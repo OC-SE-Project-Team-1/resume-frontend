@@ -10,6 +10,11 @@ const snackbar = ref({
   color: "",
   text: "",
 });
+function makeSnackbar(color, text){
+    snackbar.value.value = true;
+    snackbar.value.color = color;
+    snackbar.value.text = text;
+}
 const account = ref({
   userName: "",
   password: "",
@@ -29,16 +34,12 @@ async function login() {
   await UserServices.loginUser(account)
     .then((data) => {
       window.localStorage.setItem("account", JSON.stringify(data.data));
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "Login successful!";
+      makeSnackbar("green", "Login Sucessful!")
       router.push({ name: "home" });
     })
     .catch((error) => {
       console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
+      makeSnackbar("error", error.response.data.message)
     });
 }
 

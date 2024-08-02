@@ -25,6 +25,11 @@ const snackbar = ref({
   color: "",
   text: "",
 });
+function makeSnackbar(color, text){
+    snackbar.value.value = true;
+    snackbar.value.color = color;
+    snackbar.value.text = text;
+}
 const theme = useTheme();
 
 onMounted(async () => {
@@ -43,9 +48,7 @@ async function getResume() {
     })
     .catch((error) => {
       console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
+      makeSnackbar("error", error.response.data.message)
     });
 }
 
@@ -68,15 +71,11 @@ async function exportResume() {
     .then(() => {
       isDownloaded.value = true;
       closeExport();
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "Resume Exported!";
+      makeSnackbar("green", "Resume Exported!")
     })
     .catch((error) => {
       console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
+      makeSnackbar("error", error.response.data.message)
     });
   }
 

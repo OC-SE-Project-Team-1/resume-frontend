@@ -134,23 +134,24 @@ const isSkilled = computed(() => {
         skillDescription.value !== ""
     )
 });
-const isEducationFilled = computed(() =>{
-    var endGrad = isAttending.value ? (schoolGrad.value !== "" && schoolGrad.value !== null):
-    (schoolEnd.value !== "" && schoolEnd.value !== null)
-    return(
+const isEducationFilled = computed(() => {
+    var endGrad = isAttending.value ? (schoolGrad.value !== "" && schoolGrad.value !== null) :
+        (schoolEnd.value !== "" && schoolEnd.value !== null)
+    var isdegree = degreeTitle.value == 'High School Diploma' || (degree.value !== "" && degree.value !== null &&
+        degreeTitle.value !== "" && degreeTitle.value !== null &&
+        degreeType.value !== "" && degreeType.value !== null)
+    return (
         schoolName.value !== "" && schoolName.value !== null &&
         schoolCity.value !== "" && schoolCity.value !== null &&
         schoolState.value !== "" && schoolState.value !== null &&
         schoolStart.value !== "" && schoolStart.value !== null &&
-        degree.value !== "" && degree.value !== null &&
-        degreeTitle.value !== "" && degreeTitle.value !== null &&
-        degreeType.value !== "" && degreeType.value !== null && endGrad
+        isdegree && endGrad
     )
 })
 
-const isExperienced = computed(() =>{
+const isExperienced = computed(() => {
     var isEndDate = isCurrent.value ? true : (jobEnd.value !== "" && jobEnd.value !== null)
-    return(
+    return (
         jobExperienceTitle.value !== "" && jobExperienceTitle.value !== null &&
         jobCompany.value !== "" && jobCompany.value !== null &&
         jobCity.value !== "" && jobCity.value !== null &&
@@ -160,8 +161,8 @@ const isExperienced = computed(() =>{
     )
 })
 
-const isOthered = computed(() =>{
-    return(
+const isOthered = computed(() => {
+    return (
         jobExperienceTitle.value !== "" && jobExperienceTitle.value !== null &&
         jobStart.value !== "" && jobStart.value !== null &&
         jobDescription.value !== "" && jobDescription.value !== null
@@ -683,7 +684,7 @@ function closeEditLinksDialog() {
 
 async function saveEditLinks() {
     await LinkServices.updateLink(editedItem.value.id, editedItem.value.type, editedItem.value.url, account.value.id)
-    .then(() => {
+        .then(() => {
             makeSnackbar("green", "Link Updated!");
         })
         .catch((error) => {
@@ -709,7 +710,7 @@ function closeEditProfSumDialog() {
 async function saveEditProfSum() {
     console.log(editedItem.value)
     await GoalServices.updateGoal(editedItem.value.id, editedItem.value.title, editedItem.value.description, account.value.id)
-    .then(() => {
+        .then(() => {
             makeSnackbar("green", "Professional Summary Updated!");
         })
         .catch((error) => {
@@ -756,6 +757,19 @@ async function saveEditEducation() {
             "term": editedItem.value.studyAbroad.term,
             "year": editedItem.value.studyAbroad.year
         }
+    }
+    if (editedItem.value.minor == '') {
+        editedItem.value.minor = null;
+    }
+    if (editedItem.value.courses == '') {
+        editedItem.value.courses = null;
+    }
+    if (editedItem.value.awards == '') {
+        editedItem.value.awards = null;
+    }
+
+    if (editedItem.value.gradDate !== null) {
+        editedItem.value.endDate = editedItem.value.gradDate;
     }
     await EducationServices.updateEducation(editedItem.value.title, editedItem.value.description, editedItem.value.startDate, editedItem.value.endDate,
         editedItem.value.gradDate, editedItem.value.gpa, editedItem.value.organization, editedItem.value.city, editedItem.value.state,
@@ -819,13 +833,13 @@ function closeEditSkillsDialog() {
 
 async function saveEditSkills() {
     await SkillServices.updateSkill(editedItem.value.id, editedItem.value.title, editedItem.value.description, editedItem.value.chatHistory, account.value.id)
-    .then(() => {
+        .then(() => {
             makeSnackbar("green", "Skill Updated!");
         })
         .catch((error) => {
             console.log(error);
             makeSnackbar("error", error.response.data.message);
-        }); 
+        });
     getSkills();
     closeEditSkillsDialog();
 }
@@ -871,7 +885,7 @@ async function deleteItem() {
 
 async function deleting(deleteItem) {
     await deleteItem(deleteItemId, account.value.id)
-    .then(() => {
+        .then(() => {
             makeSnackbar("green", "Item Deleted!");
         })
         .catch((error) => {
@@ -2217,8 +2231,9 @@ export default {
                                                 </v-col>
                                             </v-row>
                                             <div v-if="editedItem.studyAbroad !== null">
-                                            <v-row >
-                                                    <v-text-field label="Study Abroad Title" v-model="editedItem.studyAbroad.title"
+                                                <v-row>
+                                                    <v-text-field label="Study Abroad Title"
+                                                        v-model="editedItem.studyAbroad.title"
                                                         hint="Name of Study Abroad Program">
                                                     </v-text-field>
                                                 </v-row>
@@ -2229,24 +2244,27 @@ export default {
                                                             hint="Ex) Capital Normal"></v-text-field>
                                                     </v-col>
                                                     <v-col>
-                                                        <v-text-field v-model="editedItem.studyAbroad.location" label="Study Abroad Location"
+                                                        <v-text-field v-model="editedItem.studyAbroad.location"
+                                                            label="Study Abroad Location"
                                                             hint="Ex) Beijing, China"></v-text-field>
                                                     </v-col>
                                                 </v-row>
                                                 <v-row>
                                                     <v-col>
-                                                        <v-text-field v-model="editedItem.studyAbroad.term" label="Study Abroad Term"
+                                                        <v-text-field v-model="editedItem.studyAbroad.term"
+                                                            label="Study Abroad Term"
                                                             hint="Ex) Fall Semester"></v-text-field>
                                                     </v-col>
                                                     <v-col>
-                                                        <v-text-field v-model="editedItem.studyAbroad.year" label="Study Abroad Year"
-                                                            hint="Ex) 2018"></v-text-field>
+                                                        <v-text-field v-model="editedItem.studyAbroad.year"
+                                                            label="Study Abroad Year" hint="Ex) 2018"></v-text-field>
                                                     </v-col>
                                                 </v-row>
                                             </div>
                                             <div v-else>
-                                            <v-row >
-                                                    <v-text-field label="Study Abroad Title" v-model="editedStudyAbroadTitle"
+                                                <v-row>
+                                                    <v-text-field label="Study Abroad Title"
+                                                        v-model="editedStudyAbroadTitle"
                                                         hint="Name of Study Abroad Program">
                                                     </v-text-field>
                                                 </v-row>
@@ -2257,18 +2275,20 @@ export default {
                                                             hint="Ex) Capital Normal"></v-text-field>
                                                     </v-col>
                                                     <v-col>
-                                                        <v-text-field v-model="editedStudyAbroadLocation" label="Study Abroad Location"
+                                                        <v-text-field v-model="editedStudyAbroadLocation"
+                                                            label="Study Abroad Location"
                                                             hint="Ex) Beijing, China"></v-text-field>
                                                     </v-col>
                                                 </v-row>
                                                 <v-row>
                                                     <v-col>
-                                                        <v-text-field v-model="editedStudyAbroadTime" label="Study Abroad Term"
+                                                        <v-text-field v-model="editedStudyAbroadTime"
+                                                            label="Study Abroad Term"
                                                             hint="Ex) Fall Semester"></v-text-field>
                                                     </v-col>
                                                     <v-col>
-                                                        <v-text-field v-model="editedStudyAbroadYear" label="Study Abroad Year"
-                                                            hint="Ex) 2018"></v-text-field>
+                                                        <v-text-field v-model="editedStudyAbroadYear"
+                                                            label="Study Abroad Year" hint="Ex) 2018"></v-text-field>
                                                     </v-col>
                                                 </v-row>
                                             </div>

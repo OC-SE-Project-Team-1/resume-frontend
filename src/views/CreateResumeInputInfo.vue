@@ -153,14 +153,15 @@ const isGenerated = computed(() => {
 const isEducationFilled = computed(() =>{
     var endGrad = isAttending.value ? (schoolGrad.value !== "" && schoolGrad.value !== null):
                                     (schoolEnd.value !== "" && schoolEnd.value !== null)
+    var isdegree =  degreeTitle.value == 'High School Diploma' || (degree.value !== "" && degree.value !== null &&
+                    degreeTitle.value !== "" && degreeTitle.value !== null &&
+                    degreeType.value !== "" && degreeType.value !== null)
     return(
         schoolName.value !== "" && schoolName.value !== null &&
         schoolCity.value !== "" && schoolCity.value !== null &&
         schoolState.value !== "" && schoolState.value !== null &&
         schoolStart.value !== "" && schoolStart.value !== null &&
-        degree.value !== "" && degree.value !== null &&
-        degreeTitle.value !== "" && degreeTitle.value !== null &&
-        degreeType.value !== "" && degreeType.value !== null && endGrad
+        isdegree && endGrad
     )
 })
 

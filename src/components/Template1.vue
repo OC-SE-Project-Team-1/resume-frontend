@@ -113,7 +113,7 @@ async function sortData() {
           </div>
         </div>
         <p><i>GPA: {{ item.gpa }}</i></p>
-        <p v-if="item.awards && education[item].awards && item.awards !== 'null'"><i>Awards: {{ item.awards }}</i></p>
+        <p v-if="item.awards !== 'null'"><i>Awards: {{ item.awards }}</i></p>
         <p v-if="item.courses !== 'null'"><i>Coursework: {{ item.courses }}</i></p>
       </div>
       </section>

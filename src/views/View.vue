@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, computed } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import template1 from "../components/Template1.vue";
@@ -19,6 +19,7 @@ const isEdit = ref(false);;
 const isDownloaded = ref(false);
 const isFeedback = ref(false);
 const feedback = ref("");
+const rating = ref("");
 const templateId = ref(0);
 const snackbar = ref({
   value: false,
@@ -31,6 +32,27 @@ function makeSnackbar(color, text){
     snackbar.value.text = text;
 }
 const theme = useTheme();
+
+const showFeedback = computed(() => {
+    if (isFeedback.value) {
+      return "Hide Feedback"
+    }
+    else {
+      return "Show Feedback"
+    }
+});
+
+const anyFeedback = computed(() => {
+    if (rating.value !== "") {
+      return true
+    }
+    else if (isEdit.value == false) {
+      return false
+    }
+    else {
+      return true
+    }
+});
 
 onMounted(async () => {
   account.value = JSON.parse(localStorage.getItem("account"));
@@ -45,6 +67,7 @@ async function getResume() {
       isEdit.value = response.data.editing; 
       templateId.value = resumeData.value.template;
       feedback.value = resumeData.value.comments;
+      rating.value = resumeData.value.rating;
     })
     .catch((error) => {
       console.log(error);
@@ -113,7 +136,7 @@ function refreshPage(){
         <v-card-actions>
           <v-btn variant="flat" color="secondary" @click="navigateToEdit()">Edit</v-btn>
           <v-btn variant="flat" color="secondary" @click="openExport()">Export</v-btn>
-          <v-btn variant="flat" color="secondary" @click="toggleFeedback()">Toggle Feedback</v-btn>
+          <v-btn v-show="anyFeedback" variant="flat" color="secondary" @click="toggleFeedback()">{{ showFeedback }}</v-btn>
           <v-btn class="ml-auto" variant="flat" color="secondary" @click="navigateToLibrary()"> Back </v-btn>
         </v-card-actions>
 
@@ -154,10 +177,13 @@ function refreshPage(){
             </div>
           </v-col>
           <v-col>
-            <v-card class="rounded-lg elevation-5 my-8">
+            <v-card v-show="isEdit || rating !== ''" class="rounded-lg elevation-5 my-8">
               <v-card-title class="text-center headline mb-2">Feedback</v-card-title>
-              <v-card-text>
-                <v-textarea v-model="feedback" label="View Feedback" auto-grow readonly></v-textarea>
+              <v-card-text v-show="isEdit">
+                <v-textarea v-model="feedback" label="Career Service Feedback" auto-grow readonly></v-textarea>
+              </v-card-text>
+              <v-card-text v-show="rating !== ''">
+                <v-textarea v-model="rating" label="AI Feedback" auto-grow readonly></v-textarea>
               </v-card-text>
             </v-card>
           </v-col>

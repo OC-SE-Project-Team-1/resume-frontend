@@ -64,12 +64,14 @@ async function getUser() {
                 <p><strong>{{ edu.organization }}</strong> | {{ date.format(edu.startDate, 'monthAndYear') }} - <a v-if="edu.gradDate !== null">Projected </a>{{ date.format(edu.endDate, 'monthAndYear') }}</p>
                 <p><strong><em>{{ edu.degree }}</em></strong></p>
                 <p>{{ edu.gpa }}</p>
-                <!-- TODO: FIgure out what to do for study abroad -->
-                <p>{{ edu.abroad }}</p>
-                <ul>
+                <div v-if="edu.studyAbroad !== null">
+                <p>{{ edu.studyAbroad.title }} {{ edu.studyAbroad.term }} {{ edu.studyAbroad.year }}</p>
+                <p>{{ edu.studyAbroad.organization }} | {{ edu.studyAbroad.location }}</p>
+                <!-- <ul>
                     <li v-for="(program, index) in edu.studyAbroadPrograms" :key="index">{{ program }}</li>
-                </ul>
+                </ul> -->
                 </div>
+              </div>
             </section>
             <section>
                 <h2>EXPERIENCE</h2>

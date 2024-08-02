@@ -12,7 +12,7 @@ export default {
     },
     addEducation(title, description, accountID, startDate, 
         endDate, gradDate, gpa, organization, city, state, courses, minors, totalGPA, awards, studyAbroad) {
-        return apiClient.post("/education/", {
+            return apiClient.post("/education/", {
             "title": String(title),
             "description": String(description),
             "userId": accountID,
@@ -27,7 +27,7 @@ export default {
             "minor": String(minors),
             "totalGPA": String(totalGPA),
             "awards": String(awards),
-            "studyAbroad": String(studyAbroad)
+            "studyAbroad": studyAbroad
         });
 
     },
@@ -48,7 +48,7 @@ export default {
                 "minor": String(minors),
                 "totalGPA": String(totalGPA),
                 "awards": String(awards),
-                "studyAbroad": String(studyAbroad)
+                "studyAbroad": studyAbroad
             })
     },
     deleteEducation(educationID, accountID) {

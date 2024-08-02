@@ -114,6 +114,8 @@ const isAwards = ref(false);
 const isAttending = ref(false);
 
 let deleteItemId = 0;
+
+//gray out submit button rules
 const isLinked = computed(() => {
     return (
         link.value !== "" &&
@@ -132,6 +134,39 @@ const isSkilled = computed(() => {
         skillDescription.value !== ""
     )
 });
+const isEducationFilled = computed(() =>{
+    var endGrad = isAttending.value ? (schoolGrad.value !== "" && schoolGrad.value !== null):
+    (schoolEnd.value !== "" && schoolEnd.value !== null)
+    return(
+        schoolName.value !== "" && schoolName.value !== null &&
+        schoolCity.value !== "" && schoolCity.value !== null &&
+        schoolState.value !== "" && schoolState.value !== null &&
+        schoolStart.value !== "" && schoolStart.value !== null &&
+        degree.value !== "" && degree.value !== null &&
+        degreeTitle.value !== "" && degreeTitle.value !== null &&
+        degreeType.value !== "" && degreeType.value !== null && endGrad
+    )
+})
+
+const isExperienced = computed(() =>{
+    var isEndDate = isCurrent.value ? true : (jobEnd.value !== "" && jobEnd.value !== null)
+    return(
+        jobExperienceTitle.value !== "" && jobExperienceTitle.value !== null &&
+        jobCompany.value !== "" && jobCompany.value !== null &&
+        jobCity.value !== "" && jobCity.value !== null &&
+        jobState.value !== "" && jobState.value !== null &&
+        jobStart.value !== "" && jobStart.value !== null &&
+        jobDescription.value !== "" && jobDescription.value !== null && isEndDate
+    )
+})
+
+const isOthered = computed(() =>{
+    return(
+        jobExperienceTitle.value !== "" && jobExperienceTitle.value !== null &&
+        jobStart.value !== "" && jobStart.value !== null &&
+        jobDescription.value !== "" && jobDescription.value !== null
+    )
+})
 
 onMounted(() => {
     account.value = JSON.parse(localStorage.getItem("account"));
@@ -147,6 +182,7 @@ function makeSnackbar(value, color, text) {
     snackbar.value.color = color;
     snackbar.value.text = text;
 }
+
 async function setNewLinkVisible() {
     isNewLinkVisible.value = true;
 }
@@ -173,19 +209,19 @@ async function getLinks() {
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
 }
 
 async function addNewLink() {
     await LinkServices.addLink(link.value, linkDescription.value, parseInt(account.value.id))
         .then(() => {
-            makeSnackbar(true, "green", "Link Added!");
+            makeSnackbar("green", "Link Added!");
             closeNewLink();
             getLinks();
         })
         .catch((error) => {
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
 }
 
@@ -359,7 +395,7 @@ async function getPersonalInfo() {
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
 }
 
@@ -371,20 +407,20 @@ async function getGoals() {
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
 }
 
 async function addNewGoal() {
     await GoalServices.addGoal(goalTitle.value, goalDescription.value, parseInt(account.value.id), goalChatHistory)
         .then(() => {
-            makeSnackbar(true, "green", "Goal Added!");
+            makeSnackbar("green", "Goal Added!");
             closeNewGoal();
             getGoals();
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
 }
 
@@ -396,7 +432,7 @@ async function getEducationInfo() {
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
 }
 
@@ -426,13 +462,13 @@ async function addNewEducation() {
         schoolStart.value, schoolEnd.value, schoolGrad.value, gpa.value, schoolName.value,
         schoolCity.value, schoolState.value, courses.value, minors.value, maxGpa.value, awards.value, studyAbroad)
         .then(() => {
-            makeSnackbar(true, "green", "Education Added!");
+            makeSnackbar("green", "Education Added!");
             closeEducation();
             getEducationInfo();
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
 }
 
@@ -472,7 +508,7 @@ async function getExperiences() {
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
 }
 
@@ -483,7 +519,7 @@ async function addNewExperience(type) {
     await ExperienceServices.addExperience(jobExperienceTitle.value, jobDescription.value, jobStart.value, jobEnd.value,
         isCurrent.value, account.value.id, type, jobCity.value, jobState.value, jobCompany.value, experienceChatHistory)
         .then(() => {
-            makeSnackbar(true, "green", "Experience Added!");
+            makeSnackbar("green", "Experience Added!");
             getExperiences();
             clearExperienceData();
             closeNewJobExperience();
@@ -495,7 +531,7 @@ async function addNewExperience(type) {
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
 }
 
@@ -558,20 +594,20 @@ async function getSkills() {
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
 }
 
 async function addNewSkill() {
     await SkillServices.addSkill(skillTitle.value, skillDescription.value, skillHistory, parseInt(account.value.id))
         .then(() => {
-            makeSnackbar(true, "green", "Skill Added!");
+            makeSnackbar("green", "Skill Added!");
             closeNewSkill();
             getSkills();
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
 }
 
@@ -647,12 +683,12 @@ function closeEditLinksDialog() {
 
 async function saveEditLinks() {
     await LinkServices.updateLink(editedItem.value.id, editedItem.value.type, editedItem.value.url, account.value.id)
-        .then(() => {
-            makeSnackbar(true, "green", "Link Updated!");
+    .then(() => {
+            makeSnackbar("green", "Link Updated!");
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
     getLinks();
     closeEditLinksDialog();
@@ -673,12 +709,12 @@ function closeEditProfSumDialog() {
 async function saveEditProfSum() {
     console.log(editedItem.value)
     await GoalServices.updateGoal(editedItem.value.id, editedItem.value.title, editedItem.value.description, account.value.id)
-        .then(() => {
-            makeSnackbar(true, "green", "Professional Summary Updated!");
+    .then(() => {
+            makeSnackbar("green", "Professional Summary Updated!");
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
     getGoals();
     closeEditProfSumDialog();
@@ -726,11 +762,11 @@ async function saveEditEducation() {
         editedItem.value.courses, editedItem.value.minor, editedItem.value.totalGPA, editedItem.value.awards, studyAbroad, account.value.id, editedItem.value.id
     )
         .then(() => {
-            makeSnackbar(true, "green", "Education Updated!");
+            makeSnackbar("green", "Education Updated!");
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
     getEducationInfo();
     closeEditEducationDialog();
@@ -758,7 +794,7 @@ async function saveEditExperience() {
         account.value.id, editedItem.value.id
     )
         .then(() => {
-            makeSnackbar(true, "green", "Experience Updated!");
+            makeSnackbar("green", "Experience Updated!");
         })
         .catch((error) => {
             console.log(error);
@@ -783,13 +819,13 @@ function closeEditSkillsDialog() {
 
 async function saveEditSkills() {
     await SkillServices.updateSkill(editedItem.value.id, editedItem.value.title, editedItem.value.description, editedItem.value.chatHistory, account.value.id)
-        .then(() => {
-            makeSnackbar(true, "green", "Skill Updated!");
+    .then(() => {
+            makeSnackbar("green", "Skill Updated!");
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
-        });
+            makeSnackbar("error", error.response.data.message);
+        }); 
     getSkills();
     closeEditSkillsDialog();
 }
@@ -835,12 +871,12 @@ async function deleteItem() {
 
 async function deleting(deleteItem) {
     await deleteItem(deleteItemId, account.value.id)
-        .then(() => {
-            makeSnackbar(true, "green", "Item Deleted!");
+    .then(() => {
+            makeSnackbar("green", "Item Deleted!");
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
 
 }
@@ -1257,7 +1293,7 @@ export default {
                                         Cancel
                                     </v-btn>
                                     &nbsp;&nbsp;&nbsp;
-                                    <v-btn variant="tonal" @click="addNewEducation()">
+                                    <v-btn variant="tonal" :disabled="!isEducationFilled" @click="addNewEducation()">
                                         Submit
                                     </v-btn>
                                 </v-container>
@@ -1365,7 +1401,7 @@ export default {
                                         Cancel
                                     </v-btn>
                                     &nbsp;&nbsp;&nbsp;
-                                    <v-btn variant="tonal" @click="addNewExperience(1)">
+                                    <v-btn variant="tonal" :disabled="!isExperienced" @click="addNewExperience(1)">
                                         Submit
                                     </v-btn>
                                 </v-container>
@@ -1482,7 +1518,7 @@ export default {
                                         Cancel
                                     </v-btn>
                                     &nbsp;&nbsp;&nbsp;
-                                    <v-btn variant="tonal" @click="addNewExperience(2)">
+                                    <v-btn variant="tonal" :disabled="!isExperienced" @click="addNewExperience(2)">
                                         Submit
                                     </v-btn>
                                 </v-container>
@@ -1586,7 +1622,7 @@ export default {
                                         Cancel
                                     </v-btn>
                                     &nbsp;&nbsp;&nbsp;
-                                    <v-btn variant="tonal" @click="addNewExperience(3)">
+                                    <v-btn variant="tonal" :disabled="!isExperienced" @click="addNewExperience(3)">
                                         Submit
                                     </v-btn>
                                 </v-container>
@@ -1689,7 +1725,7 @@ export default {
                                         Cancel
                                     </v-btn>
                                     &nbsp;&nbsp;&nbsp;
-                                    <v-btn variant="tonal" @click="addNewExperience(4)">
+                                    <v-btn variant="tonal" :disabled="!isExperienced" @click="addNewExperience(4)">
                                         Submit
                                     </v-btn>
                                 </v-container>
@@ -1886,7 +1922,7 @@ export default {
                                         Cancel
                                     </v-btn>
                                     &nbsp;&nbsp;&nbsp;
-                                    <v-btn variant="tonal" @click="addNewExperience(5)">
+                                    <v-btn variant="tonal" :disabled="!isOthered" @click="addNewExperience(5)">
                                         Submit
                                     </v-btn>
 
@@ -1963,16 +1999,10 @@ export default {
                                         Cancel
                                     </v-btn>
                                     &nbsp;&nbsp;&nbsp;
-                                    <v-btn variant="tonal" @click="addNewExperience(6)">
+                                    <v-btn variant="tonal" :disabled="!isOthered" @click="addNewExperience(6)">
                                         Submit
                                     </v-btn>
 
-                                    <div align="right">
-
-                                        <v-btn variant="tonal" @click="navigateNextTab(5)">
-                                            Next
-                                        </v-btn>
-                                    </div>
                                 </v-container>
 
 
@@ -2070,7 +2100,7 @@ export default {
                                         Cancel
                                     </v-btn>
                                     &nbsp;&nbsp;&nbsp;
-                                    <v-btn variant="tonal" @click="addNewExperience(7)">
+                                    <v-btn variant="tonal" :disabled="!isExperienced" @click="addNewExperience(7)">
                                         Submit
                                     </v-btn>
                                 </v-container>

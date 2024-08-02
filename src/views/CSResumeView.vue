@@ -26,6 +26,11 @@ const snackbar = ref({
   color: "",
   text: "",
 });
+function makeSnackbar(color, text){
+    snackbar.value.value = true;
+    snackbar.value.color = color;
+    snackbar.value.text = text;
+}
 
 onMounted(async () => {
   account.value = JSON.parse(localStorage.getItem("account"));
@@ -43,9 +48,7 @@ async function getResume() {
     })
     .catch((error) => {
       console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
+      makeSnackbar("error", error.response.data.message)
     });
 }
 
@@ -61,15 +64,11 @@ await ResumeExport.exportResume(html[0])
 .then(() => {
   isDownloaded.value = true;
   closeExport();
-  snackbar.value.value = true;
-  snackbar.value.color = "green";
-  snackbar.value.text = "Resume Exported!";
+  makeSnackbar("green", "Resume Exported!")
 })
 .catch((error) => {
   console.log(error);
-  snackbar.value.value = true;
-  snackbar.value.color = "error";
-  snackbar.value.text = error.response.data.message;
+  makeSnackbar("error", error.response.data.message)
 });
 }
 
@@ -79,15 +78,11 @@ async function submitFeedback() {
   await ResumeServices.inputCSFeedback(resumeId.value, feedback.value, selectedUser.value.id)
     .then(() => {
       console.log("Feedback Submitted!")
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "Feedback Submitted!";
+      makeSnackbar("green", "Feedback Submitted!")
     })
     .catch((error) => {
       console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
+      makeSnackbar("error", error.response.data.message)
     });
 }
 

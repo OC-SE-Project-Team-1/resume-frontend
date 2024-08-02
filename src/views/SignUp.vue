@@ -15,6 +15,12 @@ const snackbar = ref({
   color: "",
   text: "",
 });
+function makeSnackbar(color, text){
+    snackbar.value.value = true;
+    snackbar.value.color = color;
+    snackbar.value.text = text;
+}
+
 const account = ref({
   userName: "",
   email: "",
@@ -78,23 +84,17 @@ async function createAccount() {
 
   if (account.value.password !== confirmPassword.value) {
     console.log(message);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = "Passwords do not match";
+      makeSnackbar("error", "Passwords do not match")
   } else {
   await UserServices.addUser(account.value)
     .then((data) => {
       window.localStorage.setItem("account", JSON.stringify(data.data));
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "Account created successfully!";
+      makeSnackbar("green", "Account created successfully!")
       router.push({ name: "home" });
     })
     .catch((error) => {
       console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
+      makeSnackbar("error", error.response.data.message)
     });
   }
 

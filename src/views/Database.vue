@@ -612,7 +612,8 @@ async function aiGoalAssist() {
 async function experienceAIAssist(edit) {
     isRequestingAiAssist.value = true;
     if (edit){
-        await ExperienceServices.experienceAiAssist(editedItem.value.description, editedItem.value.chatHistory )
+
+        await ExperienceServices.experienceAiAssist(editedItem.value.description, JSON.parse(editedItem.value.chatHistory))
         .then((response) => {
                 editedItem.value.description = response.data.description
                 editedItem.value.chatHistory = response.data.chatHistory
@@ -2146,8 +2147,9 @@ export default {
                                                         color="primary"></v-switch>
                                                 </v-col>
                                             </v-row>
+                                            <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
                                             <v-row>
-                                                <v-textarea v-model="editedItem.description" label="Summary/Description">
+                                                <v-textarea v-if="!isRequestingAiAssist" v-model="editedItem.description" label="Summary/Description">
                                                     <template #append-inner>
                                                         <div v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">
                                                         <v-btn color="secondary" rounded="xl" value="Ai Assist"
@@ -2165,9 +2167,9 @@ export default {
                                     </v-card-text>
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
-                                        <v-btn color="blue darken-1" text
+                                        <v-btn v-if="!isRequestingAiAssist" color="blue darken-1" text
                                             @click="closeEditExperienceDialog">Cancel</v-btn>
-                                        <v-btn color="blue darken-1" text @click="saveEditExperience">Save</v-btn>
+                                        <v-btn v-if="!isRequestingAiAssist" color="blue darken-1" text @click="saveEditExperience">Save</v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </v-dialog>

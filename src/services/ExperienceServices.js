@@ -48,7 +48,8 @@ export default {
     },
 
     experienceAiAssist(experience, chatHistory){
-
+        console.log(chatHistory);
+        console.log(experience);
         return apiClient.post("experience/assist", {
             "title" : "",
             "chatHistory": chatHistory,

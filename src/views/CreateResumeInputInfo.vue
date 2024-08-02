@@ -70,6 +70,8 @@ const degreeType = ref("");
 const minors = ref(null);
 const courses = ref(null);
 const attending = ref(false);
+const awards = ref(null);
+const studyAbroad = ref(null);
 
 const experiences = ref();
 const selectedWorkExperience = ref(null);
@@ -108,6 +110,8 @@ const isNewSkillVisible = ref(false);
 
 const isMinors = ref(false);
 const isCourses = ref(false);
+const isStudyAbroad = ref(false);
+const isAwards = ref(false);
 
 const isAttending = ref(false);
 
@@ -527,6 +531,22 @@ function showCourses() {
     }
 }
 
+function showStudyAbroad() {
+    isStudyAbroad.value = !isStudyAbroad.value;
+
+    if (isStudyAbroad.value == false) {
+        studyAbroad.value = null;
+    }
+}
+
+function showAwards() {
+    isAwards.value = !isAwards.value;
+
+    if (isAwards.value == false) {
+        awards.value = null;
+    }
+}
+
 async function getPersonalInfo() {
     resetNewInput()
     await UserServices.getUser(parseInt(account.value.id))
@@ -611,7 +631,8 @@ async function addNewEducation() {
 
     await EducationServices.addEducation(tempTitle, tempDegree, account.value.id,
         schoolStart.value, schoolEnd.value, schoolGrad.value, gpa.value, schoolName.value,
-        schoolCity.value, schoolState.value, courses.value, minors.value, maxGpa.value)
+        schoolCity.value, schoolState.value, courses.value, minors.value, maxGpa.value,
+        awards.value, studyAbroad.value)
         .then(() => {
             snackbar.value.value = true;
             snackbar.value.color = "green";
@@ -648,6 +669,8 @@ async function closeEducation() {
     degree.value = null;
     degreeTitle.value = "";
     degreeType.value = null;
+    awards.value = null;
+    studyAbroad.value = null;
 }
 
 async function getExperiences() {
@@ -1372,6 +1395,40 @@ export default {
 
                             <v-text-field label="Course(s)" v-model="courses"
                                 hint="If multiple, format as: Course name, Course name">
+
+                            </v-text-field>
+
+                        </div>
+
+                        <v-btn variant="text" @click="showStudyAbroad">
+                            Add Study Abroad
+                        </v-btn>
+
+                        <div class="mb-6">
+                            <v-spacer></v-spacer>
+                        </div>
+                        <div v-if="isStudyAbroad">
+
+
+                            <v-text-field label="Study (s)" v-model="studyAbroad"
+                                hint="If multiple, format as: University: Location, University: Location">
+
+                            </v-text-field>
+
+                        </div>
+
+                        <v-btn variant="text" @click="showAwards">
+                            Add Awards
+                        </v-btn>
+
+                        <div class="mb-6">
+                            <v-spacer></v-spacer>
+                        </div>
+                        <div v-if="isAwards">
+
+
+                            <v-text-field label="Award(s)" v-model="awards"
+                                hint="If multiple, format as: Award, Award">
 
                             </v-text-field>
 

@@ -11,7 +11,7 @@ export default {
         return apiClient.get("education/user/" + userID);
     },
     addEducation(title, description, accountID, startDate, 
-        endDate, gradDate, gpa, organization, city, state, courses, minors, totalGPA) {
+        endDate, gradDate, gpa, organization, city, state, courses, minors, totalGPA, awards, studyAbroad) {
         return apiClient.post("/education/", {
             "title": String(title),
             "description": String(description),
@@ -25,12 +25,14 @@ export default {
             "state": String(state),
             "courses": String(courses),
             "minor": String(minors),
-            "totalGPA": String(totalGPA)
+            "totalGPA": String(totalGPA),
+            "awards": String(awards),
+            "studyAbroad": String(studyAbroad)
         });
 
     },
     updateEducation(title, description, startDate, 
-        endDate, gradDate, gpa, organization, city, state, courses, minors, totalGPA, accountID, id ) {
+        endDate, gradDate, gpa, organization, city, state, courses, minors, totalGPA, awards, studyAbroad, accountID, id ) {
             return apiClient.put("education/" + id, {
                 "title": String(title),
                 "description": String(description),
@@ -44,7 +46,9 @@ export default {
                 "state": String(state),
                 "courses": String(courses),
                 "minor": String(minors),
-                "totalGPA": String(totalGPA)
+                "totalGPA": String(totalGPA),
+                "awards": String(awards),
+                "studyAbroad": String(studyAbroad)
             })
     },
     deleteEducation(educationID, accountID) {

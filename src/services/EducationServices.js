@@ -32,7 +32,8 @@ export default {
 
     },
     updateEducation(title, description, startDate, 
-        endDate, gradDate, gpa, organization, city, state, courses, minors, totalGPA, awards, studyAbroad, accountID, id ) {
+        endDate, gradDate, gpa, organization, city, state, 
+        courses, minors, totalGPA, awards, studyAbroad, accountID, id ) {
             return apiClient.put("education/" + id, {
                 "title": String(title),
                 "description": String(description),

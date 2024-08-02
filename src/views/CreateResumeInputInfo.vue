@@ -1496,11 +1496,11 @@ export default {
                 <v-col>
 
                 </v-col>
-                <v-btn variant="tonal" @click="toggleExperience(1)">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(1)">
                     Cancel
                 </v-btn>
                 &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" :disabled="!isExperienced" @click="addNewExperience(1)">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced" @click="addNewExperience(1)">
                     Submit
                 </v-btn>
             </v-container>
@@ -1592,11 +1592,11 @@ export default {
                 <v-col>
 
                 </v-col>
-                <v-btn variant="tonal" @click="toggleExperience(2)">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(2)">
                     Cancel
                 </v-btn>
                 &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" :disabled="!isExperienced" @click="addNewExperience(2)">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced" @click="addNewExperience(2)">
                     Submit
                 </v-btn>
             </v-container>
@@ -1688,11 +1688,11 @@ export default {
                 <v-col>
 
                 </v-col>
-                <v-btn variant="tonal" @click="toggleExperience(3)">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(3)">
                     Cancel
                 </v-btn>
                 &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" :disabled="!isExperienced" @click="addNewExperience(3)">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced" @click="addNewExperience(3)">
                     Submit
                 </v-btn>
             </v-container>
@@ -1784,11 +1784,11 @@ export default {
                 <v-col>
 
                 </v-col>
-                <v-btn variant="tonal" @click="toggleExperience(4)">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(4)">
                     Cancel
                 </v-btn>
                 &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" :disabled="!isExperienced" @click="addNewExperience(4)">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced" @click="addNewExperience(4)">
                     Submit
                 </v-btn>
             </v-container>
@@ -1861,11 +1861,11 @@ export default {
                 <v-col>
 
                 </v-col>
-                <v-btn variant="tonal" @click="closeNewSkill()">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="closeNewSkill()">
                     Cancel
                 </v-btn>
                 &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" :disabled="!isSkilled" @click="addNewSkill()">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isSkilled" @click="addNewSkill()">
                     Submit
                 </v-btn>
             </v-container>
@@ -2103,11 +2103,11 @@ export default {
                 <v-col>
 
                 </v-col>
-                <v-btn variant="tonal" @click="toggleExperience(7)">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(7)">
                     Cancel
                 </v-btn>
                 &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" :disabled="!isExperienced" @click="addNewExperience(7)">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced" @click="addNewExperience(7)">
                     Submit
                 </v-btn>
             </v-container>

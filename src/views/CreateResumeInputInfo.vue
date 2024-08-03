@@ -70,6 +70,12 @@ const degreeType = ref("");
 const minors = ref(null);
 const courses = ref(null);
 const attending = ref(false);
+const awards = ref(null);
+const studyAbroadTitle = ref(null);
+const studyAbroadOrganization = ref(null);
+const studyAbroadLocation = ref(null);
+const studyAbroadTime = ref(null);
+const studyAbroadYear = ref(null);
 
 const experiences = ref();
 const selectedWorkExperience = ref(null);
@@ -108,6 +114,8 @@ const isNewSkillVisible = ref(false);
 
 const isMinors = ref(false);
 const isCourses = ref(false);
+const isStudyAbroad = ref(false);
+const isAwards = ref(false);
 
 const isAttending = ref(false);
 
@@ -147,14 +155,15 @@ const isGenerated = computed(() => {
 const isEducationFilled = computed(() =>{
     var endGrad = isAttending.value ? (schoolGrad.value !== "" && schoolGrad.value !== null):
                                     (schoolEnd.value !== "" && schoolEnd.value !== null)
+    var isdegree =  degreeTitle.value == 'High School Diploma' || (degree.value !== "" && degree.value !== null &&
+                    degreeTitle.value !== "" && degreeTitle.value !== null &&
+                    degreeType.value !== "" && degreeType.value !== null)
     return(
         schoolName.value !== "" && schoolName.value !== null &&
         schoolCity.value !== "" && schoolCity.value !== null &&
         schoolState.value !== "" && schoolState.value !== null &&
         schoolStart.value !== "" && schoolStart.value !== null &&
-        degree.value !== "" && degree.value !== null &&
-        degreeTitle.value !== "" && degreeTitle.value !== null &&
-        degreeType.value !== "" && degreeType.value !== null && endGrad
+        isdegree && endGrad
     )
 })
 
@@ -557,6 +566,26 @@ function showCourses() {
     }
 }
 
+function showStudyAbroad() {
+    isStudyAbroad.value = !isStudyAbroad.value;
+
+    if (isStudyAbroad.value == false) {
+        studyAbroadTitle.value = null;
+        studyAbroadOrganization.value = null;
+        studyAbroadLocation.value = null;
+        studyAbroadTime.value = null;
+        studyAbroadYear.value = null;
+    }
+}
+
+function showAwards() {
+    isAwards.value = !isAwards.value;
+
+    if (isAwards.value == false) {
+        awards.value = null;
+    }
+}
+
 async function getPersonalInfo() {
     resetNewInput()
     await UserServices.getUser(parseInt(account.value.id))
@@ -617,6 +646,16 @@ async function getEducationInfo() {
 async function addNewEducation() {
     var tempTitle = schoolState.value + " " + schoolStart.value + " " + gpa.value;
     var tempDegree = degreeTitle.value + " of " + degreeType.value + " in " + degree.value;
+    var studyAbroad = null;
+    if (studyAbroadTitle !== null && studyAbroadTitle !== "") {
+        studyAbroad = {
+            "title": studyAbroadTitle.value,
+            "organization": studyAbroadOrganization.value,
+            "location": studyAbroadLocation.value,
+            "term": studyAbroadTime.value,
+            "year": studyAbroadYear.value
+        }
+    }
 
     if (degreeTitle.value == "High School Diploma") {
         tempDegree = degreeTitle.value;
@@ -625,13 +664,12 @@ async function addNewEducation() {
     if (schoolGrad.value !== null) {
         schoolEnd.value = schoolGrad.value;
     } 
-    // else {
-    //     schoolGrad.value = schoolEnd.value;
-    // }
+    console.log(studyAbroad);    
 
     await EducationServices.addEducation(tempTitle, tempDegree, account.value.id,
         schoolStart.value, schoolEnd.value, schoolGrad.value, gpa.value, schoolName.value,
-        schoolCity.value, schoolState.value, courses.value, minors.value, maxGpa.value)
+        schoolCity.value, schoolState.value, courses.value, minors.value, maxGpa.value,
+        awards.value, studyAbroad)
         .then(() => {
             makeSnackbar("green", "Education Added")
             closeEducation();
@@ -664,6 +702,12 @@ async function closeEducation() {
     degree.value = null;
     degreeTitle.value = "";
     degreeType.value = null;
+    awards.value = null;
+    studyAbroadTitle.value = null;
+    studyAbroadOrganization.value = null;
+    studyAbroadLocation.value = null;
+    studyAbroadTime.value = null;
+    studyAbroadYear.value = null;
 }
 
 async function getExperiences() {
@@ -1261,7 +1305,7 @@ export default {
                 <v-container>
                     <v-data-table v-model="selectedEducation" :items="educationInfo" item-value="id"
                         :headers="[{ title: 'Organization', value: 'organization' }, { title: 'Degree', value: 'description' },
-                        { title: 'Start Date', value: 'startDate' }, { title: 'Grad Date', value: 'gradDate' }, { title: 'Delete', value: 'delete' }]"
+                        { title: 'Start Date', value: 'startDate' }, { title: 'End Date', value: 'endDate' }, { title: 'Delete', value: 'delete' }]"
                         show-select hide-default-footer>
                         <template v-slot:item.delete = "{ item }">
                             <v-btn  variant="text" @click="openDelete(item)" icon>
@@ -1384,6 +1428,57 @@ export default {
                                 hint="If multiple, format as: Course name, Course name">
 
                             </v-text-field>
+
+                        </div>
+
+                        <v-btn variant="text" @click="showAwards">
+                            Add Awards
+                        </v-btn>
+
+                        <div class="mb-6">
+                            <v-spacer></v-spacer>
+                        </div>
+                        <div v-if="isAwards">
+
+
+                            <v-text-field label="Award(s)" v-model="awards"
+                                hint="If multiple, format as: Award, Award">
+
+                            </v-text-field>
+
+                        </div>
+
+                        <v-btn variant="text" @click="showStudyAbroad">
+                            Add Study Abroad
+                        </v-btn>
+
+                        <div class="mb-6">
+                            <v-spacer></v-spacer>
+                        </div>
+                        <div v-if="isStudyAbroad">
+                            <v-row>
+                                <v-text-field label="Title" v-model="studyAbroadTitle"
+                                hint="Name of Study Abroad Program">
+                            </v-text-field>
+                            </v-row>
+                        <v-row>
+                            <v-col>
+                                <v-text-field v-model="studyAbroadOrganization" label="Organization" hint="Ex) Capital Normal"></v-text-field>
+                            </v-col>
+                            <v-col>
+                                <v-text-field v-model="studyAbroadLocation" label="Location" hint="Ex) Beijing, China"></v-text-field>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col>
+                                <v-text-field v-model="studyAbroadTime" label="Term" hint="Ex) Fall Semester"></v-text-field>
+                            </v-col>
+                            <v-col>
+                                <v-text-field v-model="studyAbroadYear" label="Year" hint="Ex) 2018"></v-text-field>
+                            </v-col>
+                        </v-row>
+
+
 
                         </div>
 

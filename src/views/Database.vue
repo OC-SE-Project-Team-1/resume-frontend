@@ -59,6 +59,17 @@ const degreeType = ref("");
 const minors = ref(null);
 const courses = ref(null);
 const attending = ref(false);
+const awards = ref(null);
+const studyAbroadTitle = ref(null);
+const studyAbroadOrganization = ref(null);
+const studyAbroadLocation = ref(null);
+const studyAbroadTime = ref(null);
+const studyAbroadYear = ref(null);
+const editedStudyAbroadTitle = ref(null);
+const editedStudyAbroadOrganization = ref(null);
+const editedStudyAbroadLocation = ref(null);
+const editedStudyAbroadTime = ref(null);
+const editedStudyAbroadYear = ref(null);
 
 const experiences = ref();
 const selectedWorkExperience = ref(null);
@@ -97,6 +108,8 @@ const isNewSkillVisible = ref(false);
 
 const isMinors = ref(false);
 const isCourses = ref(false);
+const isStudyAbroad = ref(false);
+const isAwards = ref(false);
 
 const isAttending = ref(false);
 
@@ -122,23 +135,24 @@ const isSkilled = computed(() => {
         skillDescription.value !== ""
     )
 });
-const isEducationFilled = computed(() =>{
-    var endGrad = isAttending.value ? (schoolGrad.value !== "" && schoolGrad.value !== null):
-    (schoolEnd.value !== "" && schoolEnd.value !== null)
-    return(
+const isEducationFilled = computed(() => {
+    var endGrad = isAttending.value ? (schoolGrad.value !== "" && schoolGrad.value !== null) :
+        (schoolEnd.value !== "" && schoolEnd.value !== null)
+    var isdegree = degreeTitle.value == 'High School Diploma' || (degree.value !== "" && degree.value !== null &&
+        degreeTitle.value !== "" && degreeTitle.value !== null &&
+        degreeType.value !== "" && degreeType.value !== null)
+    return (
         schoolName.value !== "" && schoolName.value !== null &&
         schoolCity.value !== "" && schoolCity.value !== null &&
         schoolState.value !== "" && schoolState.value !== null &&
         schoolStart.value !== "" && schoolStart.value !== null &&
-        degree.value !== "" && degree.value !== null &&
-        degreeTitle.value !== "" && degreeTitle.value !== null &&
-        degreeType.value !== "" && degreeType.value !== null && endGrad
+        isdegree && endGrad
     )
 })
 
-const isExperienced = computed(() =>{
+const isExperienced = computed(() => {
     var isEndDate = isCurrent.value ? true : (jobEnd.value !== "" && jobEnd.value !== null)
-    return(
+    return (
         jobExperienceTitle.value !== "" && jobExperienceTitle.value !== null &&
         jobCompany.value !== "" && jobCompany.value !== null &&
         jobCity.value !== "" && jobCity.value !== null &&
@@ -148,8 +162,8 @@ const isExperienced = computed(() =>{
     )
 })
 
-const isOthered = computed(() =>{
-    return(
+const isOthered = computed(() => {
+    return (
         jobExperienceTitle.value !== "" && jobExperienceTitle.value !== null &&
         jobStart.value !== "" && jobStart.value !== null &&
         jobDescription.value !== "" && jobDescription.value !== null
@@ -165,8 +179,8 @@ function closeSnackBar() {
     snackbar.value.value = false;
 }
 
-function makeSnackbar(color, text){
-    snackbar.value.value = true;
+function makeSnackbar(value, color, text) {
+    snackbar.value.value = value;
     snackbar.value.color = color;
     snackbar.value.text = text;
 }
@@ -349,6 +363,25 @@ function showCourses() {
         courses.value = null;
     }
 }
+function showStudyAbroad() {
+    isStudyAbroad.value = !isStudyAbroad.value;
+
+    if (isStudyAbroad.value == false) {
+        studyAbroadTitle.value = null;
+        studyAbroadOrganization.value = null;
+        studyAbroadLocation.value = null;
+        studyAbroadTime.value = null;
+        studyAbroadYear.value = null;
+    }
+}
+
+function showAwards() {
+    isAwards.value = !isAwards.value;
+
+    if (isAwards.value == false) {
+        awards.value = null;
+    }
+}
 
 async function getPersonalInfo() {
     resetNewInput()
@@ -408,6 +441,16 @@ async function getEducationInfo() {
 async function addNewEducation() {
     var tempTitle = schoolState.value + " " + schoolStart.value + " " + gpa.value;
     var tempDegree = degreeTitle.value + " of " + degreeType.value + " in " + degree.value;
+    var studyAbroad = null;
+    if (studyAbroadTitle !== null && studyAbroadTitle !== "") {
+        studyAbroad = {
+            "title": studyAbroadTitle.value,
+            "organization": studyAbroadOrganization.value,
+            "location": studyAbroadLocation.value,
+            "term": studyAbroadTime.value,
+            "year": studyAbroadYear.value
+        }
+    }
 
     if (degreeTitle.value == "High School Diploma") {
         tempDegree = degreeTitle.value;
@@ -419,7 +462,7 @@ async function addNewEducation() {
 
     await EducationServices.addEducation(tempTitle, tempDegree, account.value.id,
         schoolStart.value, schoolEnd.value, schoolGrad.value, gpa.value, schoolName.value,
-        schoolCity.value, schoolState.value, courses.value, minors.value, maxGpa.value)
+        schoolCity.value, schoolState.value, courses.value, minors.value, maxGpa.value, awards.value, studyAbroad)
         .then(() => {
             makeSnackbar("green", "Education Added!");
             closeEducation();
@@ -452,6 +495,12 @@ async function closeEducation() {
     degree.value = null;
     degreeTitle.value = "";
     degreeType.value = null;
+    awards.value = null;
+    studyAbroadTitle.value = null;
+    studyAbroadOrganization.value = null;
+    studyAbroadLocation.value = null;
+    studyAbroadTime.value = null;
+    studyAbroadYear.value = null;
 }
 
 async function getExperiences() {
@@ -579,7 +628,7 @@ async function skillAiAssist(edit) {
             isRequestingAiAssist.value = false;
         })
     }
-    else{
+    else {
         await SkillServices.skillAiAssist(skillDescription.value)
         .then((response) => {
             skillDescription.value = response.data.description
@@ -620,9 +669,9 @@ async function experienceAIAssist(edit) {
                 experienceChatHistory = response.data.chatHistory; 
                 isRequestingAiAssist.value = false;
             })
-    }else
+    } else
         await ExperienceServices.experienceAiAssist(jobDescription.value)
-        .then((response) => {          
+            .then((response) => {
                 jobDescription.value = response.data.description
                 experienceChatHistory.push(response.data.chatHistory[0])
                 experienceChatHistory.push(response.data.chatHistory[1])  
@@ -645,7 +694,7 @@ function closeEditLinksDialog() {
 
 async function saveEditLinks() {
     await LinkServices.updateLink(editedItem.value.id, editedItem.value.type, editedItem.value.url, account.value.id)
-    .then(() => {
+        .then(() => {
             makeSnackbar("green", "Link Updated!");
         })
         .catch((error) => {
@@ -671,7 +720,7 @@ function closeEditProfSumDialog() {
 async function saveEditProfSum() {
     console.log(editedItem.value)
     await GoalServices.updateGoal(editedItem.value.id, editedItem.value.title, editedItem.value.description, account.value.id)
-    .then(() => {
+        .then(() => {
             makeSnackbar("green", "Professional Summary Updated!");
         })
         .catch((error) => {
@@ -692,14 +741,51 @@ function openEditEducationDialog(item) {
 
 function closeEditEducationDialog() {
     editEducationDialog.value = false;
+    editedStudyAbroadTitle.value = null;
+    editedStudyAbroadOrganization.value = null;
+    editedStudyAbroadLocation.value = null;
+    editedStudyAbroadTime.value = null;
+    editedStudyAbroadYear.value = null;
 }
 
 async function saveEditEducation() {
+    var studyAbroad = null;
+    if (editedItem.value.studyAbroad == null && editedStudyAbroadTitle.value !== "" && editedStudyAbroadTitle.value !== null) {
+        studyAbroad = {
+            "title": editedStudyAbroadTitle.value,
+            "organization": editedStudyAbroadOrganization.value,
+            "location": editedStudyAbroadLocation.value,
+            "term": editedStudyAbroadTime.value,
+            "year": editedStudyAbroadYear.value
+        }
+    }
+    else {
+        studyAbroad = {
+            "title": editedItem.value.studyAbroad.title,
+            "organization": editedItem.value.studyAbroad.organization,
+            "location": editedItem.value.studyAbroad.location,
+            "term": editedItem.value.studyAbroad.term,
+            "year": editedItem.value.studyAbroad.year
+        }
+    }
+    if (editedItem.value.minor == '') {
+        editedItem.value.minor = null;
+    }
+    if (editedItem.value.courses == '') {
+        editedItem.value.courses = null;
+    }
+    if (editedItem.value.awards == '') {
+        editedItem.value.awards = null;
+    }
+
+    if (editedItem.value.gradDate !== null) {
+        editedItem.value.endDate = editedItem.value.gradDate;
+    }
     await EducationServices.updateEducation(editedItem.value.title, editedItem.value.description, editedItem.value.startDate, editedItem.value.endDate,
-                                            editedItem.value.gradDate, editedItem.value.gpa, editedItem.value.organization, editedItem.value.city, editedItem.value.state,
-                                            editedItem.value.courses,editedItem.value.minor, editedItem.value.totalGPA, account.value.id, editedItem.value.id
-                                            )
-    .then(() => {
+        editedItem.value.gradDate, editedItem.value.gpa, editedItem.value.organization, editedItem.value.city, editedItem.value.state,
+        editedItem.value.courses, editedItem.value.minor, editedItem.value.totalGPA, editedItem.value.awards, studyAbroad, account.value.id, editedItem.value.id
+    )
+        .then(() => {
             makeSnackbar("green", "Education Updated!");
         })
         .catch((error) => {
@@ -719,26 +805,26 @@ function openEditExperienceDialog(item) {
 }
 
 function closeEditExperienceDialog() {
-    experienceChatHistory = []; 
+    experienceChatHistory = [];
     editExperienceDialog.value = false;
 }
 
 async function saveEditExperience() {
-    if(editedItem.value.current == true) {
+    if (editedItem.value.current == true) {
         editedItem.value.endDate = null;
     }
-    await ExperienceServices.updateExperience(editedItem.value.title,editedItem.value.description, editedItem.value.startDate, editedItem.value.endDate,
-                                            editedItem.value.current, editedItem.value.city, editedItem.value.state, editedItem.value.organization,editedItem.value.chatHistory,
-                                            account.value.id, editedItem.value.id                                                                                       
-                                            )
-    .then(() => {
+    await ExperienceServices.updateExperience(editedItem.value.title, editedItem.value.description, editedItem.value.startDate, editedItem.value.endDate,
+        editedItem.value.current, editedItem.value.city, editedItem.value.state, editedItem.value.organization, editedItem.value.chatHistory,
+        account.value.id, editedItem.value.id
+    )
+        .then(() => {
             makeSnackbar("green", "Experience Updated!");
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar("error", error.response.data.message);
-        }); 
-    getExperiences();                                  
+            makeSnackbar(true, "error", error.response.data.message);
+        });
+    getExperiences();
     closeEditExperienceDialog();
 }
 
@@ -751,19 +837,19 @@ function openEditSkillsDialog(item) {
 }
 
 function closeEditSkillsDialog() {
-    skillHistory  = []
+    skillHistory = []
     editSkillsDialog.value = false;
 }
 
 async function saveEditSkills() {
     await SkillServices.updateSkill(editedItem.value.id, editedItem.value.title, editedItem.value.description, editedItem.value.chatHistory, account.value.id)
-    .then(() => {
+        .then(() => {
             makeSnackbar("green", "Skill Updated!");
         })
         .catch((error) => {
             console.log(error);
             makeSnackbar("error", error.response.data.message);
-        }); 
+        });
     getSkills();
     closeEditSkillsDialog();
 }
@@ -780,43 +866,43 @@ function closeDelete() {
     isDeleted.value = false;
 }
 
-async function deleteItem(){
-    switch(parseInt(tab.value)){
-        case 1: 
+async function deleteItem() {
+    switch (parseInt(tab.value)) {
+        case 1:
             await deleting(LinkServices.deleteLink);
             getLinks();
             break;
-        case 2: 
+        case 2:
             await deleting(GoalServices.deleteGoal);
             getGoals();
             break;
-        case 3: 
+        case 3:
             await deleting(EducationServices.deleteEducation);
             getEducationInfo();
             break;
-        case 4: case 5: case 6: case 7: case 9: case 10: case 11: 
+        case 4: case 5: case 6: case 7: case 9: case 10: case 11:
             await deleting(ExperienceServices.deleteExperience);
             getExperiences();
             break;
-        case 8: 
+        case 8:
             await deleting(SkillServices.deleteSkill);
             getSkills();
             break;
     }
-    
+
     closeDelete();
 }
 
-async function deleting(deleteItem){
+async function deleting(deleteItem) {
     await deleteItem(deleteItemId, account.value.id)
-    .then(() => {
+        .then(() => {
             makeSnackbar("green", "Item Deleted!");
         })
         .catch((error) => {
             console.log(error);
             makeSnackbar("error", error.response.data.message);
         });
-    
+
 }
 
 </script>
@@ -855,9 +941,9 @@ export default {
                             <!-- Links -->
                             <v-tabs-window-item value="1" style="padding: 50px">
 
-                                <v-data-table v-model="selectedLinks" :items="links" item-value="id" :headers="[{ title: 'Description', value: 'type' },
-                                { title: 'URL', value: 'url' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]"
-                                     hide-default-footer>
+                                <v-data-table v-model="selectedLinks" :items="links" item-value="id"
+                                    :headers="[{ title: 'Description', value: 'type' },
+                                    { title: 'URL', value: 'url' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]" hide-default-footer>
                                     <template v-slot:item.edit="{ item }">
                                         <v-btn variant="text" @click="openEditLinksDialog(item)" icon>
                                             <v-icon>mdi-pencil</v-icon>
@@ -911,7 +997,7 @@ export default {
                                     <v-text class="headline mb-2">Select Summary: </v-text>
                                     <v-data-table v-model="selectedGoals" :items="goals" item-value="id"
                                         :headers="[{ title: 'Title', value: 'title' },
-                                        { title: 'Summary', value: 'description' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]"  hide-default-footer
+                                        { title: 'Summary', value: 'description' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]" hide-default-footer
                                         select-strategy="single">
                                         <template v-slot:item.edit="{ item }">
                                             <v-btn variant="text" @click="openEditProfSumDialog(item)" icon>
@@ -1033,8 +1119,8 @@ export default {
                                     <v-container>
                                         <v-data-table v-model="selectedEducation" :items="educationInfo" item-value="id"
                                             :headers="[{ title: 'Organization', value: 'organization' }, { title: 'Degree', value: 'description' },
-                                            { title: 'Start Date', value: 'startDate' }, { title: 'Grad Date', value: 'gradDate' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]"
-                                             hide-default-footer>
+                                            { title: 'Start Date', value: 'startDate' }, { title: 'End Date', value: 'endDate' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]"
+                                            hide-default-footer>
                                             <template v-slot:item.edit="{ item }">
                                                 <v-btn variant="text" @click="openEditEducationDialog(item)" icon>
                                                     <v-icon>mdi-pencil</v-icon>
@@ -1163,6 +1249,61 @@ export default {
                                                 </v-text-field>
 
                                             </div>
+                                            <v-btn variant="text" @click="showAwards">
+                                                Add Awards
+                                            </v-btn>
+
+                                            <div class="mb-6">
+                                                <v-spacer></v-spacer>
+                                            </div>
+                                            <div v-if="isAwards">
+
+
+                                                <v-text-field label="Award(s)" v-model="awards"
+                                                    hint="If multiple, format as: Award, Award">
+
+                                                </v-text-field>
+
+                                            </div>
+
+                                            <v-btn variant="text" @click="showStudyAbroad">
+                                                Add Study Abroad
+                                            </v-btn>
+
+                                            <div class="mb-6">
+                                                <v-spacer></v-spacer>
+                                            </div>
+                                            <div v-if="isStudyAbroad">
+                                                <v-row>
+                                                    <v-text-field label="Title" v-model="studyAbroadTitle"
+                                                        hint="Name of Study Abroad Program">
+                                                    </v-text-field>
+                                                </v-row>
+                                                <v-row>
+                                                    <v-col>
+                                                        <v-text-field v-model="studyAbroadOrganization"
+                                                            label="Organization"
+                                                            hint="Ex) Capital Normal"></v-text-field>
+                                                    </v-col>
+                                                    <v-col>
+                                                        <v-text-field v-model="studyAbroadLocation" label="Location"
+                                                            hint="Ex) Beijing, China"></v-text-field>
+                                                    </v-col>
+                                                </v-row>
+                                                <v-row>
+                                                    <v-col>
+                                                        <v-text-field v-model="studyAbroadTime" label="Term"
+                                                            hint="Ex) Fall Semester"></v-text-field>
+                                                    </v-col>
+                                                    <v-col>
+                                                        <v-text-field v-model="studyAbroadYear" label="Year"
+                                                            hint="Ex) 2018"></v-text-field>
+                                                    </v-col>
+                                                </v-row>
+
+
+
+                                            </div>
 
                                         </v-container>
 
@@ -1207,7 +1348,7 @@ export default {
                                         <v-data-table v-model="selectedWorkExperience" :items="experiences"
                                             item-value="id" :search="'1'" :custom-filter="filterPerfectMatch"
                                             :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]"
-                                             hide-default-footer>
+                                            hide-default-footer>
                                             <template v-slot:item.edit="{ item }">
                                                 <v-btn variant="text" @click="openEditExperienceDialog(item)" icon>
                                                     <v-icon>mdi-pencil</v-icon>
@@ -1262,8 +1403,10 @@ export default {
                                             <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
                                         </v-col>
                                         <v-col>
-                                            <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date"></v-text-field>
-                                            <v-switch v-model="isCurrent" label="Present Job" color="primary"></v-switch>
+                                            <v-text-field :disabled="isCurrent" v-model="jobEnd"
+                                                label="End Date"></v-text-field>
+                                            <v-switch v-model="isCurrent" label="Present Job"
+                                                color="primary"></v-switch>
                                         </v-col>
                                     </v-row>
                                     <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
@@ -1323,7 +1466,7 @@ export default {
                                         <v-data-table v-model="selectedLeadershipExperience" :items="experiences"
                                             item-value="id" :search="'2'" :custom-filter="filterPerfectMatch"
                                             :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]"
-                                             hide-default-footer>
+                                            hide-default-footer>
                                             <template v-slot:item.edit="{ item }">
                                                 <v-btn variant="text" @click="openEditExperienceDialog(item)" icon>
                                                     <v-icon>mdi-pencil</v-icon>
@@ -1377,8 +1520,10 @@ export default {
                                             <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
                                         </v-col>
                                         <v-col>
-                                            <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date"></v-text-field>
-                                            <v-switch v-model="isCurrent" label="Present Role" color="primary"></v-switch>
+                                            <v-text-field :disabled="isCurrent" v-model="jobEnd"
+                                                label="End Date"></v-text-field>
+                                            <v-switch v-model="isCurrent" label="Present Role"
+                                                color="primary"></v-switch>
                                         </v-col>
                                     </v-row>
                                     <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
@@ -1426,7 +1571,7 @@ export default {
                                         <v-data-table v-model="selectedActivitiesExperience" :items="experiences"
                                             item-value="id" :search="'3'" :custom-filter="filterPerfectMatch"
                                             :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]"
-                                             hide-default-footer>
+                                            hide-default-footer>
                                             <template v-slot:item.edit="{ item }">
                                                 <v-btn variant="text" @click="openEditExperienceDialog(item)" icon>
                                                     <v-icon>mdi-pencil</v-icon>
@@ -1480,8 +1625,10 @@ export default {
                                             <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
                                         </v-col>
                                         <v-col>
-                                            <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date"></v-text-field>
-                                            <v-switch v-model="isCurrent" label="Present Role" color="primary"></v-switch>
+                                            <v-text-field :disabled="isCurrent" v-model="jobEnd"
+                                                label="End Date"></v-text-field>
+                                            <v-switch v-model="isCurrent" label="Present Role"
+                                                color="primary"></v-switch>
                                         </v-col>
                                     </v-row>
                                     <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
@@ -1528,7 +1675,7 @@ export default {
                                         <v-data-table v-model="selectedVolunteerExperience" :items="experiences"
                                             item-value="id" :search="'4'" :custom-filter="filterPerfectMatch"
                                             :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]"
-                                             hide-default-footer>
+                                            hide-default-footer>
                                             <template v-slot:item.edit="{ item }">
                                                 <v-btn variant="text" @click="openEditExperienceDialog(item)" icon>
                                                     <v-icon>mdi-pencil</v-icon>
@@ -1582,8 +1729,10 @@ export default {
                                             <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
                                         </v-col>
                                         <v-col>
-                                            <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date"></v-text-field>
-                                            <v-switch v-model="isCurrent" label="Present Role" color="primary"></v-switch>
+                                            <v-text-field :disabled="isCurrent" v-model="jobEnd"
+                                                label="End Date"></v-text-field>
+                                            <v-switch v-model="isCurrent" label="Present Role"
+                                                color="primary"></v-switch>
                                         </v-col>
                                     </v-row>
                                     <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
@@ -1627,7 +1776,7 @@ export default {
                                     <v-container>
                                         <v-data-table v-model="selectedSkills" :items="skills" item-value="id"
                                             :headers="[{ title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]"
-                                             hide-default-footer>
+                                            hide-default-footer>
                                             <template v-slot:item.edit="{ item }">
                                                 <v-btn variant="text" @click="openEditSkillsDialog(item)" icon>
                                                     <v-icon>mdi-pencil</v-icon>
@@ -1747,7 +1896,7 @@ export default {
                                         <v-data-table v-model="selectedHonorExperience" :items="experiences"
                                             item-value="id" :search="'5'" :custom-filter="filterPerfectMatch"
                                             :headers="[{ title: 'experienceTypeId', text: 'experienceTypeId', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]"
-                                             hide-default-footer>
+                                            hide-default-footer>
                                             <template v-slot:item.edit="{ item }">
                                                 <v-btn variant="text" @click="openEditExperienceDialog(item)" icon>
                                                     <v-icon>mdi-pencil</v-icon>
@@ -1825,7 +1974,7 @@ export default {
                                         <v-data-table v-model="selectedAwardExperience" :items="experiences"
                                             item-value="id" :search="'6'" :custom-filter="filterPerfectMatch"
                                             :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]"
-                                             hide-default-footer>
+                                            hide-default-footer>
                                             <template v-slot:item.edit="{ item }">
                                                 <v-btn variant="text" @click="openEditExperienceDialog(item)" icon>
                                                     <v-icon>mdi-pencil</v-icon>
@@ -1904,7 +2053,7 @@ export default {
                                         <v-data-table v-model="selectedProjectExperience" :items="experiences"
                                             item-value="id" :search="'7'" :custom-filter="filterPerfectMatch"
                                             :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]"
-                                             hide-default-footer>
+                                            hide-default-footer>
                                             <template v-slot:item.edit="{ item }">
                                                 <v-btn variant="text" @click="openEditExperienceDialog(item)" icon>
                                                     <v-icon>mdi-pencil</v-icon>
@@ -1958,8 +2107,10 @@ export default {
                                             <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
                                         </v-col>
                                         <v-col>
-                                            <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date"></v-text-field>
-                                            <v-switch v-model="isCurrent" label="Present Role" color="primary"></v-switch>
+                                            <v-text-field :disabled="isCurrent" v-model="jobEnd"
+                                                label="End Date"></v-text-field>
+                                            <v-switch v-model="isCurrent" label="Present Role"
+                                                color="primary"></v-switch>
                                         </v-col>
                                     </v-row>
                                     <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
@@ -1967,7 +2118,7 @@ export default {
                                         <v-textarea v-if="!isRequestingAiAssist" label="Project Summary" v-model="jobDescription">
                                             <template #append-inner>
                                                 <v-btn color="secondary" rounded="xl" value="Ai Assist"
-                                                @click="experienceAIAssist()">
+                                                    @click="experienceAIAssist()">
                                                     AI Assist
                                                 </v-btn>
                                             </template>
@@ -2091,6 +2242,74 @@ export default {
                                                         label="Minor(s)"></v-text-field>
                                                 </v-col>
                                             </v-row>
+                                            <v-row>
+                                                <v-col>
+                                                    <v-text-field v-model="editedItem.awards"
+                                                        label="Award(s)"></v-text-field>
+                                                </v-col>
+                                            </v-row>
+                                            <div v-if="editedItem.studyAbroad !== null">
+                                                <v-row>
+                                                    <v-text-field label="Study Abroad Title"
+                                                        v-model="editedItem.studyAbroad.title"
+                                                        hint="Name of Study Abroad Program">
+                                                    </v-text-field>
+                                                </v-row>
+                                                <v-row>
+                                                    <v-col>
+                                                        <v-text-field v-model="editedItem.studyAbroad.organization"
+                                                            label="Study Abroad Organization"
+                                                            hint="Ex) Capital Normal"></v-text-field>
+                                                    </v-col>
+                                                    <v-col>
+                                                        <v-text-field v-model="editedItem.studyAbroad.location"
+                                                            label="Study Abroad Location"
+                                                            hint="Ex) Beijing, China"></v-text-field>
+                                                    </v-col>
+                                                </v-row>
+                                                <v-row>
+                                                    <v-col>
+                                                        <v-text-field v-model="editedItem.studyAbroad.term"
+                                                            label="Study Abroad Term"
+                                                            hint="Ex) Fall Semester"></v-text-field>
+                                                    </v-col>
+                                                    <v-col>
+                                                        <v-text-field v-model="editedItem.studyAbroad.year"
+                                                            label="Study Abroad Year" hint="Ex) 2018"></v-text-field>
+                                                    </v-col>
+                                                </v-row>
+                                            </div>
+                                            <div v-else>
+                                                <v-row>
+                                                    <v-text-field label="Study Abroad Title"
+                                                        v-model="editedStudyAbroadTitle"
+                                                        hint="Name of Study Abroad Program">
+                                                    </v-text-field>
+                                                </v-row>
+                                                <v-row>
+                                                    <v-col>
+                                                        <v-text-field v-model="editedStudyAbroadOrganization"
+                                                            label="Study Abroad Organization"
+                                                            hint="Ex) Capital Normal"></v-text-field>
+                                                    </v-col>
+                                                    <v-col>
+                                                        <v-text-field v-model="editedStudyAbroadLocation"
+                                                            label="Study Abroad Location"
+                                                            hint="Ex) Beijing, China"></v-text-field>
+                                                    </v-col>
+                                                </v-row>
+                                                <v-row>
+                                                    <v-col>
+                                                        <v-text-field v-model="editedStudyAbroadTime"
+                                                            label="Study Abroad Term"
+                                                            hint="Ex) Fall Semester"></v-text-field>
+                                                    </v-col>
+                                                    <v-col>
+                                                        <v-text-field v-model="editedStudyAbroadYear"
+                                                            label="Study Abroad Year" hint="Ex) 2018"></v-text-field>
+                                                    </v-col>
+                                                </v-row>
+                                            </div>
 
 
                                         </v-container>
@@ -2121,12 +2340,14 @@ export default {
                                                     <v-text-field v-model="editedItem.title"
                                                         label="Position Title"></v-text-field>
                                                 </v-col>
-                                                <v-col v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">
+                                                <v-col
+                                                    v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">
                                                     <v-text-field v-model="editedItem.organization"
                                                         label="Company Name"></v-text-field>
                                                 </v-col>
                                             </v-row>
-                                            <v-row v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">
+                                            <v-row
+                                                v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">
                                                 <v-col>
                                                     <v-text-field v-model="editedItem.city" label="City"></v-text-field>
                                                 </v-col>
@@ -2140,23 +2361,27 @@ export default {
                                                     <v-text-field v-model="editedItem.startDate"
                                                         label="Start Date"></v-text-field>
                                                 </v-col>
-                                                <v-col v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">
-                                                    <v-text-field :disabled="editedItem.current" v-model="editedItem.endDate"
-                                                        label="End Date"></v-text-field>
+                                                <v-col
+                                                    v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">
+                                                    <v-text-field :disabled="editedItem.current"
+                                                        v-model="editedItem.endDate" label="End Date"></v-text-field>
                                                     <v-switch v-model="editedItem.current" label="Present Job"
                                                         color="primary"></v-switch>
                                                 </v-col>
                                             </v-row>
                                             <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
                                             <v-row>
+
                                                 <v-textarea v-if="!isRequestingAiAssist" v-model="editedItem.description" label="Summary/Description">
+
                                                     <template #append-inner>
-                                                        <div v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">
-                                                        <v-btn color="secondary" rounded="xl" value="Ai Assist"
-                                                            @click="experienceAIAssist(true)">
-                                                            AI Assist
-                                                        </v-btn>
-                                                    </div>
+                                                        <div
+                                                            v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">
+                                                            <v-btn color="secondary" rounded="xl" value="Ai Assist"
+                                                                @click="experienceAIAssist(true)">
+                                                                AI Assist
+                                                            </v-btn>
+                                                        </div>
                                                     </template>
                                                 </v-textarea>
                                             </v-row>

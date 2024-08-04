@@ -3,10 +3,8 @@ import { onMounted } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import ResumeServices from "../services/ResumeServices";
-import StoryExport from "../reports/StoryExport";
 
 const router = useRouter();
-const isExport = ref(false);
 const isDeleted = ref(false);
 const account = ref(null);
 const titles = ref();

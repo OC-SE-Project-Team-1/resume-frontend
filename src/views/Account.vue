@@ -1,8 +1,6 @@
 <script setup>
 import { computed, onMounted } from "vue";
-import { ref, toRaw, getCurrentInstance } from "vue";
-import { useRouter } from "vue-router";
-import { useTheme } from 'vuetify'
+import { ref } from "vue";
 import UserServices from "../services/UserServices";
 
 

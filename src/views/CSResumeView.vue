@@ -114,12 +114,13 @@ function refreshPage(){
 <template>
   <v-container>
     <div id="body">
-      <v-card-title class="text-center headline mb-2">View</v-card-title>
       <v-card flat color="transparent">
           <v-card-actions>
             <v-btn variant="flat" color="secondary" @click="openExport()">Export</v-btn>
             <v-btn class="ml-auto" variant="flat" color="secondary" @click="navigateToStudentResumes()"> Back </v-btn>
           </v-card-actions>
+          
+      <v-card-title class="text-center headline mb-2">View</v-card-title>
         </v-card>
       <v-row>
         <v-col>

@@ -63,7 +63,7 @@ export default {
   <v-container>
     <div id="body">
       <v-row align="center" class="mb-4">
-        <v-col cols="10"><v-card-title class="pl-0 text-h4 font-weight-bold">Library
+        <v-col cols="10"><v-card-title class="pl-0 text-h4 font-weight-bold">Student Library
           </v-card-title>
         </v-col>
       </v-row>

@@ -121,6 +121,7 @@ function refreshPage(){
         <v-checkbox  id="editingCheckBox" v-model="isEdit" :label="'Allow Feedback on this resume'"
                         @click = "updateEditing()"></v-checkbox>
       </v-card>
+      
       <v-card-title class="text-center headline mb-2">View</v-card-title>
 
       <div v-show="!isFeedback">

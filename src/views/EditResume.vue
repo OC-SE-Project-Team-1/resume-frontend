@@ -2,21 +2,11 @@
 import { computed, onMounted } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import CreateStoryServices from "../services/CreateStoryServices";
-
-
 import PreviewTemplate1 from "../components/PreviewTemplate1.vue";
 import PreviewTemplate2 from "../components/PreviewTemplate2.vue";
 import PreviewTemplate3 from "../components/PreviewTemplate3.vue";
 import PreviewTemplate4 from "../components/PreviewTemplate4.vue";
-
-
-import template1 from "../components/Template1.vue";
-import template2 from "../components/Template2.vue";
-import template3 from "../components/Template3.vue";
-import template4 from "../components/Template4.vue";
 import ResumeServices from "../services/ResumeServices";
-import UserServices from "../services/UserServices.js";
 import LinkServices from "../services/LinkServices.js";
 import GoalServices from "../services/GoalServices.js";
 import SkillServices from "../services/SkillServices.js";
@@ -24,9 +14,7 @@ import EducationServices from "../services/EducationServices.js";
 import ExperienceServices from "../services/ExperienceServices.js";
 
 const router = useRouter();
-const content = ref();
 const title = ref();
-const storyId = ref();
 const account = ref();
 const resumeId = ref(null);
 const resumeData = ref(null);
@@ -38,11 +26,6 @@ const snackbar = ref({
   color: "",
   text: "",
 });
-
-const prev1 = ref(null);
-const prev2 = ref(null);
-const prev3 = ref(null);
-const prev4 = ref(null);
 
 const links = ref([]);
 const goal = ref([]);
@@ -94,19 +77,6 @@ onMounted(async () => {
   selectedHonorExperience.value = honors.value.map(honors => honors.id);
   selectedAwardExperience.value = awards.value.map(awards => awards.id);
   selectedProjectExperience.value = projects.value.map(projects => projects.id);
-
-
-
-  console.log("This is the resume's info");
-  console.log(resumeData.value);
-  console.log(templateId.value);
-
-  console.log(links.value);
-  console.log(goal.value);
-  console.log(experience.value);
-
-  console.log(activities.value);
-
 });
 
 async function getResume() {
@@ -167,19 +137,11 @@ async function sortData() {
   skills.value = resumeData.value.Skill;
 }
 
-
-
-const isPreviewResume = ref(false);
-
-
-
 const displayLinks = computed(() => {
   var linkArr = [];
   if (selectedLinks.value !== null) {
     for (let [key, value] of Object.entries(links.value)) {
       for (let [key2, value2] of Object.entries(selectedLinks.value)) {
-        // console.log("Link Key: " + key + " Value: " + value.id);
-        // console.log("Selected Link Key: " + key2 + " Selected Value: " + value2);
         if (value.id == value2) {
           linkArr.push(value);
         }
@@ -196,8 +158,6 @@ const displayGoal = computed(() => {
   if (selectedGoals.value !== null) {
     for (let [key, value] of Object.entries(goal.value)) {
       for (let [key2, value2] of Object.entries(selectedGoals.value)) {
-        console.log("Link Key: " + key + " Value: " + value.id);
-        console.log("Selected Link Key: " + key2 + " Selected Value: " + value2);
         if (value.id == value2) {
           goalArr.push(value.description);
           break;
@@ -225,6 +185,7 @@ const displayEducation = computed(() => {
     eduArr
   )
 })
+
 const displayExperience = computed(() => {
   var expArr = [];
   if (experience.value !== null) {
@@ -303,8 +264,6 @@ const displaySkills = computed(() => {
   if (selectedSkills.value !== null) {
     for (let [key, value] of Object.entries(skills.value)) {
       for (let [key2, value2] of Object.entries(selectedSkills.value)) {
-        // console.log("Link Key: " + key + " Value: " + value.id);
-        // console.log("Selected Link Key: " + key2 + " Selected Value: " + value2);
         if (value.id == value2) {
           skillsArr.push(value);
         }
@@ -317,13 +276,11 @@ const displaySkills = computed(() => {
 })
 
 
-
 // links dialog stuff
 const editLinksDialog = ref(false);
 const editedItem = ref(null);
 
 function openEditLinksDialog(item) {
-  console.log(editedItem);
   editedItem.value = { ...item };
   editLinksDialog.value = true;
 }
@@ -567,8 +524,6 @@ async function saveEditSkills() {
 function navigateToView() {
   router.push({ name: "view" });
 }
-
-
 
 </script>
 

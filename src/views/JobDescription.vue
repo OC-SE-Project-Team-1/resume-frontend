@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted } from "vue";
+import { onMounted } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import JobDescriptionServices from "../services/JobDescriptionServices.js";

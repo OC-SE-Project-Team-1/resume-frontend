@@ -2,7 +2,6 @@
 import { onMounted } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useTheme } from 'vuetify';
 import template1 from "../components/Template1.vue";
 import template2 from "../components/Template2.vue";
 import template3 from "../components/Template3.vue";
@@ -11,7 +10,6 @@ import ResumeServices from "../services/ResumeServices";
 import ResumeExport from "../reports/ResumeExport";
 
 const router = useRouter();
-const theme = useTheme();
 const account = ref(null);
 const resumeId = ref(null);
 const isExport = ref(false);

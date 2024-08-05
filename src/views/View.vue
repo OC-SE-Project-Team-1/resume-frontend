@@ -8,7 +8,6 @@ import template3 from "../components/Template3.vue";
 import template4 from "../components/Template4.vue";
 import ResumeServices from "../services/ResumeServices";
 import ResumeExport from "../reports/ResumeExport";
-import { useTheme } from 'vuetify';
 
 const router = useRouter();
 const account = ref(null);
@@ -31,7 +30,6 @@ function makeSnackbar(color, text){
     snackbar.value.color = color;
     snackbar.value.text = text;
 }
-const theme = useTheme();
 
 const showFeedback = computed(() => {
     if (isFeedback.value) {
@@ -86,8 +84,6 @@ function navigateToLibrary() {
 
 //Export Resume
 async function exportResume() {
-
-    //theme.global.name.value = 'LightTheme';
   
     const html = document.getElementsByClassName("resume")
     await ResumeExport.exportResume(html[0])
@@ -125,7 +121,6 @@ async function updateEditing(){
 
 function refreshPage(){
   isDownloaded.value = false;
- // window.location.reload(true);
 }
 </script>
 

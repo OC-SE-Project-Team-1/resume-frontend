@@ -1,7 +1,6 @@
 <script setup>
 import { computed, onMounted } from "vue";
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 import UserServices from "../services/UserServices.js";
 import LinkServices from "../services/LinkServices.js";
 import GoalServices from "../services/GoalServices.js";

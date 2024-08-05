@@ -1,7 +1,6 @@
 <script setup>
 import { computed, onMounted } from "vue";
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 import UserServices from "../services/UserServices.js";
 import LinkServices from "../services/LinkServices.js";
 import GoalServices from "../services/GoalServices.js";
@@ -30,7 +29,6 @@ const isNewLinkVisible = ref(false);
 const isNewEduVisible = ref(false);
 const tabs = ref();
 const tab = ref("1");
-const resumeTemplate = ref();
 const dialog = ref(false);
 
 const personalInfo = ref();
@@ -383,7 +381,6 @@ async function addNewLink() {
 async function navigateNextTab(value) {
 
     resetNewInput();
-    //const temp = parseInt(tab.value) + 1;
     const temp = value + 1;
 
     getGoals();
@@ -413,7 +410,6 @@ async function selectedTemplate(value) {
     selectedResumeTemplate.value = parseInt(value);
     window.localStorage.setItem("resumeTemplate", JSON.stringify(value));
     toggleSelectPreview();
-    console.log(value);
 }
 
 async function toggleSelectPreview() {
@@ -433,9 +429,6 @@ function toggleIsAttending() {
     if (isAttending.value == false) {
         schoolGrad.value = null;
     }
-    // else {
-    //     schoolEnd.value = schoolGrad.value;
-    // }
 }
 
 function toggleExperience(value) {
@@ -522,34 +515,6 @@ function toggleExperience(value) {
     }
 }
 
-async function showTab(index) {
-    if (index == "Personal Details") {
-        isPersonalDetails.value = !isPersonalDetails.value;
-        console.log("1");
-    }
-    else if (index == "Professional Summary") {
-        isProfSum.value = !isProfSum.value;
-        console.log("2");
-    }
-    else if (index == "Education") {
-        isEducation.value = !isEducation.value;
-        console.log("3");
-    }
-    else if (index == "Experience") {
-        isExperience.value = !isExperience.value;
-        console.log("4");
-    }
-    else if (index == "Skills") {
-        isSkills.value = !isSkills.value;
-        console.log("5");
-    }
-    else if (index == "Others") {
-        isOthers.value = !isOthers.value;
-        console.log("6");
-    }
-
-}
-
 function showMinors() {
     isMinors.value = !isMinors.value;
 
@@ -617,8 +582,6 @@ async function getGoals() {
 }
 
 async function addNewGoal() {
-    console.log(goalTitle.value);
-    console.log(goalDescription.value);
     await GoalServices.addGoal(goalTitle.value, goalDescription.value, parseInt(account.value.id), goalChatHistory)
         .then(() => {
             makeSnackbar("green", "Goal Added!")
@@ -663,8 +626,7 @@ async function addNewEducation() {
 
     if (schoolGrad.value !== null) {
         schoolEnd.value = schoolGrad.value;
-    } 
-    console.log(studyAbroad);    
+    }     
 
     await EducationServices.addEducation(tempTitle, tempDegree, account.value.id,
         schoolStart.value, schoolEnd.value, schoolGrad.value, gpa.value, schoolName.value,
@@ -714,7 +676,6 @@ async function getExperiences() {
     await ExperienceServices.getExperiencesForUser(account.value.id)
         .then((response) => {
             experiences.value = response.data;
-            // console.log(experiences.value);
         })
         .catch((error) => {
             console.log(error);
@@ -821,9 +782,8 @@ async function addNewSkill() {
 }
 
 function filterPerfectMatch(value, search) {
-    // console.log("value: " + value + ", search: " + search);
     return value != null && String(value) === search
-    }
+}
 
 async function skillAiAssist(){
     isRequestingAiAssist.value = true;
@@ -846,73 +806,58 @@ async function addResume() {
 
     if (selectedLinks.value !== null) {
         for (let [key, value] of Object.entries(selectedLinks.value)) {
-            // console.log("Link Key: " + key + " Value: " + value);
             linkArr.push(value);
         }
-        console.log(linkArr);
     }
 
     if (selectedGoals.value !== null) {
         for (let [key, value] of Object.entries(selectedGoals.value)) {
-            // console.log("Goal Key: " + key + " Value: " + value);
             goalArr.push(value);
         }
-        console.log(goalArr);
     }
 
     if (selectedEducation.value !== null) {
         for (let [key, value] of Object.entries(selectedEducation.value)) {
-            // console.log("Education Key: " + key + " Value: " + value);
             eduArr.push(value);
         }
-        console.log(eduArr);
     }
 
     if (selectedWorkExperience.value !== null) {
     for (let [key, value] of Object.entries(selectedWorkExperience.value)) {
-        // console.log("Work Exp Key: " + key + " Value: " + value);
         expArr.push(value);
     }}
     if (selectedLeadershipExperience.value !== null) {
     for (let [key, value] of Object.entries(selectedLeadershipExperience.value)) {
-        // console.log("Leadership Exp Key: " + key + " Value: " + value);
         expArr.push(value);
     }}
     if (selectedActivitiesExperience.value !== null) {
     for (let [key, value] of Object.entries(selectedActivitiesExperience.value)) {
-        // console.log("Activities Exp Key: " + key + " Value: " + value);
         expArr.push(value);
     }}
     if (selectedVolunteerExperience.value !== null) {
     for (let [key, value] of Object.entries(selectedVolunteerExperience.value)) {
-        // console.log("Volunteer Exp Key: " + key + " Value: " + value);
         expArr.push(value);
     }}
     if (selectedHonorExperience.value !== null) {
     for (let [key, value] of Object.entries(selectedHonorExperience.value)) {
-        // console.log("Honor Exp Key: " + key + " Value: " + value);
         expArr.push(value);
     }}
     if (selectedAwardExperience.value !== null) {
     for (let [key, value] of Object.entries(selectedAwardExperience.value)) {
-        // console.log("Award Exp Key: " + key + " Value: " + value);
         expArr.push(value);
     }}
     if (selectedProjectExperience.value !== null) {
     for (let [key, value] of Object.entries(selectedProjectExperience.value)) {
-        // console.log("Project Exp Key: " + key + " Value: " + value);
         expArr.push(value);
     }}
     console.log(expArr);
 
     if (selectedSkills.value !== null) {
         for (let [key, value] of Object.entries(selectedSkills.value)) {
-            // console.log("Skills Key: " + key + " Value: " + value);
             skillArr.push(value);
         }
-        console.log(skillArr);
     }
-    //TODO: Get isEdit working and Content Working (currently hardcoded)
+
     await ResumeServices.addResume(title.value, goalArr, expArr, skillArr, 
                 eduArr, linkArr, false, selectedResumeTemplate.value, 
                 parseInt(account.value.id))

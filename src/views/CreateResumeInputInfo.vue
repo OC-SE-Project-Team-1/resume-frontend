@@ -70,6 +70,12 @@ const degreeType = ref("");
 const minors = ref(null);
 const courses = ref(null);
 const attending = ref(false);
+const awards = ref(null);
+const studyAbroadTitle = ref(null);
+const studyAbroadOrganization = ref(null);
+const studyAbroadLocation = ref(null);
+const studyAbroadTime = ref(null);
+const studyAbroadYear = ref(null);
 
 const experiences = ref();
 const selectedWorkExperience = ref(null);
@@ -108,6 +114,8 @@ const isNewSkillVisible = ref(false);
 
 const isMinors = ref(false);
 const isCourses = ref(false);
+const isStudyAbroad = ref(false);
+const isAwards = ref(false);
 
 const isAttending = ref(false);
 
@@ -117,6 +125,9 @@ const selectedResumeTemplate = ref(0);
 const isSelectTemplate = ref(true);
 const isPreviewResume = ref(false);
 
+const isRequestingAiAssist = ref(false);
+
+//gray out submit button rules
 const isLinked = computed(() => {
     return (
         link.value !== "" &&
@@ -139,6 +150,40 @@ const isGenerated = computed(() => {
     return (
         isPreviewResume.value === true &&
         title.value !== "" 
+    )
+})
+const isEducationFilled = computed(() =>{
+    var endGrad = isAttending.value ? (schoolGrad.value !== "" && schoolGrad.value !== null):
+                                    (schoolEnd.value !== "" && schoolEnd.value !== null)
+    var isdegree =  degreeTitle.value == 'High School Diploma' || (degree.value !== "" && degree.value !== null &&
+                    degreeTitle.value !== "" && degreeTitle.value !== null &&
+                    degreeType.value !== "" && degreeType.value !== null)
+    return(
+        schoolName.value !== "" && schoolName.value !== null &&
+        schoolCity.value !== "" && schoolCity.value !== null &&
+        schoolState.value !== "" && schoolState.value !== null &&
+        schoolStart.value !== "" && schoolStart.value !== null &&
+        isdegree && endGrad
+    )
+})
+
+const isExperienced = computed(() =>{
+    var isEndDate = isCurrent.value ? true : (jobEnd.value !== "" && jobEnd.value !== null)
+    return(
+        jobExperienceTitle.value !== "" && jobExperienceTitle.value !== null &&
+        jobCompany.value !== "" && jobCompany.value !== null &&
+        jobCity.value !== "" && jobCity.value !== null &&
+        jobState.value !== "" && jobState.value !== null &&
+        jobStart.value !== "" && jobStart.value !== null &&
+        jobDescription.value !== "" && jobDescription.value !== null && isEndDate  
+    )
+})
+
+const isOthered = computed(() =>{
+    return(
+        jobExperienceTitle.value !== "" && jobExperienceTitle.value !== null &&
+        jobStart.value !== "" && jobStart.value !== null &&
+        jobDescription.value !== "" && jobDescription.value !== null
     )
 })
 
@@ -282,8 +327,8 @@ onMounted(() => {
     getPersonalInfo();
 });
 
-function makeSnackbar(value, color, text){
-    snackbar.value.value = value;
+function makeSnackbar(color, text){
+    snackbar.value.value = true;
     snackbar.value.color = color;
     snackbar.value.text = text;
 }
@@ -318,26 +363,20 @@ async function getLinks() {
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
 async function addNewLink() {
     await LinkServices.addLink(link.value, linkDescription.value, parseInt(account.value.id))
         .then(() => {
-            snackbar.value.value = true;
-            snackbar.value.color = "green";
-            snackbar.value.text = "Link Added!";
+            makeSnackbar("green", "Link Added!")
             closeNewLink();
             getLinks();
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
@@ -527,6 +566,26 @@ function showCourses() {
     }
 }
 
+function showStudyAbroad() {
+    isStudyAbroad.value = !isStudyAbroad.value;
+
+    if (isStudyAbroad.value == false) {
+        studyAbroadTitle.value = null;
+        studyAbroadOrganization.value = null;
+        studyAbroadLocation.value = null;
+        studyAbroadTime.value = null;
+        studyAbroadYear.value = null;
+    }
+}
+
+function showAwards() {
+    isAwards.value = !isAwards.value;
+
+    if (isAwards.value == false) {
+        awards.value = null;
+    }
+}
+
 async function getPersonalInfo() {
     resetNewInput()
     await UserServices.getUser(parseInt(account.value.id))
@@ -541,9 +600,7 @@ async function getPersonalInfo() {
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
@@ -555,9 +612,7 @@ async function getGoals() {
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
@@ -566,17 +621,13 @@ async function addNewGoal() {
     console.log(goalDescription.value);
     await GoalServices.addGoal(goalTitle.value, goalDescription.value, parseInt(account.value.id), goalChatHistory)
         .then(() => {
-            snackbar.value.value = true;
-            snackbar.value.color = "green";
-            snackbar.value.text = "Goal Added!";
+            makeSnackbar("green", "Goal Added!")
             closeNewGoal();
             getGoals();
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
@@ -588,15 +639,23 @@ async function getEducationInfo() {
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
 async function addNewEducation() {
     var tempTitle = schoolState.value + " " + schoolStart.value + " " + gpa.value;
     var tempDegree = degreeTitle.value + " of " + degreeType.value + " in " + degree.value;
+    var studyAbroad = null;
+    if (studyAbroadTitle !== null && studyAbroadTitle !== "") {
+        studyAbroad = {
+            "title": studyAbroadTitle.value,
+            "organization": studyAbroadOrganization.value,
+            "location": studyAbroadLocation.value,
+            "term": studyAbroadTime.value,
+            "year": studyAbroadYear.value
+        }
+    }
 
     if (degreeTitle.value == "High School Diploma") {
         tempDegree = degreeTitle.value;
@@ -605,25 +664,20 @@ async function addNewEducation() {
     if (schoolGrad.value !== null) {
         schoolEnd.value = schoolGrad.value;
     } 
-    // else {
-    //     schoolGrad.value = schoolEnd.value;
-    // }
+    console.log(studyAbroad);    
 
     await EducationServices.addEducation(tempTitle, tempDegree, account.value.id,
         schoolStart.value, schoolEnd.value, schoolGrad.value, gpa.value, schoolName.value,
-        schoolCity.value, schoolState.value, courses.value, minors.value, maxGpa.value)
+        schoolCity.value, schoolState.value, courses.value, minors.value, maxGpa.value,
+        awards.value, studyAbroad)
         .then(() => {
-            snackbar.value.value = true;
-            snackbar.value.color = "green";
-            snackbar.value.text = "Education Added!";
+            makeSnackbar("green", "Education Added")
             closeEducation();
             getEducationInfo();
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
@@ -648,6 +702,12 @@ async function closeEducation() {
     degree.value = null;
     degreeTitle.value = "";
     degreeType.value = null;
+    awards.value = null;
+    studyAbroadTitle.value = null;
+    studyAbroadOrganization.value = null;
+    studyAbroadLocation.value = null;
+    studyAbroadTime.value = null;
+    studyAbroadYear.value = null;
 }
 
 async function getExperiences() {
@@ -658,9 +718,7 @@ async function getExperiences() {
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
@@ -672,9 +730,7 @@ async function addNewExperience(type) {
         jobEnd.value, isCurrent.value, account.value.id, type, jobCity.value, jobState.value, 
         jobCompany.value, experienceChatHistory)
         .then(() => {
-            snackbar.value.value = true;
-            snackbar.value.color = "green";
-            snackbar.value.text = "Experience Added!";
+            makeSnackbar("green", "Experience Added!")
             getExperiences();
             clearExperienceData();
             closeNewJobExperience();
@@ -686,9 +742,7 @@ async function addNewExperience(type) {
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
@@ -749,26 +803,20 @@ async function getSkills() {
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
 async function addNewSkill() {
     await SkillServices.addSkill(skillTitle.value, skillDescription.value, skillHistory, parseInt(account.value.id))
         .then(() => {
-            snackbar.value.value = true;
-            snackbar.value.color = "green";
-            snackbar.value.text = "Skill Added!";
+            makeSnackbar("green", "Skill Added!")
             closeNewSkill();
             getSkills();
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
@@ -778,11 +826,13 @@ function filterPerfectMatch(value, search) {
     }
 
 async function skillAiAssist(){
+    isRequestingAiAssist.value = true;
     await SkillServices.skillAiAssist(skillDescription.value)
         .then((response) => {
         skillDescription.value = response.data.description
         skillHistory.push(response.data.chatHistory[0])
-        skillHistory.push(response.data.chatHistory[1])         
+        skillHistory.push(response.data.chatHistory[1]) 
+        isRequestingAiAssist.value = false;        
         })
         
 }
@@ -867,16 +917,12 @@ async function addResume() {
                 eduArr, linkArr, false, selectedResumeTemplate.value, 
                 parseInt(account.value.id))
         .then(() => {
-            snackbar.value.value = true;
-            snackbar.value.color = "green";
-            snackbar.value.text = "Resume Created!";
+            makeSnackbar("green", "Resume Created!")
             clearAllSelected();
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
@@ -900,27 +946,32 @@ function clearGoalAiAssist(){
     aiGoalExperiences.value = null;
     aiGoalAchievements.value = null;
     aiGoalTitle.value = null;
+    isRequestingAiAssist.value = false;
 }
 
 async function aiGoalAssist(){
-    goalDescription.value = "Generating Description, please wait"
+    isRequestingAiAssist.value = true;
     await GoalServices.goalAiAssist(aiGoalTitle.value, aiGoalExperiences.value.split(","), aiGoalAchievements.value.split(",") )
         .then((response) =>{
             goalDescription.value = response.data.description
             goalChatHistory.push(response.data.chatHistory[0])
             goalChatHistory.push(response.data.chatHistory[1])
+            clearGoalAiAssist();
         })
         
     }
         
 async function experienceAIAssist(){
+    isRequestingAiAssist.value = true;
     await ExperienceServices.experienceAiAssist(jobDescription.value)
         .then((response) => {
         jobDescription.value = response.data.description
         experienceChatHistory.push(response.data.chatHistory[0])
-        experienceChatHistory.push(response.data.chatHistory[1])         
+        experienceChatHistory.push(response.data.chatHistory[1])  
+        isRequestingAiAssist.value = false;       
     })
 }
+
 
 const editDialog = ref(false);
 const editedItem = ref(null);
@@ -1169,11 +1220,14 @@ export default {
                 <v-container v-if="isNewGoalVisible">
                 <v-row>
                 <v-col>
-                    <v-text-field v-model="goalTitle" label="Title"></v-text-field>
+                    <v-skeleton-loader v-if="isRequestingAiAssist" type="paragraph"></v-skeleton-loader>
+                    <v-text-field v-if="!isRequestingAiAssist" v-model="goalTitle" label="Title">
+                    </v-text-field>
                 </v-col>
             </v-row>
+            <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
                 <v-row>
-                    <v-textarea v-model="goalDescription" label="A brief overview of your skills and experiences">
+                    <v-textarea v-if="!isRequestingAiAssist" v-model="goalDescription" label="A brief overview of your skills and experiences">
                         <template #append-inner>
                             <div class="text-center pa-4">
                                 <v-dialog v-model="dialog" persistent>
@@ -1210,7 +1264,7 @@ export default {
                                                     <v-btn @click="clearGoalAiAssist(), dialog = false"> Cancel </v-btn>
                                                 </v-col>
                                                 <v-col >
-                                                    <v-btn @click="aiGoalAssist(), clearGoalAiAssist(), dialog = false"> Confirm </v-btn>
+                                                    <v-btn @click="aiGoalAssist(), dialog = false"> Confirm </v-btn>
                                                 </v-col>
                                                                                     
                                             </v-row>                                            
@@ -1225,11 +1279,11 @@ export default {
                         </template>
                     </v-textarea>
                 </v-row>
-                <v-btn variant="tonal" @click="closeNewGoal()">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="closeNewGoal()">
                     Cancel
                 </v-btn>
                 &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" :disabled="!isGoals" @click="addNewGoal()">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isGoals" @click="addNewGoal()">
                     Submit
                 </v-btn>
             </v-container>
@@ -1252,7 +1306,7 @@ export default {
                 <v-container>
                     <v-data-table v-model="selectedEducation" :items="educationInfo" item-value="id"
                         :headers="[{ title: 'Organization', value: 'organization' }, { title: 'Degree', value: 'description' },
-                        { title: 'Start Date', value: 'startDate' }, { title: 'Grad Date', value: 'gradDate' }, { title: 'Delete', value: 'delete' }]"
+                        { title: 'Start Date', value: 'startDate' }, { title: 'End Date', value: 'endDate' }, { title: 'Delete', value: 'delete' }]"
                         show-select hide-default-footer>
                         <template v-slot:item.delete = "{ item }">
                             <v-btn  variant="text" @click="openDelete(item)" icon>
@@ -1378,6 +1432,57 @@ export default {
 
                         </div>
 
+                        <v-btn variant="text" @click="showAwards">
+                            Add Awards
+                        </v-btn>
+
+                        <div class="mb-6">
+                            <v-spacer></v-spacer>
+                        </div>
+                        <div v-if="isAwards">
+
+
+                            <v-text-field label="Award(s)" v-model="awards"
+                                hint="If multiple, format as: Award, Award">
+
+                            </v-text-field>
+
+                        </div>
+
+                        <v-btn variant="text" @click="showStudyAbroad">
+                            Add Study Abroad
+                        </v-btn>
+
+                        <div class="mb-6">
+                            <v-spacer></v-spacer>
+                        </div>
+                        <div v-if="isStudyAbroad">
+                            <v-row>
+                                <v-text-field label="Title" v-model="studyAbroadTitle"
+                                hint="Name of Study Abroad Program">
+                            </v-text-field>
+                            </v-row>
+                        <v-row>
+                            <v-col>
+                                <v-text-field v-model="studyAbroadOrganization" label="Organization" hint="Ex) Capital Normal"></v-text-field>
+                            </v-col>
+                            <v-col>
+                                <v-text-field v-model="studyAbroadLocation" label="Location" hint="Ex) Beijing, China"></v-text-field>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col>
+                                <v-text-field v-model="studyAbroadTime" label="Term" hint="Ex) Fall Semester"></v-text-field>
+                            </v-col>
+                            <v-col>
+                                <v-text-field v-model="studyAbroadYear" label="Year" hint="Ex) 2018"></v-text-field>
+                            </v-col>
+                        </v-row>
+
+
+
+                        </div>
+
                     </v-container>
 
 
@@ -1392,7 +1497,7 @@ export default {
                     Cancel
                 </v-btn>
                 &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" @click="addNewEducation()">
+                <v-btn variant="tonal" :disabled="!isEducationFilled" @click="addNewEducation()">
                     Submit
                 </v-btn>
             </v-container>
@@ -1473,8 +1578,9 @@ export default {
                         <v-switch v-model="isCurrent" label="Present Job" color="primary"></v-switch>
                     </v-col>
                 </v-row>
+                <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
                 <v-row>
-                    <v-textarea v-model="jobDescription" label="Work Summary">
+                    <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription" label="Work Summary">
                         <template #append-inner>
                             <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="experienceAIAssist()">
                                 AI Assist
@@ -1486,11 +1592,11 @@ export default {
                 <v-col>
 
                 </v-col>
-                <v-btn variant="tonal" @click="toggleExperience(1)">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(1)">
                     Cancel
                 </v-btn>
                 &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" @click="addNewExperience(1)">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced" @click="addNewExperience(1)">
                     Submit
                 </v-btn>
             </v-container>
@@ -1568,8 +1674,9 @@ export default {
                     </v-col>
                 </v-row>
 
+                <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
                 <v-row>
-                    <v-textarea v-model="jobDescription" label="Role Summary">
+                    <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription" label="Role Summary">
                         <template #append-inner>
                             <v-btn color="secondary" rounded="xl" value="Ai Assist"  @click="experienceAIAssist()">
                                 AI Assist
@@ -1581,11 +1688,11 @@ export default {
                 <v-col>
 
                 </v-col>
-                <v-btn variant="tonal" @click="toggleExperience(2)">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(2)">
                     Cancel
                 </v-btn>
                 &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" @click="addNewExperience(2)">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced" @click="addNewExperience(2)">
                     Submit
                 </v-btn>
             </v-container>
@@ -1662,8 +1769,10 @@ export default {
                         <v-switch v-model="isCurrent" label="Present Role" color="primary"></v-switch>
                     </v-col>
                 </v-row>
+
+                <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
                 <v-row>
-                    <v-textarea v-model="jobDescription" label="Role Summary">
+                    <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription" label="Role Summary">
                         <template #append-inner>
                             <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="experienceAIAssist()">
                                 AI Assist
@@ -1675,11 +1784,11 @@ export default {
                 <v-col>
 
                 </v-col>
-                <v-btn variant="tonal" @click="toggleExperience(3)">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(3)">
                     Cancel
                 </v-btn>
                 &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" @click="addNewExperience(3)">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced" @click="addNewExperience(3)">
                     Submit
                 </v-btn>
             </v-container>
@@ -1756,8 +1865,10 @@ export default {
                         <v-switch v-model="isCurrent" label="Present Role" color="primary"></v-switch>
                     </v-col>
                 </v-row>
+                
+                <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
                 <v-row>
-                    <v-textarea v-model="jobDescription" label="Role Summary">
+                    <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription" label="Role Summary">
                         <template #append-inner>
                             <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="experienceAIAssist()">
                                 AI Assist
@@ -1769,11 +1880,11 @@ export default {
                 <v-col>
 
                 </v-col>
-                <v-btn variant="tonal" @click="toggleExperience(4)">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(4)">
                     Cancel
                 </v-btn>
                 &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" @click="addNewExperience(4)">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced" @click="addNewExperience(4)">
                     Submit
                 </v-btn>
             </v-container>
@@ -1824,14 +1935,17 @@ export default {
             </v-btn>
 
             <v-container v-if="isNewSkillVisible">
+                <v-skeleton-loader v-if="isRequestingAiAssist" type="paragraph"></v-skeleton-loader>
                 <v-row>
                     <v-col>
-                        <v-text-field v-model="skillTitle" label="Skill"></v-text-field>
+                        <v-text-field v-if="!isRequestingAiAssist" v-model="skillTitle" label="Skill"></v-text-field>
                     </v-col>
                 </v-row>
+                
+                <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
                 <v-row>
                     <v-col>
-                        <v-textarea v-model="skillDescription" label="Brief Description/Proficientcy Level, click AI assist button along with your input to help create a better description">
+                        <v-textarea v-if="!isRequestingAiAssist" v-model="skillDescription" label="Brief Description/Proficientcy Level, click AI assist button along with your input to help create a better description">
                         <template #append-inner>
                             <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="skillAiAssist()">
                                 AI Assist
@@ -1843,11 +1957,11 @@ export default {
                 <v-col>
 
                 </v-col>
-                <v-btn variant="tonal" @click="closeNewSkill()">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="closeNewSkill()">
                     Cancel
                 </v-btn>
                 &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" :disabled="!isSkilled" @click="addNewSkill()">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isSkilled" @click="addNewSkill()">
                     Submit
                 </v-btn>
             </v-container>
@@ -1925,7 +2039,7 @@ export default {
                     Cancel
                 </v-btn>
                 &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" @click="addNewExperience(5)">
+                <v-btn variant="tonal" :disabled="!isOthered" @click="addNewExperience(5)">
                     Submit
                 </v-btn>
             </v-container>
@@ -1996,7 +2110,7 @@ export default {
                     Cancel
                 </v-btn>
                 &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" @click="addNewExperience(6)">
+                <v-btn variant="tonal" :disabled="!isOthered" @click="addNewExperience(6)">
                     Submit
                 </v-btn>
             </v-container>
@@ -2070,8 +2184,10 @@ export default {
                         <v-switch v-model="isCurrent" label="Present Role" color="primary"></v-switch>
                     </v-col>
                 </v-row>
+
+                <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
                 <v-row>
-                    <v-textarea label="Project Summary" v-model="jobDescription">
+                    <v-textarea v-if="!isRequestingAiAssist" label="Project Summary" v-model="jobDescription">
                         <template #append-inner>
                             <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="experienceAIAssist()">
                                 AI Assist
@@ -2083,11 +2199,11 @@ export default {
                 <v-col>
 
                 </v-col>
-                <v-btn variant="tonal" @click="toggleExperience(7)">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(7)">
                     Cancel
                 </v-btn>
                 &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" @click="addNewExperience(7)">
+                <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced" @click="addNewExperience(7)">
                     Submit
                 </v-btn>
             </v-container>

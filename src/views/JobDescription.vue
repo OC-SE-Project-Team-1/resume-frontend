@@ -18,7 +18,11 @@ const snackbar = ref({
     color: "",
     text: "",
 });
-
+function makeSnackbar(color, text){
+    snackbar.value.value = true;
+    snackbar.value.color = color;
+    snackbar.value.text = text;
+}
 // Resume variables
 const resumeId = ref();
 const resumeData = ref(null);
@@ -53,9 +57,7 @@ async function getResume() {
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
@@ -67,25 +69,19 @@ async function getJobDescInfo() {
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
 async function addNewJobDesc() {
     await JobDescriptionServices.addJobDescription(jobDescriptionTitle.value, jobDescription.value, account.value.id)
         .then(() => {
-            snackbar.value.value = true;
-            snackbar.value.color = "green";
-            snackbar.value.text = "Job Description Added!";
+            makeSnackbar("green", "Job Description Added!")
             getJobDescInfo();
         })
         .catch((error) => {
             console.log(error);
-            snackbar.value.value = true;
-            snackbar.value.color = "error";
-            snackbar.value.text = error.response.data.message;
+            makeSnackbar("error", error.response.data.message)
         });
 }
 
@@ -112,15 +108,11 @@ async function requestFeedback() {
             .catch((error) => {
                 console.log(error);
                 isRequestingFeedback.value = false;
-                snackbar.value.value = true;
-                snackbar.value.color = "error";
-                snackbar.value.text = error.response.data.message;
+                makeSnackbar("error", error.response.data.message)
             }
             );
     } else {
-        snackbar.value.value = true;
-        snackbar.value.color = "error";
-        snackbar.value.text = "Select a value from the table first.";
+        makeSnackbar("error", "Select a value from the table first.")
     }
 }
 

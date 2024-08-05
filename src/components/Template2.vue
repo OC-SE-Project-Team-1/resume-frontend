@@ -75,7 +75,7 @@ async function sortData() {
 
 <template>
 <v-container>
-    <v-sheet :elevation="4" class="resume" style="width: calc(90vh * 8.5 / 11); position:relative; margin:0 auto;">
+    <v-sheet :elevation="4" class="resume" style="width: calc(90vh * 8.5 / 11); position:relative; margin:0 auto;  background-color: white;">
         <div>
             <header>
                 <h1>{{ user.firstName }} {{ user.lastName }}</h1>
@@ -93,12 +93,14 @@ async function sortData() {
                 <p><strong>{{ edu.organization }}</strong> | {{ date.format(edu.startDate, 'monthAndYear') }} - <a v-if="edu.gradDate !== null">Projected </a>{{ date.format(edu.endDate, 'monthAndYear') }}</p>
                 <p><strong><em>{{ edu.degree }}</em></strong></p>
                 <p>{{ edu.gpa }}</p>
-                <!-- TODO: FIgure out what to do for study abroad -->
-                <p>{{ edu.abroad }}</p>
-                <ul>
+                <div v-if="edu.studyAbroad !== null && edu.studyAbroad.title !== null">
+                <p><a v-if="edu.studyAbroad.title !==''">{{ edu.studyAbroad.title }} </a> <a v-if="edu.studyAbroad.organization !==''"> {{ edu.studyAbroad.term }} </a> <a v-if="edu.studyAbroad.year !==''"> {{ edu.studyAbroad.year }}</a></p>
+                <p><a v-if="edu.studyAbroad.organization !==''">{{ edu.studyAbroad.organization }}</a><a v-if="edu.studyAbroad.location !==''"> | {{ edu.studyAbroad.location }}</a></p>
+                <!-- <ul>
                     <li v-for="(program, index) in edu.studyAbroadPrograms" :key="index">{{ program }}</li>
-                </ul>
+                </ul> -->
                 </div>
+              </div>
             </section>
             <section>
                 <h2>EXPERIENCE</h2>
@@ -204,6 +206,7 @@ async function sortData() {
     padding-bottom: 15%;
     font-family: 'Times New Roman', Times, serif;
     font-size: x-small;
+    color: black;
 }
 
   header {

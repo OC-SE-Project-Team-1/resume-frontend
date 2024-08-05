@@ -30,8 +30,8 @@ onMounted(async () => {
 
 });
 
-function makeSnackbar(value, color, text){
-    snackbar.value.value = value;
+function makeSnackbar(color, text){
+    snackbar.value.value = true;
     snackbar.value.color = color;
     snackbar.value.text = text;
 }
@@ -122,16 +122,16 @@ function closeChangePasswordDialog() {
 
 async function changePassword() {
   if (newPassword.value !== confirmPassword.value) {
-  makeSnackbar(true, "error", "Passwords do not match")
+  makeSnackbar("error", "Passwords do not match")
   }
   else {
       await UserServices.updatePassword(account.value.id,newPassword.value)
   .then(() => {
-      makeSnackbar(true, "green", "Password Updated!")
+      makeSnackbar("green", "Password Updated!")
     })
     .catch((error) => {
       console.log(error);
-      makeSnackbar(true, "error", error.response.data.message)
+      makeSnackbar("error", error.response.data.message)
     });  
     closeChangePasswordDialog();
   }
@@ -142,7 +142,7 @@ async function changePassword() {
 async function updateAccount() {
   await UserServices.updateAccount(account.value.id, newUsername.value, newEmail.value, newFirstName.value, newLastName.value, newAddress.value, newPhoneNumber.value)
   .then((response) => {
-      makeSnackbar(true, "green", response)
+      makeSnackbar("green", response)
       accountData.value.token = JSON.parse(localStorage.getItem("account")).token //keep token
       window.localStorage.setItem("account", JSON.stringify(accountData.value));
       account.value = JSON.parse(localStorage.getItem("account"));
@@ -150,7 +150,7 @@ async function updateAccount() {
     })
     .catch((error) => {
       console.log(error);
-      makeSnackbar(true, "error", error.response.data.message)
+      makeSnackbar("error", error.response.data.message)
     });
   closeChangePasswordDialog();
 }

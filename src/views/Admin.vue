@@ -33,6 +33,12 @@ onMounted(async () => {
   await getUsers();
 });
 
+function makeSnackbar(color, text){
+    snackbar.value.value = true;
+    snackbar.value.color = color;
+    snackbar.value.text = text;
+}
+
 async function getUsers() {
   await UserServices.getUsers()
     .then((response) => {
@@ -40,9 +46,7 @@ async function getUsers() {
     })
     .catch((error) => {
       console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
+      makeSnackbar("error", error.response.data.message)
     });
 }
 
@@ -60,16 +64,12 @@ async function deleteUser() {
       getUsers();
       localStorage.removeItem("userId");
       isDeleted.value = false;
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "User Deleted!";
+      makeSnackbar("green", "User Deleted!")
       router.push({ name: "admin" });
     })
     .catch((error) => {
       console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
+      makeSnackbar("error", error.response.data.message)
     });
   isDeleted.value = false;
 }
@@ -80,16 +80,12 @@ async function changeUserRole() {
       getUsers();
       localStorage.removeItem("userId");
       isUserUpdate.value = false;
-      snackbar.value.value = true;
-      snackbar.value.color = "green";
-      snackbar.value.text = "User Role Updated!";
+      makeSnackbar("green", "User Role Updated!")
       router.push({ name: "admin" });
     })
     .catch((error) => {
       console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
+      makeSnackbar("error", error.response.data.message)
     });
   isUserUpdate.value = false;
 }

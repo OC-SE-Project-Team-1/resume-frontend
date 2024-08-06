@@ -4,20 +4,7 @@ import EducationServices from '../services/EducationServices';
 
 // Define props
 const props = defineProps({
-  eduId: Number,
-  title: String,
-  organization: String,
-  city: String,
-  state: String,
-  gpa: String,
-  totalGPA: String,
-  description: String,
-  startDate: String,
-  endDate: String,
-  gradDate: String,
-  courses: String,
-  minor: String,
-  awards: String,
+  editingItem: Object,
   studyAbroadTitle: String,
   studyAbroadOrganization: String,
   studyAbroadLocation: String,
@@ -30,18 +17,7 @@ const props = defineProps({
 // Define emits
 const emit = defineEmits([
   'update:editEducationDialog',
-  'update:organization',
-  'update:description',
-  'update:city',
-  'update:state',
-  'update:gpa',
-  'update:totalGPA',
-  'update:startDate',
-  'update:endDate',
-  'update:gradDate',
-  'update:courses',
-  'update:minor',
-  'update:awards',
+  'update:editingItem',
   'update:studyAbroadTitle',
   'update:studyAbroadOrganization',
   'update:studyAbroadLocation',
@@ -52,18 +28,7 @@ const emit = defineEmits([
 
 // Local state for editing
 const account = ref(null);
-const localOrganization = ref(props.organization);
-const localCity = ref(props.city);
-const localState = ref(props.state);
-const localGpa = ref(props.gpa);
-const localTotalGPA = ref(props.totalGPA);
-const localDescription = ref(props.description);
-const localStartDate = ref(props.startDate);
-const localEndDate = ref(props.endDate);
-const localGradDate = ref(props.gradDate);
-const localCourses = ref(props.courses);
-const localMinor = ref(props.minor);
-const localAwards = ref(props.awards);
+const editedItem = ref(props.editingItem);
 const localStudyAbroadTitle = ref(props.studyAbroadTitle);
 const localStudyAbroadOrganization = ref(props.studyAbroadOrganization);
 const localStudyAbroadLocation = ref(props.studyAbroadLocation);
@@ -73,52 +38,8 @@ const localIsAttending = ref(props.isAttending);
 const localEditEducationDialog = ref(props.editEducationDialog);
 
 // Watch for changes in props
-watch(() => props.organization, (newValue) => {
-  localOrganization.value = newValue;
-});
-
-watch(() => props.city, (newValue) => {
-  localCity.value = newValue;
-});
-
-watch(() => props.state, (newValue) => {
-  localState.value = newValue;
-});
-
-watch(() => props.gpa, (newValue) => {
-  localGpa.value = newValue;
-});
-
-watch(() => props.totalGPA, (newValue) => {
-  localTotalGPA.value = newValue;
-});
-
-watch(() => props.description, (newValue) => {
-  localDescription.value = newValue;
-});
-
-watch(() => props.startDate, (newValue) => {
-  localStartDate.value = newValue;
-});
-
-watch(() => props.endDate, (newValue) => {
-  localEndDate.value = newValue;
-});
-
-watch(() => props.gradDate, (newValue) => {
-  localGradDate.value = newValue;
-});
-
-watch(() => props.courses, (newValue) => {
-  localCourses.value = newValue;
-});
-
-watch(() => props.minor, (newValue) => {
-  localMinor.value = newValue;
-});
-
-watch(() => props.awards, (newValue) => {
-  localAwards.value = newValue;
+watch(() => props.editingItem, (newValue) => {
+  editedItem.value = newValue;
 });
 
 watch(() => props.studyAbroadTitle, (newValue) => {
@@ -150,18 +71,7 @@ watch(() => props.editEducationDialog, (newValue) => {
 });
 
 // Emit updates for each local state
-watch(localOrganization, (newValue) => emit('update:organization', newValue));
-watch(localCity, (newValue) => emit('update:city', newValue));
-watch(localState, (newValue) => emit('update:state', newValue));
-watch(localGpa, (newValue) => emit('update:gpa', newValue));
-watch(localTotalGPA, (newValue) => emit('update:totalGPA', newValue));
-watch(localDescription, (newValue) => emit('update:description', newValue));
-watch(localStartDate, (newValue) => emit('update:startDate', newValue));
-watch(localEndDate, (newValue) => emit('update:endDate', newValue));
-watch(localGradDate, (newValue) => emit('update:gradDate', newValue));
-watch(localCourses, (newValue) => emit('update:courses', newValue));
-watch(localMinor, (newValue) => emit('update:minor', newValue));
-watch(localAwards, (newValue) => emit('update:awards', newValue));
+watch(editedItem.value, (newValue) => emit('update:editingItem', newValue));
 watch(localStudyAbroadTitle, (newValue) => emit('update:studyAbroadTitle', newValue));
 watch(localStudyAbroadOrganization, (newValue) => emit('update:studyAbroadOrganization', newValue));
 watch(localStudyAbroadLocation, (newValue) => emit('update:studyAbroadLocation', newValue));
@@ -179,7 +89,7 @@ function toggleIsAttending() {
   localIsAttending.value = !localIsAttending.value;
 
     if (localIsAttending.value == false) {
-      localGradDate.value = null;
+      editedItem.value.gradDate = null;
     }
 }
 
@@ -198,19 +108,19 @@ async function saveEditEducation() {
                         year: localStudyAbroadYear.value
                       } : null;
 
-  var awards = localAwards.value === '' ? null : localAwards.value;
-  var minors = localMinor.value === '' ? null : localMinor.value;
-  var courses = localCourses.value === '' ? null : localCourses.value;
-  if (localGradDate.value !== null) {
-        localEndDate.value = localGradDate.value;
+  var awards = editedItem.value.awards === '' ? null : editedItem.value.awards;
+  var minors = editedItem.value.minor === '' ? null : editedItem.value.minor;
+  var courses = editedItem.value.courses === '' ? null : editedItem.value.courses;
+  if (editedItem.value.gradDate !== null) {
+    editedItem.value.endDate = editedItem.value.gradDate;
     }
 
   try {
-    await EducationServices.updateEducation( props.title,
-      localDescription.value, localStartDate.value,
-      localEndDate.value, localGradDate.value, localGpa.value, localOrganization.value, localCity.value,
-      localState.value, courses, minors, localTotalGPA.value,
-      awards, studyAbroad, account.value.id, props.eduId
+    await EducationServices.updateEducation( editedItem.value.title,
+    editedItem.value.description, editedItem.value.startDate,
+    editedItem.value.endDate, editedItem.value.gradDate, editedItem.value.gpa, editedItem.value.organization, editedItem.value.city,
+    editedItem.value.state, courses, minors, editedItem.value.totalGPA,
+      awards, studyAbroad, account.value.id, props.editingItem.id
     );
     // makeSnackbar("green", "Education Updated!");
   } catch (error) {
@@ -224,7 +134,7 @@ async function saveEditEducation() {
 </script>
 
 <template>
-  <v-container v-if="localOrganization !== ''">
+  <v-container v-if="editedItem !== ''">
     <v-dialog v-model="localEditEducationDialog" persistent>
     <v-card>
       <v-card-title>
@@ -234,53 +144,53 @@ async function saveEditEducation() {
         <v-container>
           <v-row>
             <v-col>
-              <v-text-field v-model="localOrganization" label="School Name"></v-text-field>
+              <v-text-field v-model="editedItem.organization" label="School Name"></v-text-field>
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-text-field v-model="localCity" label="City"></v-text-field>
+              <v-text-field v-model="editedItem.city" label="City"></v-text-field>
             </v-col>
             <v-col>
-              <v-text-field v-model="localState" label="State"></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-text-field v-model="localGpa" label="GPA"></v-text-field>
-            </v-col>
-            <v-col>
-              <v-text-field v-model="localTotalGPA" label="Max GPA"></v-text-field>
+              <v-text-field v-model="editedItem.state" label="State"></v-text-field>
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-text-field v-model="localDescription" label="Title of Degree"></v-text-field>
+              <v-text-field v-model="editedItem.gpa" label="GPA"></v-text-field>
+            </v-col>
+            <v-col>
+              <v-text-field v-model="editedItem.totalGPA" label="Max GPA"></v-text-field>
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-text-field v-model="localStartDate" label="Start Date" hint="Ex: Aug 2024"></v-text-field>
+              <v-text-field v-model="editedItem.description" label="Title of Degree"></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field v-model="editedItem.startDate" label="Start Date" hint="Ex: Aug 2024"></v-text-field>
             </v-col>
             <v-col>
-              <v-text-field v-model="localEndDate" v-if="!localIsAttending" label="End Date" hint="Ex: Aug 2024"></v-text-field>
-              <v-text-field v-model="localGradDate" v-if="localIsAttending" label="Grad Date" hint="Ex: Aug 2024"></v-text-field>
+              <v-text-field v-model="editedItem.endDate" v-if="!localIsAttending" label="End Date" hint="Ex: Aug 2024"></v-text-field>
+              <v-text-field v-model="editedItem.gradDate" v-if="localIsAttending" label="Grad Date" hint="Ex: Aug 2024"></v-text-field>
               <v-switch v-model="localIsAttending" label="Still Attending" color="primary" @click="toggleIsAttending()"></v-switch>
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-text-field v-model="localCourses" label="Course(s)"></v-text-field>
+              <v-text-field v-model="editedItem.courses" label="Course(s)"></v-text-field>
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-text-field v-model="localMinor" label="Minor(s)"></v-text-field>
+              <v-text-field v-model="editedItem.minor" label="Minor(s)"></v-text-field>
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-text-field v-model="localAwards" label="Award(s)"></v-text-field>
+              <v-text-field v-model="editedItem.awards" label="Award(s)"></v-text-field>
             </v-col>
           </v-row>
           <div>

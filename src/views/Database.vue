@@ -2122,20 +2122,7 @@ export default {
 
                             <!-- EDUCATION DIALOG -->
                             <div v-if="editEducationDialog">
-                                <EducationEdit :eduId="editedItem.id"
-                                            :title="editedItem.title"
-                                            :organization="editedItem.organization"
-                                            :city="editedItem.city"
-                                            :state="editedItem.state"
-                                            :gpa="editedItem.gpa"
-                                            :totalGPA="editedItem.totalGPA"
-                                            :description="editedItem.description"
-                                            :startDate="editedItem.startDate"
-                                            :endDate="editedItem.endDate"
-                                            :gradDate="editedItem.gradDate"
-                                            :courses="editedItem.courses"
-                                            :awards="editedItem.awards"
-                                            :minor="editedItem.minor"
+                                <EducationEdit :editingItem="editedItem"
                                             :studyAbroadTitle="editstudyAbroadTitle"
                                             :studyAbroadOrganization="editstudyAbroadOrganization"
                                             :studyAbroadLocation="editstudyAbroadLocation"

@@ -369,52 +369,8 @@ function updateEditEducationDialog(newState) {
   updateEditEducation()
 }
 
-function updateOrganization(newValue) {
-  editedItem.value.organization = newValue;
-}
-
-function updateCity(newValue) {
-  editedItem.value.city = newValue;
-}
-
-function updateState(newValue) {
-  editedItem.value.state = newValue;
-}
-
-function updateGpa(newValue) {
-  editedItem.value.gpa = newValue;
-}
-
-function updateTotalGPA(newValue) {
-  editedItem.value.totalGPA = newValue;
-}
-
-function updateDescription(newValue) {
-  editedItem.value.description = newValue;
-}
-
-function updateStartDate(newValue) {
-  editedItem.value.startDate = newValue;
-}
-
-function updateEndDate(newValue) {
-  editedItem.value.endDate = newValue;
-}
-
-function updateGradDate(newValue) {
-  editedItem.value.gradDate = newValue;
-}
-
-function updateCourses(newValue) {
-  editedItem.value.courses = newValue;
-}
-
-function updateMinor(newValue) {
-  editedItem.value.minor = newValue;
-}
-
-function updateAwards(newValue) {
-  editedItem.value.awards = newValue;
+function updateEditingItem(newValue) {
+  editedItem.value = newValue;
 }
 
 function updateStudyAbroadTitle(newValue) {
@@ -819,20 +775,7 @@ function navigateToView() {
 
   <!-- EDUCATION DIALOG -->
   <div v-if="editEducationDialog">
-    <EducationEdit :eduId="editedItem.id"
-                   :title="editedItem.title"
-                   :organization="editedItem.organization"
-                   :city="editedItem.city"
-                   :state="editedItem.state"
-                   :gpa="editedItem.gpa"
-                   :totalGPA="editedItem.totalGPA"
-                   :description="editedItem.description"
-                   :startDate="editedItem.startDate"
-                   :endDate="editedItem.endDate"
-                   :gradDate="editedItem.gradDate"
-                   :courses="editedItem.courses"
-                   :awards="editedItem.awards"
-                   :minor="editedItem.minor"
+    <EducationEdit :editingItem="editedItem"
                    :studyAbroadTitle="studyAbroadTitle"
                    :studyAbroadOrganization="studyAbroadOrganization"
                    :studyAbroadLocation="studyAbroadLocation"
@@ -841,18 +784,7 @@ function navigateToView() {
                    :isAttending="isAttending"
                    :editEducationDialog="editEducationDialog"
                    @update:editEducationDialog="updateEditEducationDialog"
-                   @update:organization="updateOrganization"
-                   @update:city="updateCity"
-                   @update:state="updateState"
-                   @update:gpa="updateGpa"
-                   @update:totalGPA="updateTotalGPA"
-                   @update:description="updateDescription"
-                   @update:startDate="updateStartDate"
-                   @update:endDate="updateEndDate"
-                   @update:gradDate="updateGradDate"
-                   @update:courses="updateCourses"
-                   @update:minor="updateMinor"
-                   @update:awards="updateAwards"
+                   @update:editingItem="updateEditingItem"
                    @update:studyAbroadTitle="updateStudyAbroadTitle"
                    @update:studyAbroadOrganization="updateStudyAbroadOrganization"
                    @update:studyAbroadLocation="updateStudyAbroadLocation"
@@ -861,7 +793,7 @@ function navigateToView() {
                    @update:isAttending="updateIsAttending"
                    ></EducationEdit>
     </div>
-    
+
   <!-- EXPERIENCE DIALOG-->
   <v-dialog v-model="editExperienceDialog" persistent>
     <v-card>

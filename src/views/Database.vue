@@ -11,6 +11,7 @@ import Snackbar from "../components/Snackbar.vue";
 import DeleteDialog from "../components/DeleteDialog.vue";
 import { useRouter } from "vue-router";
 import NewLink from "../components/NewLink.vue";
+import NewGoal from "../components/NewGoal.vue";
 
 const router = useRouter();
 
@@ -30,7 +31,6 @@ const isNewLinkVisible = ref(false);
 const isNewEduVisible = ref(false);
 const tabs = ref();
 const tab = ref("1");
-const dialog = ref(false);
 
 const personalInfo = ref();
 const firstName = ref();
@@ -49,9 +49,6 @@ const goalDescription = ref("");
 const goals = ref();
 const selectedGoals = ref(null);
 const isNewGoalVisible = ref(false);
-const aiGoalExperiences = ref();
-const aiGoalAchievements = ref();
-const aiGoalTitle = ref();
 let goalChatHistory = [];
 
 const educationInfo = ref();
@@ -127,12 +124,6 @@ const isAttending = ref(false);
 let deleteItemId = 0;
 const isRequestingAiAssist = ref(false);
 
-const isGoals = computed(() => {
-    return (
-        goalTitle.value !== "" &&
-        goalDescription.value !== ""
-    )
-});
 const isSkilled = computed(() => {
     return (
         skillTitle.value !== "" &&
@@ -187,19 +178,9 @@ async function setNewLinkVisible() {
     isNewLinkVisible.value = true;
 }
 
-async function closeNewLink() {
-    isNewLinkVisible.value = false;
-    link.value = "";
-    linkDescription.value = "";
-}
 
 async function setNewGoalVisible() {
     isNewGoalVisible.value = true;
-}
-async function closeNewGoal() {
-    isNewGoalVisible.value = false;
-    goalTitle.value = "";
-    goalDescription.value = "";
 }
 
 async function getLinks() {
@@ -228,8 +209,6 @@ async function navigateNextTab(value) {
 }
 
 async function resetNewInput() {
-    closeNewLink();
-    closeNewGoal();
     closeEducation();
     clearExperienceData();
     closeNewJobExperience();
@@ -400,18 +379,6 @@ async function getGoals() {
         });
 }
 
-async function addNewGoal() {
-    await GoalServices.addGoal(goalTitle.value, goalDescription.value, parseInt(account.value.id), goalChatHistory)
-        .then(() => {
-            makeSnackbar("green", "Goal Added!");
-            closeNewGoal();
-            getGoals();
-        })
-        .catch((error) => {
-            console.log(error);
-            makeSnackbar("error", error.response.data.message);
-        });
-}
 
 async function getEducationInfo() {
     resetNewInput()
@@ -626,24 +593,7 @@ async function skillAiAssist(edit) {
     }
 }
 
-function clearGoalAiAssist() {
-    aiGoalExperiences.value = null;
-    aiGoalAchievements.value = null;
-    aiGoalTitle.value = null;
-}
 
-async function aiGoalAssist() {
-    isRequestingAiAssist.value = true;
-    goalDescription.value = "Generating Description, please wait"
-    await GoalServices.goalAiAssist(aiGoalTitle.value, aiGoalExperiences.value.split(","), aiGoalAchievements.value.split(","))
-        .then((response) => {
-            goalDescription.value = response.data.description
-            goalChatHistory.push(response.data.chatHistory[0])
-            goalChatHistory.push(response.data.chatHistory[1])
-            isRequestingAiAssist.value = false;
-        })
-
-}
 
 async function experienceAIAssist(edit) {
     isRequestingAiAssist.value = true;
@@ -946,89 +896,10 @@ export default {
                                             + Add New Summary
                                         </v-btn>
                                     </div>
-                                    <v-container v-if="isNewGoalVisible">
-                                        <v-row>
-                                            <v-skeleton-loader v-if="isRequestingAiAssist"
-                                                type="paragraph"></v-skeleton-loader>
-                                            <v-col>
-                                                <v-text-field v-if="!isRequestingAiAssist" v-model="goalTitle"
-                                                    label="Title"></v-text-field>
-                                            </v-col>
-                                        </v-row>
-                                        <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
-                                        <v-row>
-                                            <v-textarea v-if="!isRequestingAiAssist" v-model="goalDescription"
-                                                label="A brief overview of your skills and experiences">
-                                                <template #append-inner>
-                                                    <div class="text-center pa-4">
-                                                        <v-dialog v-model="dialog" persistent>
-                                                            <template v-slot:activator="{ props: activatorProps }">
-                                                                <v-btn color="secondary" rounded="xl" value="Ai Assist"
-                                                                    v-bind="activatorProps">
-                                                                    AI Assist
-                                                                </v-btn>
-                                                            </template>
 
-                                                            <v-card
-                                                                text="Please list your Experiences and Achievements that you want to include in the summary, separated by commas(,) ."
-                                                                title="Goal Ai Assist">
-                                                                <template v-slot:actions>
-                                                                    <v-spacer></v-spacer>
-                                                                    <v-container>
-
-                                                                        <v-row>
-                                                                            <v-text-field label="Experiences"
-                                                                                v-model="aiGoalExperiences"
-                                                                                variant="outlined" style="width: 30%;">
-                                                                            </v-text-field>
-                                                                        </v-row>
-                                                                        <v-row>
-                                                                            <v-text-field label="Achievements"
-                                                                                v-model="aiGoalAchievements"
-                                                                                variant="outlined" style="width: 30%;">
-                                                                            </v-text-field>
-                                                                        </v-row>
-                                                                        <v-row>
-                                                                            <v-text-field label="Professional title"
-                                                                                v-model="aiGoalTitle" variant="outlined"
-                                                                                style="width: 30%;">
-
-                                                                            </v-text-field>
-                                                                        </v-row>
-                                                                        <div align="center">
-                                                                            <v-row style="width:50%">
-                                                                                <v-col>
-                                                                                    <v-btn
-                                                                                        @click="clearGoalAiAssist(), dialog = false">
-                                                                                        Cancel </v-btn>
-                                                                                </v-col>
-                                                                                <v-col>
-                                                                                    <v-btn
-                                                                                        @click="aiGoalAssist(), clearGoalAiAssist(), dialog = false">
-                                                                                        Confirm </v-btn>
-                                                                                </v-col>
-
-                                                                            </v-row>
-                                                                        </div>
-
-                                                                    </v-container>
-                                                                </template>
-                                                            </v-card>
-                                                        </v-dialog>
-                                                    </div>
-
-                                                </template>
-                                            </v-textarea>
-                                        </v-row>
-                                        <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="closeNewGoal()">
-                                            Cancel
-                                        </v-btn>
-                                        &nbsp;&nbsp;&nbsp;
-                                        <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isGoals"
-                                            @click="addNewGoal()">
-                                            Submit
-                                        </v-btn>
-                                    </v-container>
+                                    <NewGoal v-if="isNewGoalVisible" :isNewGoalVisible="isNewGoalVisible"
+                                        @update:isNewGoalVisible="value => isNewGoalVisible = value" :account="account"
+                                        :makeSnackbar="makeSnackbar" :getGoals="getGoals"></NewGoal>
 
                                     <div align="right">
 

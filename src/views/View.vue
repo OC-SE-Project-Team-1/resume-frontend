@@ -29,12 +29,16 @@ const snackbar = ref({
 
 var snackbarValue = false;
 var snackbarColor = "";
-var snackbarText = ""
+var snackbarText = "";
+
+const testValue = ref(false);
+const testColor = ref("Blue");
+const testText = ref("Something idk");
 
 function makeSnackbar(color, text){
-  snackbarValue = true;
-  snackbarColor = color;
-  snackbarText = text;
+  testValue.value = true;
+  testColor.value = color;
+  testText.value = text;
 }
 
 const showFeedback = computed(() => {
@@ -211,10 +215,10 @@ function refreshPage(){
           
         </v-card>
       </v-dialog>
-      
-      <Snackbar 
-        :show="snackbarValue" :color="snackbarColor" :message="snackbarText" v-on:update="alert = $event"
-      ></Snackbar>
+
+      <Snackbar :show="testValue" :color="testColor" :message="testText"
+      @update:show="value => testValue = value"></Snackbar>
+
       
     </div>
   </v-container>

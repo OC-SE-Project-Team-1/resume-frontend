@@ -19,6 +19,7 @@ import NewLink from "../components/NewLink.vue";
 import NewGoal from "../components/NewGoal.vue";
 import NewEducation from "../components/NewEducation.vue";
 import NewExperience from "../components/NewExperience.vue";
+import NewSkill from "../components/NewSkill.vue";
 
 const router = useRouter();
 
@@ -164,7 +165,7 @@ async function getLinks() {
 
 async function navigateNextTab(value) {
 
-    resetNewInput();
+    clearExperienceData();
     const temp = value + 1;
 
     getGoals();
@@ -173,11 +174,6 @@ async function navigateNextTab(value) {
     getSkills();
 
     tab.value = temp.toString();
-}
-
-async function resetNewInput() {
-    clearExperienceData();
-    closeNewSkill();
 }
 
 function toggleIsAttending() {
@@ -274,7 +270,7 @@ function toggleExperience(value) {
 
 
 async function getPersonalInfo() {
-    resetNewInput()
+    clearExperienceData()
     await UserServices.getUser(parseInt(account.value.id))
         .then((response) => {
             personalInfo.value = response.data;
@@ -292,7 +288,7 @@ async function getPersonalInfo() {
 }
 
 async function getGoals() {
-    resetNewInput()
+    clearExperienceData()
     await GoalServices.getGoalsForUser(parseInt(account.value.id))
         .then((response) => {
             goals.value = response.data;
@@ -305,7 +301,7 @@ async function getGoals() {
 
 
 async function getEducationInfo() {
-    resetNewInput()
+    clearExperienceData()
     await EducationServices.getEducationsForUser(parseInt(account.value.id))
         .then((response) => {
             educationInfo.value = response.data;
@@ -351,15 +347,9 @@ async function setNewskillVisible() {
     isNewSkillVisible.value = true;
 }
 
-async function closeNewSkill() {
-    isNewSkillVisible.value = false;
-    skillTitle.value = "";
-    skillDescription.value = "";
-    skillHistory = []
-}
 
 async function getSkills() {
-    resetNewInput()
+    clearExperienceData()
     await SkillServices.getSkillsForUser(parseInt(account.value.id))
         .then((response) => {
             skills.value = response.data;
@@ -370,18 +360,6 @@ async function getSkills() {
         });
 }
 
-async function addNewSkill() {
-    await SkillServices.addSkill(skillTitle.value, skillDescription.value, skillHistory, parseInt(account.value.id))
-        .then(() => {
-            makeSnackbar("green", "Skill Added!");
-            closeNewSkill();
-            getSkills();
-        })
-        .catch((error) => {
-            console.log(error);
-            makeSnackbar("error", error.response.data.message);
-        });
-}
 
 function filterPerfectMatch(value, search) {
     return value != null && String(value) === search
@@ -968,38 +946,15 @@ export default {
                                     + Add New Skill
                                 </v-btn>
 
-                                <v-container v-if="isNewSkillVisible">
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="skillTitle" label="Skill"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
-                                    <v-row>
-                                        <v-col>
-                                            <v-textarea v-if="!isRequestingAiAssist" v-model="skillDescription"
-                                                label="Brief Description/Proficientcy Level, click AI assist button along with your input to help create a better description">
-                                                <template #append-inner>
-                                                    <v-btn color="secondary" rounded="xl" value="Ai Assist"
-                                                        @click="skillAiAssist()">
-                                                        AI Assist
-                                                    </v-btn>
-                                                </template>
-                                            </v-textarea>
-                                        </v-col>
-                                    </v-row>
-                                    <v-col>
+                                <NewSkill v-if="isNewSkillVisible" :isNewSkillVisible="isNewSkillVisible"
+                                    @update:isNewSkillVisible="value => isNewSkillVisible = value" :account="account"
+                                    :makeSnackbar="makeSnackbar" :getSkills="getSkills" :skillAiAssist="skillAiAssist"
+                                    :isRequestingAiAssist="isRequestingAiAssist" 
+                                    :skillDescription="skillDescription" :skillHistory="skillHistory"
+                                    @update:skillDescription="value => skillDescription = value" 
+                                    @update:skillHistory="value => skillHistory = value" 
 
-                                    </v-col>
-                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="closeNewSkill()">
-                                        Cancel
-                                    </v-btn>
-                                    &nbsp;&nbsp;&nbsp;
-                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isSkilled"
-                                        @click="addNewSkill()">
-                                        Submit
-                                    </v-btn>
-                                </v-container>
+                                ></NewSkill>
 
                                 <div align="right">
 

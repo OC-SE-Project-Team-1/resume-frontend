@@ -131,7 +131,7 @@ async function changePassword() {
 async function updateAccount() {
   await UserServices.updateAccount(account.value.id, newUsername.value, newEmail.value, newFirstName.value, newLastName.value, newAddress.value, newPhoneNumber.value)
   .then((response) => {
-      makeSnackbar("green", response)
+      makeSnackbar("green", "Account updated!")
       accountData.value.token = JSON.parse(localStorage.getItem("account")).token //keep token
       window.localStorage.setItem("account", JSON.stringify(accountData.value));
       account.value = JSON.parse(localStorage.getItem("account"));

@@ -132,26 +132,6 @@ const isSkilled = computed(() => {
 });
 
 
-const isExperienced = computed(() => {
-    var isEndDate = isCurrent.value ? true : (jobEnd.value !== "" && jobEnd.value !== null)
-    return (
-        jobExperienceTitle.value !== "" && jobExperienceTitle.value !== null &&
-        jobCompany.value !== "" && jobCompany.value !== null &&
-        jobCity.value !== "" && jobCity.value !== null &&
-        jobState.value !== "" && jobState.value !== null &&
-        jobStart.value !== "" && jobStart.value !== null &&
-        jobDescription.value !== "" && jobDescription.value !== null && isEndDate
-    )
-})
-
-const isOthered = computed(() => {
-    return (
-        jobExperienceTitle.value !== "" && jobExperienceTitle.value !== null &&
-        jobStart.value !== "" && jobStart.value !== null &&
-        jobDescription.value !== "" && jobDescription.value !== null
-    )
-})
-
 onMounted(() => {
     account.value = JSON.parse(localStorage.getItem("account"));
     getPersonalInfo();
@@ -197,10 +177,6 @@ async function navigateNextTab(value) {
 
 async function resetNewInput() {
     clearExperienceData();
-    closeNewJobExperience();
-    closeNewLeadershipExperience();
-    closeNewActivitiesExperience();
-    closeNewVolunteerExperience();
     closeNewSkill();
     closeNewHonor();
     closeNewAward();
@@ -360,28 +336,6 @@ async function getExperiences() {
         });
 }
 
-async function addNewExperience(type) {
-    if (isCurrent.value == true) {
-        jobEnd.value = null;
-    }
-    await ExperienceServices.addExperience(jobExperienceTitle.value, jobDescription.value, jobStart.value, jobEnd.value,
-        isCurrent.value, account.value.id, type, jobCity.value, jobState.value, jobCompany.value, experienceChatHistory)
-        .then(() => {
-            makeSnackbar("green", "Experience Added!");
-            getExperiences();
-            clearExperienceData();
-            closeNewJobExperience();
-            closeNewLeadershipExperience();
-            closeNewActivitiesExperience();
-            closeNewVolunteerExperience();
-            closeNewHonor();
-            closeNewAward();
-        })
-        .catch((error) => {
-            console.log(error);
-            makeSnackbar("error", error.response.data.message);
-        });
-}
 
 async function clearExperienceData() {
     jobExperienceTitle.value = null;
@@ -395,33 +349,6 @@ async function clearExperienceData() {
     isCurrent.value = false;
 }
 
-async function closeNewJobExperience() {
-    isJobExperience.value = false;
-}
-
-async function closeNewLeadershipExperience() {
-    isLeadershipExperience.value = false;
-}
-
-async function closeNewActivitiesExperience() {
-    isActivitiesExperience.value = false;
-}
-
-async function closeNewVolunteerExperience() {
-    isVolunteerExperience.value = false;
-}
-
-async function closeNewHonor() {
-    isHonorExperience.value = false;
-}
-
-async function closeNewAward() {
-    isAwardExperience.value = false;
-}
-
-async function closeNewProject() {
-    isProjectExperience.value = false;
-}
 
 async function setNewskillVisible() {
     isNewSkillVisible.value = true;

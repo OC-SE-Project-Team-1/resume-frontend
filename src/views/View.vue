@@ -193,7 +193,6 @@ async function updateEditing(){
       <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
       @update:show="value => snackbarValue = value"></Snackbar>
 
-      
     </div>
   </v-container>
 </template>

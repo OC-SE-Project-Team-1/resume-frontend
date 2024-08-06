@@ -9,6 +9,7 @@ import EducationServices from "../services/EducationServices.js";
 import ExperienceServices from "../services/ExperienceServices.js";
 import LinksEdit from "../components/LinksEdit.vue";
 import EducationEdit from "../components/EducationEdit.vue";
+import ExperienceEdit from "../components/ExperienceEdit.vue";
 
 const account = ref();
 //Snackbar to display errors
@@ -741,7 +742,7 @@ function openEditEducationDialog(item) {
 
 function updateEditEducationDialog(newState) {
   editEducationDialog.value = newState;
-  getEducationInfo()
+  getEducationInfo();
 }
 
 function updateIsAttending(newValue) {
@@ -757,28 +758,10 @@ function openEditExperienceDialog(item) {
     editExperienceDialog.value = true;
 }
 
-function closeEditExperienceDialog() {
+function updateEditExperienceDialog() {
     experienceChatHistory = [];
     editExperienceDialog.value = false;
-}
-
-async function saveEditExperience() {
-    if (editedItem.value.current == true) {
-        editedItem.value.endDate = null;
-    }
-    await ExperienceServices.updateExperience(editedItem.value.title, editedItem.value.description, editedItem.value.startDate, editedItem.value.endDate,
-        editedItem.value.current, editedItem.value.city, editedItem.value.state, editedItem.value.organization, editedItem.value.chatHistory,
-        account.value.id, editedItem.value.id
-    )
-        .then(() => {
-            makeSnackbar("green", "Experience Updated!");
-        })
-        .catch((error) => {
-            console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
-        });
     getExperiences();
-    closeEditExperienceDialog();
 }
 
 // skills dialog stuff
@@ -2136,78 +2119,14 @@ export default {
                                 </div>
 
                             <!-- EXPERIENCE DIALOG-->
-                            <v-dialog v-model="editExperienceDialog" persistent>
-                                <v-card>
-                                    <v-card-title>
-                                        <span class="headline">Edit Item</span>
-                                    </v-card-title>
-                                    <v-card-text>
-
-
-                                        <v-container>
-                                            <v-row>
-                                                <v-col>
-                                                    <v-text-field v-model="editedItem.title"
-                                                        label="Position Title"></v-text-field>
-                                                </v-col>
-                                                <v-col
-                                                    v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">
-                                                    <v-text-field v-model="editedItem.organization"
-                                                        label="Company Name"></v-text-field>
-                                                </v-col>
-                                            </v-row>
-                                            <v-row
-                                                v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">
-                                                <v-col>
-                                                    <v-text-field v-model="editedItem.city" label="City"></v-text-field>
-                                                </v-col>
-                                                <v-col>
-                                                    <v-text-field v-model="editedItem.state"
-                                                        label="State"></v-text-field>
-                                                </v-col>
-                                            </v-row>
-                                            <v-row>
-                                                <v-col>
-                                                    <v-text-field v-model="editedItem.startDate"
-                                                        label="Start Date"></v-text-field>
-                                                </v-col>
-                                                <v-col
-                                                    v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">
-                                                    <v-text-field :disabled="editedItem.current"
-                                                        v-model="editedItem.endDate" label="End Date"></v-text-field>
-                                                    <v-switch v-model="editedItem.current" label="Present Job"
-                                                        color="primary"></v-switch>
-                                                </v-col>
-                                            </v-row>
-                                            <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
-                                            <v-row>
-
-                                                <v-textarea v-if="!isRequestingAiAssist" v-model="editedItem.description" label="Summary/Description">
-
-                                                    <template #append-inner>
-                                                        <div
-                                                            v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">
-                                                            <v-btn color="secondary" rounded="xl" value="Ai Assist"
-                                                                @click="experienceAIAssist(true)">
-                                                                AI Assist
-                                                            </v-btn>
-                                                        </div>
-                                                    </template>
-                                                </v-textarea>
-                                            </v-row>
-                                            <v-col>
-                                            </v-col>
-
-                                        </v-container>
-                                    </v-card-text>
-                                    <v-card-actions>
-                                        <v-spacer></v-spacer>
-                                        <v-btn v-if="!isRequestingAiAssist" color="blue darken-1" text
-                                            @click="closeEditExperienceDialog">Cancel</v-btn>
-                                        <v-btn v-if="!isRequestingAiAssist" color="blue darken-1" text @click="saveEditExperience">Save</v-btn>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-dialog>
+                            <div v-if="editExperienceDialog">
+                                <ExperienceEdit :editingItem="editedItem"
+                                                :editExperienceDialog="editExperienceDialog"
+                                                :experienceAIAssist="experienceAIAssist"
+                                                :isRequestingAiAssist="isRequestingAiAssist"
+                                                @update:editExperienceDialog="updateEditExperienceDialog"
+                                ></ExperienceEdit>
+                            </div>
 
 
                             <!-- DELETE DIALOG -->

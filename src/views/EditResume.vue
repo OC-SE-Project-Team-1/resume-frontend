@@ -14,6 +14,7 @@ import EducationServices from "../services/EducationServices.js";
 import ExperienceServices from "../services/ExperienceServices.js";
 import LinksEdit from "../components/LinksEdit.vue";
 import EducationEdit from "../components/EducationEdit.vue";
+import ExperienceEdit from "../components/ExperienceEdit.vue";
 
 const router = useRouter();
 const title = ref();
@@ -47,13 +48,13 @@ const studyAbroadTitle = computed(() => {
 const studyAbroadOrganization = computed(() => {
   return editedItem.value.studyAbroad?.organization || '';
 });
-const studyAbroadLocation= computed(() => {
+const studyAbroadLocation = computed(() => {
   return editedItem.value.studyAbroad?.location || '';
 });
 const studyAbroadTime = computed(() => {
   return editedItem.value.studyAbroad?.term || '';
 });
-const studyAbroadYear= computed(() => {
+const studyAbroadYear = computed(() => {
   return editedItem.value.studyAbroad?.year || '';
 });
 
@@ -291,7 +292,7 @@ const displaySkills = computed(() => {
 })
 
 function filterPerfectMatch(value, search) {
-    return value != null && String(value) === search
+  return value != null && String(value) === search
 }
 
 // links dialog stuff
@@ -316,11 +317,11 @@ function updateLinkDescription(newDescription) {
 }
 
 async function updateEditLinks() {
-      const index = links.value.findIndex(link => link.id === editedItem.value.id);
-      if (index !== -1) {
-        links.value[index] = { ...editedItem.value };
-      }
-      makeSnackbar(true, "green", "Link Updated!");
+  const index = links.value.findIndex(link => link.id === editedItem.value.id);
+  if (index !== -1) {
+    links.value[index] = { ...editedItem.value };
+  }
+  makeSnackbar(true, "green", "Link Updated!");
   getResume();
 }
 
@@ -405,87 +406,77 @@ async function updateEditEducation() {
   getResume();
 }
 
-async function toggleIsAttending() {
-  isAttending.value = !isAttending.value;
-  if (isAttending.value == false) {
-    editedItem.value.gradDate = null;
-  }
-}
-
 // all types of experience dialog stuff
 const editExperienceDialog = ref(false);
+const isRequestingAiAssist = ref(false);
+
+async function experienceAIAssist(edit) {
+  isRequestingAiAssist.value = true;
+  if (edit) {
+    await ExperienceServices.experienceAiAssist(editedItem.value.description, editedItem.value.chatHistory)
+      .then((response) => {
+        editedItem.value.description = response.data.description
+        editedItem.value.chatHistory = response.data.chatHistory
+        experienceChatHistory = response.data.chatHistory;
+        isRequestingAiAssist.value = false;
+      })
+  }
+}
 
 function openEditExperienceDialog(item) {
   editedItem.value = { ...item };
   editExperienceDialog.value = true;
 }
 
-function closeEditExperienceDialog() {
+function updateEditExperienceDialog() {
   experienceChatHistory = [];
   editExperienceDialog.value = false;
+  updateEditExperience();
 }
 
-async function saveEditExperience() {
-  await ExperienceServices.updateExperience(editedItem.value.title, editedItem.value.description, editedItem.value.startDate, editedItem.value.endDate,
-    editedItem.value.city, editedItem.value.state, editedItem.value.organization, editedItem.value.chatHistory,
-    account.value.id, editedItem.value.id
-  )
-    .then(() => {
-
-
-      if (editedItem.value.experienceTypeId == 1) {
-        const index = work.value.findIndex(work => work.id === editedItem.value.id);
-        if (index !== -1) {
-          work.value[index] = { ...editedItem.value };
-        }
-      }
-      else if (editedItem.value.experienceTypeId == 2) {
-        const index = leadership.value.findIndex(leadership => leadership.id === editedItem.value.id);
-        if (index !== -1) {
-          leadership.value[index] = { ...editedItem.value };
-        }
-      }
-      else if (editedItem.value.experienceTypeId == 3) {
-        const index = activities.value.findIndex(activities => activities.id === editedItem.value.id);
-        if (index !== -1) {
-          activities.value[index] = { ...editedItem.value };
-        }
-      }
-      else if (editedItem.value.experienceTypeId == 4) {
-        const index = volunteer.value.findIndex(volunteer => volunteer.id === editedItem.value.id);
-        if (index !== -1) {
-          volunteer.value[index] = { ...editedItem.value };
-        }
-      }
-      else if (editedItem.value.experienceTypeId == 5) {
-        const index = honors.value.findIndex(honors => honors.id === editedItem.value.id);
-        if (index !== -1) {
-          honors.value[index] = { ...editedItem.value };
-        }
-      }
-      else if (editedItem.value.experienceTypeId == 6) {
-        const index = awards.value.findIndex(awards => awards.id === editedItem.value.id);
-        if (index !== -1) {
-          awards.value[index] = { ...editedItem.value };
-        }
-      }
-      else if (editedItem.value.experienceTypeId == 7) {
-        const index = projects.value.findIndex(projects => projects.id === editedItem.value.id);
-        if (index !== -1) {
-          projects.value[index] = { ...editedItem.value };
-        }
-      }
-
-
-
-
-      makeSnackbar(true, "green", "Experience Updated!");
-    })
-    .catch((error) => {
-      console.log(error);
-      makeSnackbar(true, "error", error.response.data.message);
-    });
-  closeEditExperienceDialog();
+async function updateEditExperience() {
+  if (editedItem.value.experienceTypeId == 1) {
+    const index = work.value.findIndex(work => work.id === editedItem.value.id);
+    if (index !== -1) {
+      work.value[index] = { ...editedItem.value };
+    }
+  }
+  else if (editedItem.value.experienceTypeId == 2) {
+    const index = leadership.value.findIndex(leadership => leadership.id === editedItem.value.id);
+    if (index !== -1) {
+      leadership.value[index] = { ...editedItem.value };
+    }
+  }
+  else if (editedItem.value.experienceTypeId == 3) {
+    const index = activities.value.findIndex(activities => activities.id === editedItem.value.id);
+    if (index !== -1) {
+      activities.value[index] = { ...editedItem.value };
+    }
+  }
+  else if (editedItem.value.experienceTypeId == 4) {
+    const index = volunteer.value.findIndex(volunteer => volunteer.id === editedItem.value.id);
+    if (index !== -1) {
+      volunteer.value[index] = { ...editedItem.value };
+    }
+  }
+  else if (editedItem.value.experienceTypeId == 5) {
+    const index = honors.value.findIndex(honors => honors.id === editedItem.value.id);
+    if (index !== -1) {
+      honors.value[index] = { ...editedItem.value };
+    }
+  }
+  else if (editedItem.value.experienceTypeId == 6) {
+    const index = awards.value.findIndex(awards => awards.id === editedItem.value.id);
+    if (index !== -1) {
+      awards.value[index] = { ...editedItem.value };
+    }
+  }
+  else if (editedItem.value.experienceTypeId == 7) {
+    const index = projects.value.findIndex(projects => projects.id === editedItem.value.id);
+    if (index !== -1) {
+      projects.value[index] = { ...editedItem.value };
+    }
+  }
 }
 
 
@@ -745,13 +736,9 @@ function navigateToView() {
 
   <!-- LINKS DIALOG -->
   <v-dialog v-model="editLinksDialog" persistent>
-      <LinksEdit :url="editedItem.url" 
-      :description="editedItem.type" 
-      :linkId="editedItem.id" 
-      :editLinksDialog="editLinksDialog"
-      @update:url="updateUrl"
-      @update:description="updateLinkDescription"
-      @update:editLinksDialog="updateEditLinksDialog" ></LinksEdit>
+    <LinksEdit :url="editedItem.url" :description="editedItem.type" :linkId="editedItem.id"
+      :editLinksDialog="editLinksDialog" @update:url="updateUrl" @update:description="updateLinkDescription"
+      @update:editLinksDialog="updateEditLinksDialog"></LinksEdit>
   </v-dialog>
 
   <!-- PROFESSIONAL SUMMARY DIALOG -->
@@ -775,76 +762,22 @@ function navigateToView() {
 
   <!-- EDUCATION DIALOG -->
   <div v-if="editEducationDialog">
-    <EducationEdit :editingItem="editedItem"
-                   :studyAbroadTitle="studyAbroadTitle"
-                   :studyAbroadOrganization="studyAbroadOrganization"
-                   :studyAbroadLocation="studyAbroadLocation"
-                   :studyAbroadTime="studyAbroadTime"
-                   :studyAbroadYear="studyAbroadYear"
-                   :isAttending="isAttending"
-                   :editEducationDialog="editEducationDialog"
-                   @update:editEducationDialog="updateEditEducationDialog"
-                   @update:editingItem="updateEditingItem"
-                   @update:studyAbroadTitle="updateStudyAbroadTitle"
-                   @update:studyAbroadOrganization="updateStudyAbroadOrganization"
-                   @update:studyAbroadLocation="updateStudyAbroadLocation"
-                   @update:studyAbroadTime="updateStudyAbroadTime"
-                   @update:studyAbroadYear="updateStudyAbroadYear"
-                   @update:isAttending="updateIsAttending"
-                   ></EducationEdit>
-    </div>
+    <EducationEdit :editingItem="editedItem" :studyAbroadTitle="studyAbroadTitle"
+      :studyAbroadOrganization="studyAbroadOrganization" :studyAbroadLocation="studyAbroadLocation"
+      :studyAbroadTime="studyAbroadTime" :studyAbroadYear="studyAbroadYear" :isAttending="isAttending"
+      :editEducationDialog="editEducationDialog" @update:editEducationDialog="updateEditEducationDialog"
+      @update:editingItem="updateEditingItem" @update:studyAbroadTitle="updateStudyAbroadTitle"
+      @update:studyAbroadOrganization="updateStudyAbroadOrganization"
+      @update:studyAbroadLocation="updateStudyAbroadLocation" @update:studyAbroadTime="updateStudyAbroadTime"
+      @update:studyAbroadYear="updateStudyAbroadYear" @update:isAttending="updateIsAttending"></EducationEdit>
+  </div>
 
   <!-- EXPERIENCE DIALOG-->
-  <v-dialog v-model="editExperienceDialog" persistent>
-    <v-card>
-      <v-card-title>
-        <span class="headline">Edit Item</span>
-      </v-card-title>
-      <v-card-text>
-
-
-        <v-container>
-          <v-row>
-            <v-col>
-              <v-text-field v-model="editedItem.title" label="Position Title"></v-text-field>
-            </v-col>
-            <v-col>
-              <v-text-field v-model="editedItem.organization" label="Company Name"></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-text-field v-model="editedItem.city" label="City"></v-text-field>
-            </v-col>
-            <v-col>
-              <v-text-field v-model="editedItem.state" label="State"></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-text-field v-model="editedItem.startDate" label="Start Date"></v-text-field>
-            </v-col>
-            <v-col>
-              <v-text-field :disabled="editedItem.current" v-model="editedItem.endDate" label="End Date"></v-text-field>
-              <v-switch v-model="editedItem.current" label="Present Job" color="primary"></v-switch>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-textarea v-model="editedItem.description" label="Work Summary">
-            </v-textarea>
-          </v-row>
-          <v-col>
-          </v-col>
-
-        </v-container>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" text @click="closeEditExperienceDialog">Cancel</v-btn>
-        <v-btn color="blue darken-1" text @click="saveEditExperience">Save</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+  <div v-if="editExperienceDialog">
+    <ExperienceEdit :editingItem="editedItem" :editExperienceDialog="editExperienceDialog"
+      :experienceAIAssist="experienceAIAssist" :isRequestingAiAssist="isRequestingAiAssist"
+      @update:editExperienceDialog="updateEditExperienceDialog"></ExperienceEdit>
+  </div>
 
   <v-dialog v-model="editSkillsDialog" persistent>
     <v-card>

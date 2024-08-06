@@ -14,15 +14,11 @@ import GoalsEdit from "../components/GoalsEdit.vue";
 import SkillsEdit from "../components/SkillsEdit.vue";
 import Snackbar from "../components/Snackbar.vue";
 import DeleteDialog from "../components/DeleteDialog.vue";
-import { useRouter } from "vue-router";
 import NewLink from "../components/NewLink.vue";
 import NewGoal from "../components/NewGoal.vue";
 import NewEducation from "../components/NewEducation.vue";
 import NewExperience from "../components/NewExperience.vue";
 import NewSkill from "../components/NewSkill.vue";
-
-const router = useRouter();
-
 
 const account = ref();
 //Snackbar to display errors
@@ -47,42 +43,30 @@ const address = ref();
 const phoneNumber = ref();
 const email = ref();
 
-const linkDescription = ref("");
-const link = ref("");
 const links = ref();
 const selectedLinks = ref(null);
 
-const goalTitle = ref("");
-const goalDescription = ref("");
 const goals = ref();
 const selectedGoals = ref(null);
 const isNewGoalVisible = ref(false);
-let goalChatHistory = [];
 
 const educationInfo = ref();
 const selectedEducation = ref(null);
 const schoolGrad = ref(null);
-const attending = ref(false);
-const awards = ref(null);
-const studyAbroadTitle = ref(null);
-const studyAbroadOrganization = ref(null);
-const studyAbroadLocation = ref(null);
-const studyAbroadTime = ref(null);
-const studyAbroadYear = ref(null);
 const editstudyAbroadTitle = computed(() => {
-  return editedItem.value.studyAbroad?.title || '';
+    return editedItem.value.studyAbroad?.title || '';
 });
 const editstudyAbroadOrganization = computed(() => {
-  return editedItem.value.studyAbroad?.organization || '';
+    return editedItem.value.studyAbroad?.organization || '';
 });
-const editstudyAbroadLocation= computed(() => {
-  return editedItem.value.studyAbroad?.location || '';
+const editstudyAbroadLocation = computed(() => {
+    return editedItem.value.studyAbroad?.location || '';
 });
 const editstudyAbroadTime = computed(() => {
-  return editedItem.value.studyAbroad?.term || '';
+    return editedItem.value.studyAbroad?.term || '';
 });
-const editstudyAbroadYear= computed(() => {
-  return editedItem.value.studyAbroad?.year || '';
+const editstudyAbroadYear = computed(() => {
+    return editedItem.value.studyAbroad?.year || '';
 });
 
 const experiences = ref();
@@ -112,7 +96,6 @@ const isAwardExperience = ref(false);
 const isProjectExperience = ref(false);
 const isCurrent = ref(false);
 
-const skillTitle = ref("");
 const skillDescription = ref("");
 const skills = ref();
 
@@ -125,27 +108,14 @@ const isAttending = ref(false);
 let deleteItemId = 0;
 const isRequestingAiAssist = ref(false);
 
-const isSkilled = computed(() => {
-    return (
-        skillTitle.value !== "" &&
-        skillDescription.value !== ""
-    )
-});
-
-
 onMounted(() => {
     account.value = JSON.parse(localStorage.getItem("account"));
     getPersonalInfo();
 });
 
-function closeSnackBar() {
-    snackbar.value.value = false;
-}
-
 async function setNewLinkVisible() {
     isNewLinkVisible.value = true;
 }
-
 
 async function setNewGoalVisible() {
     isNewGoalVisible.value = true;
@@ -164,24 +134,14 @@ async function getLinks() {
 
 
 async function navigateNextTab(value) {
-
     clearExperienceData();
     const temp = value + 1;
-
     getGoals();
     getEducationInfo();
     getExperiences();
     getSkills();
 
     tab.value = temp.toString();
-}
-
-function toggleIsAttending() {
-    isAttending.value = !isAttending.value;
-
-    if (isAttending.value == false) {
-        schoolGrad.value = null;
-    }
 }
 
 function toggleExperience(value) {
@@ -268,7 +228,6 @@ function toggleExperience(value) {
     }
 }
 
-
 async function getPersonalInfo() {
     clearExperienceData()
     await UserServices.getUser(parseInt(account.value.id))
@@ -299,7 +258,6 @@ async function getGoals() {
         });
 }
 
-
 async function getEducationInfo() {
     clearExperienceData()
     await EducationServices.getEducationsForUser(parseInt(account.value.id))
@@ -312,11 +270,9 @@ async function getEducationInfo() {
         });
 }
 
-
 async function setNewEduVisible() {
     isNewEduVisible.value = true;
 }
-
 
 async function getExperiences() {
     await ExperienceServices.getExperiencesForUser(account.value.id)
@@ -328,7 +284,6 @@ async function getExperiences() {
             makeSnackbar("error", error.response.data.message);
         });
 }
-
 
 async function clearExperienceData() {
     jobExperienceTitle.value = null;
@@ -342,11 +297,9 @@ async function clearExperienceData() {
     isCurrent.value = false;
 }
 
-
 async function setNewskillVisible() {
     isNewSkillVisible.value = true;
 }
-
 
 async function getSkills() {
     clearExperienceData()
@@ -359,7 +312,6 @@ async function getSkills() {
             makeSnackbar("error", error.response.data.message);
         });
 }
-
 
 function filterPerfectMatch(value, search) {
     return value != null && String(value) === search
@@ -387,12 +339,9 @@ async function skillAiAssist(edit) {
     }
 }
 
-
-
 async function experienceAIAssist(edit) {
     isRequestingAiAssist.value = true;
     if (edit) {
-
         await ExperienceServices.experienceAiAssist(editedItem.value.description, editedItem.value.chatHistory)
             .then((response) => {
                 editedItem.value.description = response.data.description
@@ -420,8 +369,8 @@ function openEditLinksDialog(item) {
 }
 
 function updateEditLinksDialog(newState) {
-  editLinksDialog.value = newState;
-  getLinks();
+    editLinksDialog.value = newState;
+    getLinks();
 }
 
 // professional summary dialog stuff
@@ -447,14 +396,13 @@ function openEditEducationDialog(item) {
 }
 
 function updateEditEducationDialog(newState) {
-  editEducationDialog.value = newState;
-  getEducationInfo();
+    editEducationDialog.value = newState;
+    getEducationInfo();
 }
 
 function updateIsAttending(newValue) {
-  isAttending.value = newValue;
+    isAttending.value = newValue;
 }
-
 
 // all types of experience dialog stuff
 const editExperienceDialog = ref(false);
@@ -502,12 +450,12 @@ export default {
 </script>
 
 <template>
-
     <v-container>
         <v-row>
             <v-col style="width: 50%;">
 
                 <v-card>
+                    <!-- TAB HEADER -->
                     <v-sheet elevation="3" rounded="lg" align="center">
                         <v-tabs v-model="tab" :items="tabs" align-tabs="center" height="60" slider-color="#f78166">
                             <v-tab value="1" @click="getPersonalInfo()">Links</v-tab>
@@ -527,7 +475,6 @@ export default {
 
                             <!-- Links -->
                             <v-tabs-window-item value="1" style="padding: 50px">
-
                                 <v-data-table v-model="selectedLinks" :items="links" item-value="id"
                                     :headers="[{ title: 'Description', value: 'type' },
                                     { title: 'URL', value: 'url' }, { title: 'Edit', value: 'edit' }, { title: 'Delete', value: 'delete' }]" hide-default-footer>
@@ -550,8 +497,6 @@ export default {
                                 <NewLink v-if="isNewLinkVisible" :isNewLinkVisible="isNewLinkVisible"
                                     @update:isNewLinkVisible="value => isNewLinkVisible = value" :account="account"
                                     :makeSnackbar="makeSnackbar" :getLinks="getLinks"></NewLink>
-
-
                                 <div align="right">
 
                                     <v-btn variant="tonal" @click="navigateNextTab(1)">
@@ -560,9 +505,8 @@ export default {
                                 </div>
                             </v-tabs-window-item>
 
-                            <!-- Professional Summary -->
+                            <!-- Professional Summary/Goal -->
                             <v-tabs-window-item value="2" style="padding: 50px">
-
                                 <div align="left">
                                     <v-data-table v-model="selectedGoals" :items="goals" item-value="id"
                                         :headers="[{ title: 'Title', value: 'title' },
@@ -601,13 +545,11 @@ export default {
                                         </v-btn>
                                     </div>
                                 </div>
-
                             </v-tabs-window-item>
+
                             <!-- Education -->
                             <v-tabs-window-item value="3" style="padding: 50px">
-
                                 <div align="left">
-
                                     <v-container>
                                         <v-data-table v-model="selectedEducation" :items="educationInfo" item-value="id"
                                             :headers="[{ title: 'Organization', value: 'organization' }, { title: 'Degree', value: 'description' },
@@ -625,9 +567,7 @@ export default {
                                             </template>
                                         </v-data-table>
                                     </v-container>
-
                                 </div>
-
 
                                 <div class="mb-10">
                                     <v-spacer></v-spacer>
@@ -639,18 +579,15 @@ export default {
                                     <v-spacer></v-spacer>
                                 </div>
 
-
                                 <v-btn variant="tonal" @click="setNewEduVisible">
                                     Add New Education
                                 </v-btn>
 
                                 <NewEducation v-if="isNewEduVisible" :isNewEduVisible="isNewEduVisible"
-                                        @update:isNewEduVisible="value => isNewEduVisible = value" :account="account"
-                                        :makeSnackbar="makeSnackbar" :getEducationInfo="getEducationInfo"
-                                ></NewEducation>
+                                    @update:isNewEduVisible="value => isNewEduVisible = value" :account="account"
+                                    :makeSnackbar="makeSnackbar" :getEducationInfo="getEducationInfo"></NewEducation>
 
                                 <div align="right">
-
                                     <div class="mb-10">
                                         <v-spacer></v-spacer>
                                     </div>
@@ -658,10 +595,7 @@ export default {
                                         Next
                                     </v-btn>
                                 </div>
-
-
                             </v-tabs-window-item>
-
 
                             <!-- Work Experience -->
                             <v-tabs-window-item value="4" style="padding: 50px">
@@ -683,9 +617,7 @@ export default {
                                             </template>
                                         </v-data-table>
                                     </v-container>
-
                                 </div>
-
 
                                 <div class="mb-10">
                                     <v-spacer></v-spacer>
@@ -696,19 +628,18 @@ export default {
                                 <div class="mb-10">
                                     <v-spacer></v-spacer>
                                 </div>
-
 
                                 <v-btn variant="tonal" @click="toggleExperience(1)">
                                     Add New Job Experience
                                 </v-btn>
 
-                                <NewExperience v-if="isJobExperience"  :isJobExperience="isJobExperience"
+                                <NewExperience v-if="isJobExperience" :isJobExperience="isJobExperience"
                                     @update:isJobExperience="value => isJobExperience = value" :account="account"
                                     :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
-                                    :toggleExperience="toggleExperience" :whichExperience="1" :experienceAIAssist="experienceAIAssist"
+                                    :toggleExperience="toggleExperience" :whichExperience="1"
+                                    :experienceAIAssist="experienceAIAssist"
                                     :isRequestingAiAssist="isRequestingAiAssist" :jobDescription="jobDescription"
-                                    @update:jobDescription="value => jobDescription = value"
-                                    ></NewExperience>
+                                    @update:jobDescription="value => jobDescription = value"></NewExperience>
 
                                 <div class="mb-10">
                                     <v-spacer></v-spacer>
@@ -719,10 +650,6 @@ export default {
                                 <div class="mb-10">
                                     <v-spacer></v-spacer>
                                 </div>
-
-
-
-
 
                                 <div align="right">
 
@@ -734,10 +661,7 @@ export default {
 
                             <!-- Leadership Experience -->
                             <v-tabs-window-item value="5" style="padding: 50px">
-
-
                                 <div align="left">
-
                                     <v-container>
                                         <v-data-table v-model="selectedLeadershipExperience" :items="experiences"
                                             item-value="id" :search="'2'" :custom-filter="filterPerfectMatch"
@@ -755,9 +679,7 @@ export default {
                                             </template>
                                         </v-data-table>
                                     </v-container>
-
                                 </div>
-
 
                                 <div class="mb-10">
                                     <v-spacer></v-spacer>
@@ -769,22 +691,20 @@ export default {
                                     <v-spacer></v-spacer>
                                 </div>
 
-
                                 <v-btn variant="tonal" @click="toggleExperience(2)">
                                     Add New Leadership Experience
                                 </v-btn>
 
-                                <NewExperience v-if="isLeadershipExperience"  :isLeadershipExperience="isLeadershipExperience"
-                                    @update:isLeadershipExperience="value => isLeadershipExperience = value" :account="account"
-                                    :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
-                                    :toggleExperience="toggleExperience" :whichExperience="2" :experienceAIAssist="experienceAIAssist"
+                                <NewExperience v-if="isLeadershipExperience"
+                                    :isLeadershipExperience="isLeadershipExperience"
+                                    @update:isLeadershipExperience="value => isLeadershipExperience = value"
+                                    :account="account" :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
+                                    :toggleExperience="toggleExperience" :whichExperience="2"
+                                    :experienceAIAssist="experienceAIAssist"
                                     :isRequestingAiAssist="isRequestingAiAssist" :jobDescription="jobDescription"
-                                    @update:jobDescription="value => jobDescription = value"
-                                    ></NewExperience>
-
+                                    @update:jobDescription="value => jobDescription = value"></NewExperience>
 
                                 <div align="right">
-
                                     <v-btn variant="tonal" @click="navigateNextTab(5)">
                                         Next
                                     </v-btn>
@@ -793,10 +713,7 @@ export default {
 
                             <!-- Activities -->
                             <v-tabs-window-item value="6" style="padding: 50px">
-
-
                                 <div align="left">
-
                                     <v-container>
                                         <v-data-table v-model="selectedActivitiesExperience" :items="experiences"
                                             item-value="id" :search="'3'" :custom-filter="filterPerfectMatch"
@@ -814,9 +731,7 @@ export default {
                                             </template>
                                         </v-data-table>
                                     </v-container>
-
                                 </div>
-
 
                                 <div class="mb-10">
                                     <v-spacer></v-spacer>
@@ -828,34 +743,29 @@ export default {
                                     <v-spacer></v-spacer>
                                 </div>
 
-
                                 <v-btn variant="tonal" @click="toggleExperience(3)">
                                     Add New Activities
                                 </v-btn>
 
-                                <NewExperience v-if="isActivitiesExperience"  :isActivitiesExperience="isActivitiesExperience"
-                                    @update:isActivitiesExperience="value => isActivitiesExperience = value" :account="account"
-                                    :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
-                                    :toggleExperience="toggleExperience" :whichExperience="3" :experienceAIAssist="experienceAIAssist"
+                                <NewExperience v-if="isActivitiesExperience"
+                                    :isActivitiesExperience="isActivitiesExperience"
+                                    @update:isActivitiesExperience="value => isActivitiesExperience = value"
+                                    :account="account" :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
+                                    :toggleExperience="toggleExperience" :whichExperience="3"
+                                    :experienceAIAssist="experienceAIAssist"
                                     :isRequestingAiAssist="isRequestingAiAssist" :jobDescription="jobDescription"
-                                    @update:jobDescription="value => jobDescription = value"
-                                    ></NewExperience>
+                                    @update:jobDescription="value => jobDescription = value"></NewExperience>
 
                                 <div align="right">
-
                                     <v-btn variant="tonal" @click="navigateNextTab(6)">
                                         Next
                                     </v-btn>
                                 </div>
-
                             </v-tabs-window-item>
 
                             <!-- Volunteer Work -->
                             <v-tabs-window-item value="7" style="padding: 50px">
-
-
                                 <div align="left">
-
                                     <v-container>
                                         <v-data-table v-model="selectedVolunteerExperience" :items="experiences"
                                             item-value="id" :search="'4'" :custom-filter="filterPerfectMatch"
@@ -873,9 +783,7 @@ export default {
                                             </template>
                                         </v-data-table>
                                     </v-container>
-
                                 </div>
-
 
                                 <div class="mb-10">
                                     <v-spacer></v-spacer>
@@ -892,16 +800,16 @@ export default {
                                     Add New Volunteer
                                 </v-btn>
 
-                                <NewExperience v-if="isVolunteerExperience"  :isVolunteerExperience="isVolunteerExperience"
-                                    @update:isVolunteerExperience="value => isVolunteerExperience = value" :account="account"
-                                    :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
-                                    :toggleExperience="toggleExperience" :whichExperience="4" :experienceAIAssist="experienceAIAssist"
+                                <NewExperience v-if="isVolunteerExperience"
+                                    :isVolunteerExperience="isVolunteerExperience"
+                                    @update:isVolunteerExperience="value => isVolunteerExperience = value"
+                                    :account="account" :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
+                                    :toggleExperience="toggleExperience" :whichExperience="4"
+                                    :experienceAIAssist="experienceAIAssist"
                                     :isRequestingAiAssist="isRequestingAiAssist" :jobDescription="jobDescription"
-                                    @update:jobDescription="value => jobDescription = value"
-                                    ></NewExperience>
+                                    @update:jobDescription="value => jobDescription = value"></NewExperience>
 
                                 <div align="right">
-
                                     <v-btn variant="tonal" @click="navigateNextTab(7)">
                                         Next
                                     </v-btn>
@@ -910,7 +818,6 @@ export default {
 
                             <!-- Skills -->
                             <v-tabs-window-item value="8" style="padding: 50px">
-
                                 <div align="left">
                                     <v-container>
                                         <v-data-table v-model="selectedSkills" :items="skills" item-value="id"
@@ -930,7 +837,6 @@ export default {
                                     </v-container>
                                 </div>
 
-
                                 <div class="mb-10">
                                     <v-spacer></v-spacer>
                                 </div>
@@ -941,7 +847,6 @@ export default {
                                     <v-spacer></v-spacer>
                                 </div>
 
-
                                 <v-btn variant="text" @click="setNewskillVisible()">
                                     + Add New Skill
                                 </v-btn>
@@ -949,15 +854,12 @@ export default {
                                 <NewSkill v-if="isNewSkillVisible" :isNewSkillVisible="isNewSkillVisible"
                                     @update:isNewSkillVisible="value => isNewSkillVisible = value" :account="account"
                                     :makeSnackbar="makeSnackbar" :getSkills="getSkills" :skillAiAssist="skillAiAssist"
-                                    :isRequestingAiAssist="isRequestingAiAssist" 
-                                    :skillDescription="skillDescription" :skillHistory="skillHistory"
-                                    @update:skillDescription="value => skillDescription = value" 
-                                    @update:skillHistory="value => skillHistory = value" 
-
-                                ></NewSkill>
+                                    :isRequestingAiAssist="isRequestingAiAssist" :skillDescription="skillDescription"
+                                    :skillHistory="skillHistory"
+                                    @update:skillDescription="value => skillDescription = value"
+                                    @update:skillHistory="value => skillHistory = value"></NewSkill>
 
                                 <div align="right">
-
                                     <v-btn variant="tonal" @click="navigateNextTab(8)">
                                         Next
                                     </v-btn>
@@ -982,12 +884,9 @@ export default {
                                                     <v-icon>mdi-delete</v-icon>
                                                 </v-btn>
                                             </template>
-
                                         </v-data-table>
                                     </v-container>
-
                                 </div>
-
 
                                 <div class="mb-10">
                                     <v-spacer></v-spacer>
@@ -999,26 +898,25 @@ export default {
                                     <v-spacer></v-spacer>
                                 </div>
 
-
                                 <v-btn variant="tonal" @click="toggleExperience(5)">
                                     Add New Honor
                                 </v-btn>
 
-                                <NewExperience v-if="isHonorExperience"  :isHonorExperience="isHonorExperience"
+                                <NewExperience v-if="isHonorExperience" :isHonorExperience="isHonorExperience"
                                     @update:isHonorExperience="value => isHonorExperience = value" :account="account"
                                     :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
-                                    :toggleExperience="toggleExperience" :whichExperience="5" :experienceAIAssist="experienceAIAssist"
+                                    :toggleExperience="toggleExperience" :whichExperience="5"
+                                    :experienceAIAssist="experienceAIAssist"
                                     :isRequestingAiAssist="isRequestingAiAssist" :jobDescription="jobDescription"
-                                    @update:jobDescription="value => jobDescription = value"
-                                    ></NewExperience>
+                                    @update:jobDescription="value => jobDescription = value"></NewExperience>
 
                                 <div align="right">
-
                                     <v-btn variant="tonal" @click="navigateNextTab(9)">
                                         Next
                                     </v-btn>
                                 </div>
                             </v-tabs-window-item>
+
                             <!-- Awards -->
                             <v-tabs-window-item value="10" style="padding: 50px">
                                 <div align="left">
@@ -1039,9 +937,7 @@ export default {
                                             </template>
                                         </v-data-table>
                                     </v-container>
-
                                 </div>
-
 
                                 <div class="mb-10">
                                     <v-spacer></v-spacer>
@@ -1053,21 +949,19 @@ export default {
                                     <v-spacer></v-spacer>
                                 </div>
 
-
                                 <v-btn variant="tonal" @click="toggleExperience(6)">
                                     Add New Award
                                 </v-btn>
 
-                                <NewExperience v-if="isAwardExperience"  :isAwardExperience="isAwardExperience"
+                                <NewExperience v-if="isAwardExperience" :isAwardExperience="isAwardExperience"
                                     @update:isAwardExperience="value => isAwardExperience = value" :account="account"
                                     :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
-                                    :toggleExperience="toggleExperience" :whichExperience="6" :experienceAIAssist="experienceAIAssist"
+                                    :toggleExperience="toggleExperience" :whichExperience="6"
+                                    :experienceAIAssist="experienceAIAssist"
                                     :isRequestingAiAssist="isRequestingAiAssist" :jobDescription="jobDescription"
-                                    @update:jobDescription="value => jobDescription = value"
-                                    ></NewExperience>
+                                    @update:jobDescription="value => jobDescription = value"></NewExperience>
 
                                 <div align="right">
-
                                     <v-btn variant="tonal" @click="navigateNextTab(10)">
                                         Next
                                     </v-btn>
@@ -1094,9 +988,7 @@ export default {
                                             </template>
                                         </v-data-table>
                                     </v-container>
-
                                 </div>
-
 
                                 <div class="mb-10">
                                     <v-spacer></v-spacer>
@@ -1108,93 +1000,69 @@ export default {
                                     <v-spacer></v-spacer>
                                 </div>
 
-
                                 <v-btn variant="tonal" @click="toggleExperience(7)">
                                     Add New Project
                                 </v-btn>
 
-                                <NewExperience v-if="isProjectExperience"  :isProjectExperience="isProjectExperience"
-                                    @update:isProjectExperience="value => isProjectExperience = value" :account="account"
-                                    :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
-                                    :toggleExperience="toggleExperience" :whichExperience="7" :experienceAIAssist="experienceAIAssist"
+                                <NewExperience v-if="isProjectExperience" :isProjectExperience="isProjectExperience"
+                                    @update:isProjectExperience="value => isProjectExperience = value"
+                                    :account="account" :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
+                                    :toggleExperience="toggleExperience" :whichExperience="7"
+                                    :experienceAIAssist="experienceAIAssist"
                                     :isRequestingAiAssist="isRequestingAiAssist" :jobDescription="jobDescription"
-                                    @update:jobDescription="value => jobDescription = value"
-                                    ></NewExperience>
-
+                                    @update:jobDescription="value => jobDescription = value"></NewExperience>
                             </v-tabs-window-item>
-
-                            <!-- LINKS DIALOG -->
-                            <v-dialog v-model="editLinksDialog" persistent>
-                                <LinksEdit :makeSnackbar="makeSnackbar" :url="editedItem.url" 
-                                :description="editedItem.type" 
-                                :linkId="editedItem.id" 
-                                :editLinksDialog="editLinksDialog"
-                                @update:editLinksDialog="updateEditLinksDialog" ></LinksEdit>
-                            </v-dialog>
-
-                            <!-- PROFESSIONAL SUMMARY DIALOG -->
-                            <div v-if="editProfSumDialog">
-                            <GoalsEdit :makeSnackbar="makeSnackbar" :editingItem="editedItem"
-                                       :editProfSumDialog="editProfSumDialog"
-                                       @update:editProfSumDialog="updateEditProfSumDialog"
-                            ></GoalsEdit>
-                            </div>  
-
-                            <!-- EDUCATION DIALOG -->
-                            <div v-if="editEducationDialog">
-                                <EducationEdit :makeSnackbar="makeSnackbar" :editingItem="editedItem"
-                                            :studyAbroadTitle="editstudyAbroadTitle"
-                                            :studyAbroadOrganization="editstudyAbroadOrganization"
-                                            :studyAbroadLocation="editstudyAbroadLocation"
-                                            :studyAbroadTime="editstudyAbroadTime"
-                                            :studyAbroadYear="editstudyAbroadYear"
-                                            :isAttending="isAttending"
-                                            :editEducationDialog="editEducationDialog"
-                                            @update:editEducationDialog="updateEditEducationDialog"
-                                            @update:isAttending="updateIsAttending"
-                                            ></EducationEdit>
-                                </div>
-
-                            <!-- EXPERIENCE DIALOG-->
-                            <div v-if="editExperienceDialog">
-                                <ExperienceEdit :makeSnackbar="makeSnackbar" :editingItem="editedItem"
-                                                :editExperienceDialog="editExperienceDialog"
-                                                :experienceAIAssist="experienceAIAssist"
-                                                :isRequestingAiAssist="isRequestingAiAssist"
-                                                @update:editExperienceDialog="updateEditExperienceDialog"
-                                ></ExperienceEdit>
-                            </div>
-
-                            <!-- SKILLS DIALOG-->
-                            <div v-if="editSkillsDialog">
-                                <SkillsEdit :makeSnackbar="makeSnackbar" :editingItem="editedItem"
-                                            :editSkillsDialog="editSkillsDialog"
-                                            :skillAiAssist="skillAiAssist"
-                                            :isRequestingAiAssist="isRequestingAiAssist"
-                                            @update:editSkillsDialog="updateEditSkillsDialog"
-                                ></SkillsEdit>
-                            </div>
-
-                            <DeleteDialog v-model="isDeleted" :isDeleted="isDeleted"
-                                @update:isDeleted="value => isDeleted = value" :tab="tab" :deleteItemId="deleteItemId"
-                                :account="account" :makeSnackbar="makeSnackbar" :getLinks="getLinks"
-                                :getGoals="getGoals" :getEducationInfo="getEducationInfo"
-                                :getExperiences="getExperiences" :getSkills="getSkills">
-                            </DeleteDialog>
-
-
-
                         </v-tabs-window>
                     </v-sheet>
                 </v-card>
-
             </v-col>
         </v-row>
 
+        <!-- LINKS DIALOG -->
+        <v-dialog v-model="editLinksDialog" persistent>
+            <LinksEdit :makeSnackbar="makeSnackbar" :url="editedItem.url" :description="editedItem.type"
+                :linkId="editedItem.id" :editLinksDialog="editLinksDialog"
+                @update:editLinksDialog="updateEditLinksDialog"></LinksEdit>
+        </v-dialog>
+
+        <!-- PROFESSIONAL SUMMARY DIALOG -->
+        <div v-if="editProfSumDialog">
+            <GoalsEdit :makeSnackbar="makeSnackbar" :editingItem="editedItem" :editProfSumDialog="editProfSumDialog"
+                @update:editProfSumDialog="updateEditProfSumDialog"></GoalsEdit>
+        </div>
+
+        <!-- EDUCATION DIALOG -->
+        <div v-if="editEducationDialog">
+            <EducationEdit :makeSnackbar="makeSnackbar" :editingItem="editedItem"
+                :studyAbroadTitle="editstudyAbroadTitle" :studyAbroadOrganization="editstudyAbroadOrganization"
+                :studyAbroadLocation="editstudyAbroadLocation" :studyAbroadTime="editstudyAbroadTime"
+                :studyAbroadYear="editstudyAbroadYear" :isAttending="isAttending"
+                :editEducationDialog="editEducationDialog" @update:editEducationDialog="updateEditEducationDialog"
+                @update:isAttending="updateIsAttending"></EducationEdit>
+        </div>
+
+        <!-- EXPERIENCE DIALOG-->
+        <div v-if="editExperienceDialog">
+            <ExperienceEdit :makeSnackbar="makeSnackbar" :editingItem="editedItem"
+                :editExperienceDialog="editExperienceDialog" :experienceAIAssist="experienceAIAssist"
+                :isRequestingAiAssist="isRequestingAiAssist" @update:editExperienceDialog="updateEditExperienceDialog">
+            </ExperienceEdit>
+        </div>
+
+        <!-- SKILLS DIALOG-->
+        <div v-if="editSkillsDialog">
+            <SkillsEdit :makeSnackbar="makeSnackbar" :editingItem="editedItem" :editSkillsDialog="editSkillsDialog"
+                :skillAiAssist="skillAiAssist" :isRequestingAiAssist="isRequestingAiAssist"
+                @update:editSkillsDialog="updateEditSkillsDialog"></SkillsEdit>
+        </div>
+
+        <DeleteDialog v-model="isDeleted" :isDeleted="isDeleted" @update:isDeleted="value => isDeleted = value"
+            :tab="tab" :deleteItemId="deleteItemId" :account="account" :makeSnackbar="makeSnackbar" :getLinks="getLinks"
+            :getGoals="getGoals" :getEducationInfo="getEducationInfo" :getExperiences="getExperiences"
+            :getSkills="getSkills">
+        </DeleteDialog>
+
         <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
             @update:show="value => snackbarValue = value"></Snackbar>
-
     </v-container>
-
-
 </template>

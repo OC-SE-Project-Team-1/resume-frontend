@@ -12,6 +12,7 @@ import DeleteDialog from "../components/DeleteDialog.vue";
 import { useRouter } from "vue-router";
 import NewLink from "../components/NewLink.vue";
 import NewGoal from "../components/NewGoal.vue";
+import NewExperience from "../components/NewExperience.vue";
 
 const router = useRouter();
 
@@ -1178,60 +1179,13 @@ export default {
                                     Add New Job Experience
                                 </v-btn>
 
-                                <v-container v-if="isJobExperience">
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="jobExperienceTitle"
-                                                label="Position Title"></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field v-model="jobCompany" label="Company Name"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="jobCity" label="City"></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field v-model="jobState" label="State"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field :disabled="isCurrent" v-model="jobEnd"
-                                                label="End Date"></v-text-field>
-                                            <v-switch v-model="isCurrent" label="Present Job"
-                                                color="primary"></v-switch>
-                                        </v-col>
-                                    </v-row>
-                                    <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
-                                    <v-row>
-                                        <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription"
-                                            label="Work Summary">
-                                            <template #append-inner>
-                                                <v-btn color="secondary" rounded="xl" value="Ai Assist"
-                                                    @click="experienceAIAssist()">
-                                                    AI Assist
-                                                </v-btn>
-                                            </template>
-                                        </v-textarea>
-                                    </v-row>
-
-                                    <v-col>
-
-                                    </v-col>
-                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(1)">
-                                        Cancel
-                                    </v-btn>
-                                    &nbsp;&nbsp;&nbsp;
-                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced"
-                                        @click="addNewExperience(1)">
-                                        Submit
-                                    </v-btn>
-                                </v-container>
+                                <NewExperience v-if="isJobExperience"  :isJobExperience="isJobExperience"
+                                    @update:isJobExperience="value => isJobExperience = value" :account="account"
+                                    :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
+                                    :toggleExperience="toggleExperience" :whichExperience="1" :experienceAIAssist="experienceAIAssist"
+                                    :isRequestingAiAssist="isRequestingAiAssist" :jobDescription="jobDescription"
+                                    @update:jobDescription="value => jobDescription = value"
+                                    ></NewExperience>
 
                                 <div class="mb-10">
                                     <v-spacer></v-spacer>
@@ -1297,60 +1251,13 @@ export default {
                                     Add New Leadership Experience
                                 </v-btn>
 
-                                <v-container v-if="isLeadershipExperience">
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="jobExperienceTitle" label="Position"></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field v-model="jobCompany" label="Organization Name"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="jobCity" label="City"></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field v-model="jobState" label="State"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field :disabled="isCurrent" v-model="jobEnd"
-                                                label="End Date"></v-text-field>
-                                            <v-switch v-model="isCurrent" label="Present Role"
-                                                color="primary"></v-switch>
-                                        </v-col>
-                                    </v-row>
-                                    <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
-                                    <v-row>
-                                        <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription"
-                                            label="Role Summary">
-                                            <template #append-inner>
-                                                <v-btn color="secondary" rounded="xl" value="Ai Assist"
-                                                    @click="experienceAIAssist()">
-                                                    AI Assist
-                                                </v-btn>
-                                            </template>
-                                        </v-textarea>
-                                    </v-row>
-
-                                    <v-col>
-
-                                    </v-col>
-                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(2)">
-                                        Cancel
-                                    </v-btn>
-                                    &nbsp;&nbsp;&nbsp;
-                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced"
-                                        @click="addNewExperience(2)">
-                                        Submit
-                                    </v-btn>
-                                </v-container>
-
+                                <NewExperience v-if="isLeadershipExperience"  :isLeadershipExperience="isLeadershipExperience"
+                                    @update:isLeadershipExperience="value => isLeadershipExperience = value" :account="account"
+                                    :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
+                                    :toggleExperience="toggleExperience" :whichExperience="2" :experienceAIAssist="experienceAIAssist"
+                                    :isRequestingAiAssist="isRequestingAiAssist" :jobDescription="jobDescription"
+                                    @update:jobDescription="value => jobDescription = value"
+                                    ></NewExperience>
 
 
                                 <div align="right">
@@ -1403,59 +1310,13 @@ export default {
                                     Add New Activities
                                 </v-btn>
 
-                                <v-container v-if="isActivitiesExperience">
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="jobExperienceTitle" label="Position"></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field v-model="jobCompany" label="Organization Name"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="jobCity" label="City"></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field v-model="jobState" label="State"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field :disabled="isCurrent" v-model="jobEnd"
-                                                label="End Date"></v-text-field>
-                                            <v-switch v-model="isCurrent" label="Present Role"
-                                                color="primary"></v-switch>
-                                        </v-col>
-                                    </v-row>
-                                    <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
-                                    <v-row>
-                                        <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription"
-                                            label="Role Summary">
-                                            <template #append-inner>
-                                                <v-btn color="secondary" rounded="xl" value="Ai Assist"
-                                                    @click="experienceAIAssist()">
-                                                    AI Assist
-                                                </v-btn>
-                                            </template>
-                                        </v-textarea>
-                                    </v-row>
-
-                                    <v-col>
-
-                                    </v-col>
-                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(3)">
-                                        Cancel
-                                    </v-btn>
-                                    &nbsp;&nbsp;&nbsp;
-                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced"
-                                        @click="addNewExperience(3)">
-                                        Submit
-                                    </v-btn>
-                                </v-container>
+                                <NewExperience v-if="isActivitiesExperience"  :isActivitiesExperience="isActivitiesExperience"
+                                    @update:isActivitiesExperience="value => isActivitiesExperience = value" :account="account"
+                                    :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
+                                    :toggleExperience="toggleExperience" :whichExperience="3" :experienceAIAssist="experienceAIAssist"
+                                    :isRequestingAiAssist="isRequestingAiAssist" :jobDescription="jobDescription"
+                                    @update:jobDescription="value => jobDescription = value"
+                                    ></NewExperience>
 
                                 <div align="right">
 
@@ -1508,60 +1369,13 @@ export default {
                                     Add New Volunteer
                                 </v-btn>
 
-                                <v-container v-if="isVolunteerExperience">
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="jobExperienceTitle" label="Position"></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field v-model="jobCompany" label="Organization Name"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="jobCity" label="City"></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field v-model="jobState" label="State"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field :disabled="isCurrent" v-model="jobEnd"
-                                                label="End Date"></v-text-field>
-                                            <v-switch v-model="isCurrent" label="Present Role"
-                                                color="primary"></v-switch>
-                                        </v-col>
-                                    </v-row>
-                                    <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
-                                    <v-row>
-                                        <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription"
-                                            label="Role Summary">
-                                            <template #append-inner>
-                                                <v-btn color="secondary" rounded="xl" value="Ai Assist"
-                                                    @click="experienceAIAssist()">
-                                                    AI Assist
-                                                </v-btn>
-                                            </template>
-                                        </v-textarea>
-                                    </v-row>
-
-                                    <v-col>
-
-                                    </v-col>
-                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(4)">
-                                        Cancel
-                                    </v-btn>
-                                    &nbsp;&nbsp;&nbsp;
-                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced"
-                                        @click="addNewExperience(4)">
-                                        Submit
-                                    </v-btn>
-                                </v-container>
-
+                                <NewExperience v-if="isVolunteerExperience"  :isVolunteerExperience="isVolunteerExperience"
+                                    @update:isVolunteerExperience="value => isVolunteerExperience = value" :account="account"
+                                    :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
+                                    :toggleExperience="toggleExperience" :whichExperience="4" :experienceAIAssist="experienceAIAssist"
+                                    :isRequestingAiAssist="isRequestingAiAssist" :jobDescription="jobDescription"
+                                    @update:jobDescription="value => jobDescription = value"
+                                    ></NewExperience>
 
                                 <div align="right">
 
@@ -1734,35 +1548,13 @@ export default {
                                     Add New Honor
                                 </v-btn>
 
-                                <v-container v-if="isHonorExperience">
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="jobExperienceTitle"
-                                                label="Honor Title"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="jobStart" label="Date Awarded"
-                                                hint="Aug 2024"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-text-field v-model="jobDescription" label="Honor Description"></v-text-field>
-                                    </v-row>
-
-                                    <v-col>
-
-                                    </v-col>
-                                    <v-btn variant="tonal" @click="toggleExperience(5)">
-                                        Cancel
-                                    </v-btn>
-                                    &nbsp;&nbsp;&nbsp;
-                                    <v-btn variant="tonal" :disabled="!isOthered" @click="addNewExperience(5)">
-                                        Submit
-                                    </v-btn>
-
-                                </v-container>
+                                <NewExperience v-if="isHonorExperience"  :isHonorExperience="isHonorExperience"
+                                    @update:isHonorExperience="value => isHonorExperience = value" :account="account"
+                                    :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
+                                    :toggleExperience="toggleExperience" :whichExperience="5" :experienceAIAssist="experienceAIAssist"
+                                    :isRequestingAiAssist="isRequestingAiAssist" :jobDescription="jobDescription"
+                                    @update:jobDescription="value => jobDescription = value"
+                                    ></NewExperience>
 
                                 <div align="right">
 
@@ -1810,36 +1602,13 @@ export default {
                                     Add New Award
                                 </v-btn>
 
-                                <v-container v-if="isAwardExperience">
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="jobExperienceTitle"
-                                                label="Award Title"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="jobStart" label="Date Awarded"
-                                                hint="Aug 2024"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-text-field v-model="jobDescription" label="Award Description"></v-text-field>
-                                    </v-row>
-
-                                    <v-col>
-
-                                    </v-col>
-                                    <v-btn variant="tonal" @click="toggleExperience(6)">
-                                        Cancel
-                                    </v-btn>
-                                    &nbsp;&nbsp;&nbsp;
-                                    <v-btn variant="tonal" :disabled="!isOthered" @click="addNewExperience(6)">
-                                        Submit
-                                    </v-btn>
-
-                                </v-container>
-
+                                <NewExperience v-if="isAwardExperience"  :isAwardExperience="isAwardExperience"
+                                    @update:isAwardExperience="value => isAwardExperience = value" :account="account"
+                                    :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
+                                    :toggleExperience="toggleExperience" :whichExperience="6" :experienceAIAssist="experienceAIAssist"
+                                    :isRequestingAiAssist="isRequestingAiAssist" :jobDescription="jobDescription"
+                                    @update:jobDescription="value => jobDescription = value"
+                                    ></NewExperience>
 
                                 <div align="right">
 
@@ -1888,59 +1657,13 @@ export default {
                                     Add New Project
                                 </v-btn>
 
-                                <v-container v-if="isProjectExperience">
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="jobExperienceTitle" label="Position"></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field v-model="jobCompany" label="Organization Name"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="jobCity" label="City"></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field v-model="jobState" label="State"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field :disabled="isCurrent" v-model="jobEnd"
-                                                label="End Date"></v-text-field>
-                                            <v-switch v-model="isCurrent" label="Present Role"
-                                                color="primary"></v-switch>
-                                        </v-col>
-                                    </v-row>
-                                    <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
-                                    <v-row>
-                                        <v-textarea v-if="!isRequestingAiAssist" label="Project Summary"
-                                            v-model="jobDescription">
-                                            <template #append-inner>
-                                                <v-btn color="secondary" rounded="xl" value="Ai Assist"
-                                                    @click="experienceAIAssist()">
-                                                    AI Assist
-                                                </v-btn>
-                                            </template>
-                                        </v-textarea>
-                                    </v-row>
-
-                                    <v-col>
-
-                                    </v-col>
-                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(7)">
-                                        Cancel
-                                    </v-btn>
-                                    &nbsp;&nbsp;&nbsp;
-                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced"
-                                        @click="addNewExperience(7)">
-                                        Submit
-                                    </v-btn>
-                                </v-container>
+                                <NewExperience v-if="isProjectExperience"  :isProjectExperience="isProjectExperience"
+                                    @update:isProjectExperience="value => isProjectExperience = value" :account="account"
+                                    :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
+                                    :toggleExperience="toggleExperience" :whichExperience="7" :experienceAIAssist="experienceAIAssist"
+                                    :isRequestingAiAssist="isRequestingAiAssist" :jobDescription="jobDescription"
+                                    @update:jobDescription="value => jobDescription = value"
+                                    ></NewExperience>
 
                             </v-tabs-window-item>
 

@@ -8,6 +8,7 @@ import template3 from "../components/Template3.vue";
 import template4 from "../components/Template4.vue";
 import ResumeServices from "../services/ResumeServices";
 import ResumeExport from "../reports/ResumeExport";
+import Snackbar from "../components/Snackbar.vue";
 
 const router = useRouter();
 const account = ref(null);
@@ -16,18 +17,16 @@ const isExport = ref(false);
 const feedback = ref(null);
 const templateId = ref(0);
 const resumeData = ref(null);
-const isDownloaded = ref(false);
 const selectedUser = ref();
 
-const snackbar = ref({
-  value: false,
-  color: "",
-  text: "",
-});
+const snackbarValue = ref(false);
+const snackbarColor = ref("");
+const snackbarText = ref("");
+
 function makeSnackbar(color, text){
-    snackbar.value.value = true;
-    snackbar.value.color = color;
-    snackbar.value.text = text;
+  snackbarValue.value = true;
+  snackbarColor.value = color;
+  snackbarText.value = text;
 }
 
 onMounted(async () => {
@@ -60,7 +59,6 @@ async function exportResume() {
 const html = document.getElementsByClassName("resume")
 await ResumeExport.exportResume(html[0])
 .then(() => {
-  isDownloaded.value = true;
   closeExport();
   makeSnackbar("green", "Resume Exported!")
 })
@@ -92,13 +90,6 @@ function closeExport() {
   isExport.value = false;
 }
 
-function closeSnackBar() {
-  snackbar.value.value = false;
-}
-
-function refreshPage(){
-  isDownloaded.value = false;
-}
 </script>
 
 <template>
@@ -155,25 +146,9 @@ function refreshPage(){
         </v-card>
       </v-dialog>
 
-      <v-dialog persistent v-model="isDownloaded" width="400">
-        <v-card class="rounded-lg elevation-5">
-          <v-card-title class="text-center headline mb-2">Finish Download?</v-card-title>
-          
-            <v-btn variant="flat" color="primary" @click="refreshPage()">Confirm</v-btn>
-          
-        </v-card>
-      </v-dialog>
+      <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
+      @update:show="value => snackbarValue = value"></Snackbar>
 
-
-      <v-snackbar v-model="snackbar.value" rounded="pill">
-        {{ snackbar.text }}
-
-        <template v-slot:actions>
-          <v-btn :color="snackbar.color" variant="text" @click="closeSnackBar()">
-            Close
-          </v-btn>
-        </template>
-      </v-snackbar>
     </div>
 
   </v-container>

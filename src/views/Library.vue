@@ -3,6 +3,7 @@ import { onMounted } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import ResumeServices from "../services/ResumeServices";
+import Snackbar from "../components/Snackbar.vue";
 
 const router = useRouter();
 const isDeleted = ref(false);
@@ -10,15 +11,14 @@ const account = ref(null);
 const titles = ref();
 const resumeId = ref();
 
-const snackbar = ref({
-  value: false,
-  color: "",
-  text: "",
-});
+const snackbarValue = ref(false);
+const snackbarColor = ref("");
+const snackbarText = ref("");
+
 function makeSnackbar(color, text){
-    snackbar.value.value = true;
-    snackbar.value.color = color;
-    snackbar.value.text = text;
+  snackbarValue.value = true;
+  snackbarColor.value = color;
+  snackbarText.value = text;
 }
 
 onMounted(async () => {
@@ -70,9 +70,6 @@ function compareToJobDesc(itemId) {
   resumeId.value = JSON.parse(localStorage.getItem("resumeId"));
   router.push({ name: "jobDescription" });
 }
-function closeSnackBar() {
-  snackbar.value.value = false;
-}
 
 function closeDelete() {
   window.localStorage.removeItem("resumeId");
@@ -123,7 +120,7 @@ export default {
       <v-dialog persistent v-model="isDeleted" width="800">
         <v-card class="rounded-lg elevation-5">
           <v-card-title class="text-center headline mb-2">Delete Resume?</v-card-title>
-          <v-text align="center">You will be unable to retrieve this resume once deleted!</v-text>
+          <v-card-text align="center">You will be unable to retrieve this resume once deleted!</v-card-text>
 
           <v-card-actions>
             <v-btn variant="flat" color="primary" @click="deleteResume()">Delete</v-btn>
@@ -133,12 +130,9 @@ export default {
         </v-card>
       </v-dialog>
 
-      <v-snackbar v-model="snackbar.value" rounded="pill">
-        {{ snackbar.text }}
-        <template v-slot:actions>
-          <v-btn :color="snackbar.color" variant="text" @click="closeSnackBar()">Close</v-btn>
-        </template>
-      </v-snackbar>
+      <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
+      @update:show="value => snackbarValue = value"></Snackbar>
+
     </div>
   </v-container>
 </template>

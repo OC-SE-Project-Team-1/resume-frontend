@@ -12,6 +12,7 @@ import GoalServices from "../services/GoalServices.js";
 import SkillServices from "../services/SkillServices.js";
 import EducationServices from "../services/EducationServices.js";
 import ExperienceServices from "../services/ExperienceServices.js";
+import Snackbar from "../components/Snackbar.vue";
 import LinksEdit from "../components/LinksEdit.vue";
 import EducationEdit from "../components/EducationEdit.vue";
 import ExperienceEdit from "../components/ExperienceEdit.vue";
@@ -26,11 +27,15 @@ const resumeData = ref(null);
 const templateId = ref(0);
 const isAttending = ref(false);
 const feedback = ref("");
-const snackbar = ref({
-  value: false,
-  color: "",
-  text: "",
-});
+const snackbarValue = ref(false);
+const snackbarColor = ref("");
+const snackbarText = ref("");
+
+function makeSnackbar(color, text){
+  snackbarValue.value = true;
+  snackbarColor.value = color;
+  snackbarText.value = text;
+}
 
 const links = ref([]);
 const goal = ref([]);
@@ -93,16 +98,8 @@ async function getResume() {
     })
     .catch((error) => {
       console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
+      makeSnackbar("error", error.response.data.message)
     });
-}
-
-function makeSnackbar(value, color, text) {
-  snackbar.value.value = value;
-  snackbar.value.color = color;
-  snackbar.value.text = text;
 }
 
 async function sortData() {
@@ -506,7 +503,6 @@ async function updateEditSkills() {
 
 }
 
-
 function navigateToView() {
   router.push({ name: "view" });
 }
@@ -762,14 +758,13 @@ function navigateToView() {
       @update:editExperienceDialog="updateEditExperienceDialog"></ExperienceEdit>
   </div>
 
+  <!-- SKILLS DIALOG-->
   <div v-if="editSkillsDialog">
     <SkillsEdit :editingItem="editedItem" :editSkillsDialog="editSkillsDialog" :skillAiAssist="skillAiAssist"
       :isRequestingAiAssist="isRequestingAiAssist" @update:editSkillsDialog="updateEditSkillsDialog"></SkillsEdit>
   </div>
 
-
-
-
-
+  <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
+  @update:show="value => snackbarValue = value"></Snackbar>
 
 </template>

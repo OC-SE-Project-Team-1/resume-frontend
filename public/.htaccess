@@ -8,7 +8,7 @@
 
   RewriteEngine On
 
-  RewriteBase /
+  RewriteBase /resume/p2t1/
 
   RewriteRule ^index\.html$ - [L]
 
@@ -16,6 +16,6 @@
 
   RewriteCond %{REQUEST_FILENAME} !-d
 
-  RewriteRule . /index.html [L]
+  RewriteRule . /resume/p2t1/index.html [L]
 
 </IfModule>

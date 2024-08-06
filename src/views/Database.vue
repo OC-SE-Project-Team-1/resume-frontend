@@ -10,6 +10,7 @@ import ExperienceServices from "../services/ExperienceServices.js";
 import Snackbar from "../components/Snackbar.vue";
 import DeleteDialog from "../components/DeleteDialog.vue";
 import { useRouter } from "vue-router";
+import NewLink from "../components/NewLink.vue";
 
 const router = useRouter();
 
@@ -20,10 +21,10 @@ const snackbarValue = ref(false);
 const snackbarColor = ref("");
 const snackbarText = ref("");
 
-function makeSnackbar(color, text){
-  snackbarValue.value = true;
-  snackbarColor.value = color;
-  snackbarText.value = text;
+function makeSnackbar(color, text) {
+    snackbarValue.value = true;
+    snackbarColor.value = color;
+    snackbarText.value = text;
 }
 const isNewLinkVisible = ref(false);
 const isNewEduVisible = ref(false);
@@ -37,6 +38,7 @@ const lastName = ref();
 const address = ref();
 const phoneNumber = ref();
 const email = ref();
+
 const linkDescription = ref("");
 const link = ref("");
 const links = ref();
@@ -125,13 +127,6 @@ const isAttending = ref(false);
 let deleteItemId = 0;
 const isRequestingAiAssist = ref(false);
 
-//gray out submit button rules
-const isLinked = computed(() => {
-    return (
-        link.value !== "" &&
-        linkDescription.value !== ""
-    )
-});
 const isGoals = computed(() => {
     return (
         goalTitle.value !== "" &&
@@ -188,12 +183,6 @@ function closeSnackBar() {
     snackbar.value.value = false;
 }
 
-function makeSnackbar(color, text) {
-    snackbar.value.value = true;
-    snackbar.value.color = color;
-    snackbar.value.text = text;
-}
-
 async function setNewLinkVisible() {
     isNewLinkVisible.value = true;
 }
@@ -224,17 +213,6 @@ async function getLinks() {
         });
 }
 
-async function addNewLink() {
-    await LinkServices.addLink(link.value, linkDescription.value, parseInt(account.value.id))
-        .then(() => {
-            makeSnackbar("green", "Link Added!");
-            closeNewLink();
-            getLinks();
-        })
-        .catch((error) => {
-            makeSnackbar("error", error.response.data.message);
-        });
-}
 
 async function navigateNextTab(value) {
 
@@ -628,23 +606,23 @@ function filterPerfectMatch(value, search) {
 
 async function skillAiAssist(edit) {
     isRequestingAiAssist.value = true;
-    if (edit){
+    if (edit) {
         await SkillServices.skillAiAssist(editedItem.value.description, editedItem.value.chatHistory)
-        .then((response) => {
-            editedItem.value.description = response.data.description
-            editedItem.value.chatHistory = response.data.chatHistory
-            skillHistory = response.data.chatHistory
-            isRequestingAiAssist.value = false;
-        })
+            .then((response) => {
+                editedItem.value.description = response.data.description
+                editedItem.value.chatHistory = response.data.chatHistory
+                skillHistory = response.data.chatHistory
+                isRequestingAiAssist.value = false;
+            })
     }
     else {
         await SkillServices.skillAiAssist(skillDescription.value)
-        .then((response) => {
-            skillDescription.value = response.data.description
-            skillHistory.push(response.data.chatHistory[0])
-            skillHistory.push(response.data.chatHistory[1])
-            isRequestingAiAssist.value = false;
-        })
+            .then((response) => {
+                skillDescription.value = response.data.description
+                skillHistory.push(response.data.chatHistory[0])
+                skillHistory.push(response.data.chatHistory[1])
+                isRequestingAiAssist.value = false;
+            })
     }
 }
 
@@ -668,14 +646,14 @@ async function aiGoalAssist() {
 }
 
 async function experienceAIAssist(edit) {
-    isRequestingAiAssist.value = true;    
-    if (edit){
+    isRequestingAiAssist.value = true;
+    if (edit) {
 
         await ExperienceServices.experienceAiAssist(editedItem.value.description, editedItem.value.chatHistory)
-        .then((response) => {
+            .then((response) => {
                 editedItem.value.description = response.data.description
                 editedItem.value.chatHistory = response.data.chatHistory
-                experienceChatHistory = response.data.chatHistory; 
+                experienceChatHistory = response.data.chatHistory;
                 isRequestingAiAssist.value = false;
             })
     } else
@@ -683,9 +661,9 @@ async function experienceAIAssist(edit) {
             .then((response) => {
                 jobDescription.value = response.data.description
                 experienceChatHistory.push(response.data.chatHistory[0])
-                experienceChatHistory.push(response.data.chatHistory[1])  
-                isRequestingAiAssist.value = false;    
-        })
+                experienceChatHistory.push(response.data.chatHistory[1])
+                isRequestingAiAssist.value = false;
+            })
 }
 
 // links dialog stuff
@@ -926,26 +904,9 @@ export default {
                                     + Add New link
                                 </v-btn>
 
-                                <v-container v-if="isNewLinkVisible">
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="linkDescription" label="Description"></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field v-model="link" label="Link"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <v-col>
-
-                                    </v-col>
-                                    <v-btn variant="tonal" @click="closeNewLink()">
-                                        Cancel
-                                    </v-btn>
-                                    &nbsp;&nbsp;&nbsp;
-                                    <v-btn variant="tonal" :disabled="!isLinked" @click="addNewLink()">
-                                        Submit
-                                    </v-btn>
-                                </v-container>
+                                <NewLink v-if="isNewLinkVisible" :isNewLinkVisible="isNewLinkVisible"
+                                    @update:isNewLinkVisible="value => isNewLinkVisible = value" :account="account"
+                                    :makeSnackbar="makeSnackbar" :getLinks="getLinks"></NewLink>
 
 
                                 <div align="right">
@@ -988,9 +949,11 @@ export default {
                                     </div>
                                     <v-container v-if="isNewGoalVisible">
                                         <v-row>
-                                            <v-skeleton-loader v-if="isRequestingAiAssist" type="paragraph"></v-skeleton-loader>
+                                            <v-skeleton-loader v-if="isRequestingAiAssist"
+                                                type="paragraph"></v-skeleton-loader>
                                             <v-col>
-                                                <v-text-field v-if="!isRequestingAiAssist" v-model="goalTitle" label="Title"></v-text-field>
+                                                <v-text-field v-if="!isRequestingAiAssist" v-model="goalTitle"
+                                                    label="Title"></v-text-field>
                                             </v-col>
                                         </v-row>
                                         <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
@@ -1036,12 +999,12 @@ export default {
                                                                         <div align="center">
                                                                             <v-row style="width:50%">
                                                                                 <v-col>
-                                                                                    <v-btn 
+                                                                                    <v-btn
                                                                                         @click="clearGoalAiAssist(), dialog = false">
                                                                                         Cancel </v-btn>
                                                                                 </v-col>
                                                                                 <v-col>
-                                                                                    <v-btn 
+                                                                                    <v-btn
                                                                                         @click="aiGoalAssist(), clearGoalAiAssist(), dialog = false">
                                                                                         Confirm </v-btn>
                                                                                 </v-col>
@@ -1062,7 +1025,8 @@ export default {
                                             Cancel
                                         </v-btn>
                                         &nbsp;&nbsp;&nbsp;
-                                        <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isGoals" @click="addNewGoal()">
+                                        <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isGoals"
+                                            @click="addNewGoal()">
                                             Submit
                                         </v-btn>
                                     </v-container>
@@ -1377,7 +1341,8 @@ export default {
                                     </v-row>
                                     <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
                                     <v-row>
-                                        <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription" label="Work Summary">
+                                        <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription"
+                                            label="Work Summary">
                                             <template #append-inner>
                                                 <v-btn color="secondary" rounded="xl" value="Ai Assist"
                                                     @click="experienceAIAssist()">
@@ -1394,7 +1359,8 @@ export default {
                                         Cancel
                                     </v-btn>
                                     &nbsp;&nbsp;&nbsp;
-                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced" @click="addNewExperience(1)">
+                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced"
+                                        @click="addNewExperience(1)">
                                         Submit
                                     </v-btn>
                                 </v-container>
@@ -1494,7 +1460,8 @@ export default {
                                     </v-row>
                                     <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
                                     <v-row>
-                                        <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription" label="Role Summary">
+                                        <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription"
+                                            label="Role Summary">
                                             <template #append-inner>
                                                 <v-btn color="secondary" rounded="xl" value="Ai Assist"
                                                     @click="experienceAIAssist()">
@@ -1511,7 +1478,8 @@ export default {
                                         Cancel
                                     </v-btn>
                                     &nbsp;&nbsp;&nbsp;
-                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced" @click="addNewExperience(2)">
+                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced"
+                                        @click="addNewExperience(2)">
                                         Submit
                                     </v-btn>
                                 </v-container>
@@ -1599,7 +1567,8 @@ export default {
                                     </v-row>
                                     <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
                                     <v-row>
-                                        <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription" label="Role Summary">
+                                        <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription"
+                                            label="Role Summary">
                                             <template #append-inner>
                                                 <v-btn color="secondary" rounded="xl" value="Ai Assist"
                                                     @click="experienceAIAssist()">
@@ -1616,7 +1585,8 @@ export default {
                                         Cancel
                                     </v-btn>
                                     &nbsp;&nbsp;&nbsp;
-                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced" @click="addNewExperience(3)">
+                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced"
+                                        @click="addNewExperience(3)">
                                         Submit
                                     </v-btn>
                                 </v-container>
@@ -1703,7 +1673,8 @@ export default {
                                     </v-row>
                                     <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
                                     <v-row>
-                                        <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription" label="Role Summary">
+                                        <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription"
+                                            label="Role Summary">
                                             <template #append-inner>
                                                 <v-btn color="secondary" rounded="xl" value="Ai Assist"
                                                     @click="experienceAIAssist()">
@@ -1720,7 +1691,8 @@ export default {
                                         Cancel
                                     </v-btn>
                                     &nbsp;&nbsp;&nbsp;
-                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced" @click="addNewExperience(4)">
+                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced"
+                                        @click="addNewExperience(4)">
                                         Submit
                                     </v-btn>
                                 </v-container>
@@ -1800,7 +1772,8 @@ export default {
                                         Cancel
                                     </v-btn>
                                     &nbsp;&nbsp;&nbsp;
-                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isSkilled" @click="addNewSkill()">
+                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isSkilled"
+                                        @click="addNewSkill()">
                                         Submit
                                     </v-btn>
                                 </v-container>
@@ -1820,10 +1793,12 @@ export default {
                                                             label="Skill"></v-text-field>
                                                     </v-col>
                                                 </v-row>
-                                                <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
+                                                <v-skeleton-loader v-if="isRequestingAiAssist"
+                                                    type="card"></v-skeleton-loader>
                                                 <v-row>
                                                     <v-col>
-                                                        <v-textarea v-if="!isRequestingAiAssist" v-model="editedItem.description"
+                                                        <v-textarea v-if="!isRequestingAiAssist"
+                                                            v-model="editedItem.description"
                                                             label="Brief Description/Proficientcy Level, click AI assist button along with your input to help create a better description">
                                                             <template #append-inner>
                                                                 <v-btn color="secondary" rounded="xl" value="Ai Assist"
@@ -1841,7 +1816,8 @@ export default {
                                             <v-spacer></v-spacer>
                                             <v-btn v-if="!isRequestingAiAssist" color="blue darken-1" text
                                                 @click="closeEditSkillsDialog">Cancel</v-btn>
-                                            <v-btn v-if="!isRequestingAiAssist" color="blue darken-1" text @click="saveEditSkills">Save</v-btn>
+                                            <v-btn v-if="!isRequestingAiAssist" color="blue darken-1" text
+                                                @click="saveEditSkills">Save</v-btn>
                                         </v-card-actions>
                                     </v-card>
                                 </v-dialog>
@@ -2081,7 +2057,8 @@ export default {
                                     </v-row>
                                     <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
                                     <v-row>
-                                        <v-textarea v-if="!isRequestingAiAssist" label="Project Summary" v-model="jobDescription">
+                                        <v-textarea v-if="!isRequestingAiAssist" label="Project Summary"
+                                            v-model="jobDescription">
                                             <template #append-inner>
                                                 <v-btn color="secondary" rounded="xl" value="Ai Assist"
                                                     @click="experienceAIAssist()">
@@ -2098,7 +2075,8 @@ export default {
                                         Cancel
                                     </v-btn>
                                     &nbsp;&nbsp;&nbsp;
-                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced" @click="addNewExperience(7)">
+                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced"
+                                        @click="addNewExperience(7)">
                                         Submit
                                     </v-btn>
                                 </v-container>
@@ -2335,10 +2313,12 @@ export default {
                                                         color="primary"></v-switch>
                                                 </v-col>
                                             </v-row>
-                                            <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
+                                            <v-skeleton-loader v-if="isRequestingAiAssist"
+                                                type="card"></v-skeleton-loader>
                                             <v-row>
 
-                                                <v-textarea v-if="!isRequestingAiAssist" v-model="editedItem.description" label="Summary/Description">
+                                                <v-textarea v-if="!isRequestingAiAssist"
+                                                    v-model="editedItem.description" label="Summary/Description">
 
                                                     <template #append-inner>
                                                         <div
@@ -2360,15 +2340,18 @@ export default {
                                         <v-spacer></v-spacer>
                                         <v-btn v-if="!isRequestingAiAssist" color="blue darken-1" text
                                             @click="closeEditExperienceDialog">Cancel</v-btn>
-                                        <v-btn v-if="!isRequestingAiAssist" color="blue darken-1" text @click="saveEditExperience">Save</v-btn>
+                                        <v-btn v-if="!isRequestingAiAssist" color="blue darken-1" text
+                                            @click="saveEditExperience">Save</v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </v-dialog>
 
-                            <DeleteDialog v-model="isDeleted" :isDeleted="isDeleted" @update:isDeleted="value => isDeleted = value"
-                               :tab="tab" :deleteItemId="deleteItemId" :account="account" :makeSnackbar="makeSnackbar"
-                               :getLinks="getLinks" :getGoals="getGoals" :getEducationInfo="getEducationInfo"
-                               :getExperiences="getExperiences" :getSkills="getSkills" ></DeleteDialog>
+                            <DeleteDialog v-model="isDeleted" :isDeleted="isDeleted"
+                                @update:isDeleted="value => isDeleted = value" :tab="tab" :deleteItemId="deleteItemId"
+                                :account="account" :makeSnackbar="makeSnackbar" :getLinks="getLinks"
+                                :getGoals="getGoals" :getEducationInfo="getEducationInfo"
+                                :getExperiences="getExperiences" :getSkills="getSkills">
+                            </DeleteDialog>
 
 
 
@@ -2380,7 +2363,7 @@ export default {
         </v-row>
 
         <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
-        @update:show="value => snackbarValue = value"></Snackbar>
+            @update:show="value => snackbarValue = value"></Snackbar>
 
     </v-container>
 

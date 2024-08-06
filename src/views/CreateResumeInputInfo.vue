@@ -18,6 +18,7 @@ import PreviewTemplate3 from "../components/PreviewTemplate3.vue";
 import PreviewTemplate4 from "../components/PreviewTemplate4.vue";
 import Snackbar from "../components/Snackbar.vue";
 import DeleteDialog from "../components/DeleteDialog.vue";
+import NewLink from "../components/NewLink.vue";
 
 const account = ref();
 const title = ref("");
@@ -26,10 +27,10 @@ const snackbarValue = ref(false);
 const snackbarColor = ref("");
 const snackbarText = ref("");
 
-function makeSnackbar(color, text){
-  snackbarValue.value = true;
-  snackbarColor.value = color;
-  snackbarText.value = text;
+function makeSnackbar(color, text) {
+    snackbarValue.value = true;
+    snackbarColor.value = color;
+    snackbarText.value = text;
 }
 const isNewLinkVisible = ref(false);
 const isNewEduVisible = ref(false);
@@ -131,13 +132,6 @@ const isPreviewResume = ref(false);
 
 const isRequestingAiAssist = ref(false);
 
-//gray out submit button rules
-const isLinked = computed(() => {
-    return (
-        link.value !== "" &&
-        linkDescription.value !== ""
-    )
-});
 const isGoals = computed(() => {
     return (
         goalTitle.value !== "" &&
@@ -153,16 +147,16 @@ const isSkilled = computed(() => {
 const isGenerated = computed(() => {
     return (
         isPreviewResume.value === true &&
-        title.value !== "" 
+        title.value !== ""
     )
 })
-const isEducationFilled = computed(() =>{
-    var endGrad = isAttending.value ? (schoolGrad.value !== "" && schoolGrad.value !== null):
-                                    (schoolEnd.value !== "" && schoolEnd.value !== null)
-    var isdegree =  degreeTitle.value == 'High School Diploma' || (degree.value !== "" && degree.value !== null &&
-                    degreeTitle.value !== "" && degreeTitle.value !== null &&
-                    degreeType.value !== "" && degreeType.value !== null)
-    return(
+const isEducationFilled = computed(() => {
+    var endGrad = isAttending.value ? (schoolGrad.value !== "" && schoolGrad.value !== null) :
+        (schoolEnd.value !== "" && schoolEnd.value !== null)
+    var isdegree = degreeTitle.value == 'High School Diploma' || (degree.value !== "" && degree.value !== null &&
+        degreeTitle.value !== "" && degreeTitle.value !== null &&
+        degreeType.value !== "" && degreeType.value !== null)
+    return (
         schoolName.value !== "" && schoolName.value !== null &&
         schoolCity.value !== "" && schoolCity.value !== null &&
         schoolState.value !== "" && schoolState.value !== null &&
@@ -171,20 +165,20 @@ const isEducationFilled = computed(() =>{
     )
 })
 
-const isExperienced = computed(() =>{
+const isExperienced = computed(() => {
     var isEndDate = isCurrent.value ? true : (jobEnd.value !== "" && jobEnd.value !== null)
-    return(
+    return (
         jobExperienceTitle.value !== "" && jobExperienceTitle.value !== null &&
         jobCompany.value !== "" && jobCompany.value !== null &&
         jobCity.value !== "" && jobCity.value !== null &&
         jobState.value !== "" && jobState.value !== null &&
         jobStart.value !== "" && jobStart.value !== null &&
-        jobDescription.value !== "" && jobDescription.value !== null && isEndDate  
+        jobDescription.value !== "" && jobDescription.value !== null && isEndDate
     )
 })
 
-const isOthered = computed(() =>{
-    return(
+const isOthered = computed(() => {
+    return (
         jobExperienceTitle.value !== "" && jobExperienceTitle.value !== null &&
         jobStart.value !== "" && jobStart.value !== null &&
         jobDescription.value !== "" && jobDescription.value !== null
@@ -203,11 +197,12 @@ const displayLinks = computed(() => {
     if (selectedLinks.value !== null) {
         for (let [key, value] of Object.entries(links.value)) {
             for (let [key2, value2] of Object.entries(selectedLinks.value)) {
-            // console.log("Link Key: " + key + " Value: " + value.id);
-            // console.log("Selected Link Key: " + key2 + " Selected Value: " + value2);
-            if (value.id == value2) {
-                linkArr.push(value);
-            }}
+                // console.log("Link Key: " + key + " Value: " + value.id);
+                // console.log("Selected Link Key: " + key2 + " Selected Value: " + value2);
+                if (value.id == value2) {
+                    linkArr.push(value);
+                }
+            }
         }
     }
     return (
@@ -220,12 +215,13 @@ const displayGoal = computed(() => {
     if (selectedGoals.value !== null) {
         for (let [key, value] of Object.entries(goals.value)) {
             for (let [key2, value2] of Object.entries(selectedGoals.value)) {
-            console.log("Link Key: " + key + " Value: " + value.id);
-            console.log("Selected Link Key: " + key2 + " Selected Value: " + value2);
-            if (value.id == value2) {
-                goalArr.push(value.description);
-                break;
-            }}
+                console.log("Link Key: " + key + " Value: " + value.id);
+                console.log("Selected Link Key: " + key2 + " Selected Value: " + value2);
+                if (value.id == value2) {
+                    goalArr.push(value.description);
+                    break;
+                }
+            }
         }
     }
     return (
@@ -238,11 +234,12 @@ const displayEducation = computed(() => {
     if (selectedEducation.value !== null) {
         for (let [key, value] of Object.entries(educationInfo.value)) {
             for (let [key2, value2] of Object.entries(selectedEducation.value)) {
-            // console.log("Link Key: " + key + " Value: " + value.id);
-            // console.log("Selected Link Key: " + key2 + " Selected Value: " + value2);
-            if (value.id == value2) {
-                eduArr.push(value);
-            }}
+                // console.log("Link Key: " + key + " Value: " + value.id);
+                // console.log("Selected Link Key: " + key2 + " Selected Value: " + value2);
+                if (value.id == value2) {
+                    eduArr.push(value);
+                }
+            }
         }
     }
     return (
@@ -252,55 +249,69 @@ const displayEducation = computed(() => {
 const displayExperience = computed(() => {
     var expArr = [];
     if (experiences.value !== null) {
-    if (selectedWorkExperience.value !== null) {
-        for (let [key, value] of Object.entries(experiences.value)) {
-            for (let [key2, value2] of Object.entries(selectedWorkExperience.value)) {
-                if (value.id == value2) {
-                    expArr.push(value);
-                }}
-    }}
-    if (selectedLeadershipExperience.value !== null) {
-        for (let [key, value] of Object.entries(experiences.value)) {
-            for (let [key2, value2] of Object.entries(selectedLeadershipExperience.value)) {
-                if (value.id == value2) {
-                    expArr.push(value);
-                }}
-            }}
-    if (selectedActivitiesExperience.value !== null) {
-        for (let [key, value] of Object.entries(experiences.value)) {
-            for (let [key2, value2] of Object.entries(selectedActivitiesExperience.value)) {
-                if (value.id == value2) {
-                    expArr.push(value);
-                }}
-            }}
-    if (selectedVolunteerExperience.value !== null) {
-        for (let [key, value] of Object.entries(experiences.value)) {
-            for (let [key2, value2] of Object.entries(selectedVolunteerExperience.value)) {
-                if (value.id == value2) {
-                    expArr.push(value);
-                }}
-    }}
-    if (selectedHonorExperience.value !== null) {
-        for (let [key, value] of Object.entries(experiences.value)) {
-            for (let [key2, value2] of Object.entries(selectedHonorExperience.value)) {
-                if (value.id == value2) {
-                    expArr.push(value);
-                }}
-            }}
-    if (selectedAwardExperience.value !== null) {
-        for (let [key, value] of Object.entries(experiences.value)) {
-            for (let [key2, value2] of Object.entries(selectedAwardExperience.value)) {
-                if (value.id == value2) {
-                    expArr.push(value);
-                }}
-    }}
-    if (selectedProjectExperience.value !== null) {
-        for (let [key, value] of Object.entries(experiences.value)) {
-            for (let [key2, value2] of Object.entries(selectedProjectExperience.value)) {
-                if (value.id == value2) {
-                    expArr.push(value);
-                }}
-    }}
+        if (selectedWorkExperience.value !== null) {
+            for (let [key, value] of Object.entries(experiences.value)) {
+                for (let [key2, value2] of Object.entries(selectedWorkExperience.value)) {
+                    if (value.id == value2) {
+                        expArr.push(value);
+                    }
+                }
+            }
+        }
+        if (selectedLeadershipExperience.value !== null) {
+            for (let [key, value] of Object.entries(experiences.value)) {
+                for (let [key2, value2] of Object.entries(selectedLeadershipExperience.value)) {
+                    if (value.id == value2) {
+                        expArr.push(value);
+                    }
+                }
+            }
+        }
+        if (selectedActivitiesExperience.value !== null) {
+            for (let [key, value] of Object.entries(experiences.value)) {
+                for (let [key2, value2] of Object.entries(selectedActivitiesExperience.value)) {
+                    if (value.id == value2) {
+                        expArr.push(value);
+                    }
+                }
+            }
+        }
+        if (selectedVolunteerExperience.value !== null) {
+            for (let [key, value] of Object.entries(experiences.value)) {
+                for (let [key2, value2] of Object.entries(selectedVolunteerExperience.value)) {
+                    if (value.id == value2) {
+                        expArr.push(value);
+                    }
+                }
+            }
+        }
+        if (selectedHonorExperience.value !== null) {
+            for (let [key, value] of Object.entries(experiences.value)) {
+                for (let [key2, value2] of Object.entries(selectedHonorExperience.value)) {
+                    if (value.id == value2) {
+                        expArr.push(value);
+                    }
+                }
+            }
+        }
+        if (selectedAwardExperience.value !== null) {
+            for (let [key, value] of Object.entries(experiences.value)) {
+                for (let [key2, value2] of Object.entries(selectedAwardExperience.value)) {
+                    if (value.id == value2) {
+                        expArr.push(value);
+                    }
+                }
+            }
+        }
+        if (selectedProjectExperience.value !== null) {
+            for (let [key, value] of Object.entries(experiences.value)) {
+                for (let [key2, value2] of Object.entries(selectedProjectExperience.value)) {
+                    if (value.id == value2) {
+                        expArr.push(value);
+                    }
+                }
+            }
+        }
     }
     return (
         expArr
@@ -313,11 +324,10 @@ const displaySkills = computed(() => {
     if (selectedSkills.value !== null) {
         for (let [key, value] of Object.entries(skills.value)) {
             for (let [key2, value2] of Object.entries(selectedSkills.value)) {
-            // console.log("Link Key: " + key + " Value: " + value.id);
-            // console.log("Selected Link Key: " + key2 + " Selected Value: " + value2);
-            if (value.id == value2) {
-                skillsArr.push(value);
-            }}
+                if (value.id == value2) {
+                    skillsArr.push(value);
+                }
+            }
         }
     }
     return (
@@ -335,11 +345,6 @@ async function setNewLinkVisible() {
     isNewLinkVisible.value = true;
 }
 
-async function closeNewLink() {
-    isNewLinkVisible.value = false;
-    link.value = "";
-    linkDescription.value = "";
-}
 
 async function setNewGoalVisible() {
     isNewGoalVisible.value = true;
@@ -361,19 +366,6 @@ async function getLinks() {
         });
 }
 
-async function addNewLink() {
-    await LinkServices.addLink(link.value, linkDescription.value, parseInt(account.value.id))
-        .then(() => {
-            makeSnackbar("green", "Link Added!")
-            closeNewLink();
-            getLinks();
-        })
-        .catch((error) => {
-            console.log(error);
-            makeSnackbar("error", error.response.data.message)
-        });
-}
-
 async function navigateNextTab(value) {
 
     resetNewInput();
@@ -388,7 +380,6 @@ async function navigateNextTab(value) {
 }
 
 async function resetNewInput() {
-    closeNewLink();
     closeNewGoal();
     closeEducation();
     clearExperienceData();
@@ -622,7 +613,7 @@ async function addNewEducation() {
 
     if (schoolGrad.value !== null) {
         schoolEnd.value = schoolGrad.value;
-    }     
+    }
 
     await EducationServices.addEducation(tempTitle, tempDegree, account.value.id,
         schoolStart.value, schoolEnd.value, schoolGrad.value, gpa.value, schoolName.value,
@@ -683,8 +674,8 @@ async function addNewExperience(type) {
     if (isCurrent.value == true) {
         jobEnd.value = null;
     }
-    await ExperienceServices.addExperience(jobExperienceTitle.value, jobDescription.value, jobStart.value, 
-        jobEnd.value, isCurrent.value, account.value.id, type, jobCity.value, jobState.value, 
+    await ExperienceServices.addExperience(jobExperienceTitle.value, jobDescription.value, jobStart.value,
+        jobEnd.value, isCurrent.value, account.value.id, type, jobCity.value, jobState.value,
         jobCompany.value, experienceChatHistory)
         .then(() => {
             makeSnackbar("green", "Experience Added!")
@@ -781,16 +772,16 @@ function filterPerfectMatch(value, search) {
     return value != null && String(value) === search
 }
 
-async function skillAiAssist(){
+async function skillAiAssist() {
     isRequestingAiAssist.value = true;
     await SkillServices.skillAiAssist(skillDescription.value)
         .then((response) => {
-        skillDescription.value = response.data.description
-        skillHistory.push(response.data.chatHistory[0])
-        skillHistory.push(response.data.chatHistory[1]) 
-        isRequestingAiAssist.value = false;        
+            skillDescription.value = response.data.description
+            skillHistory.push(response.data.chatHistory[0])
+            skillHistory.push(response.data.chatHistory[1])
+            isRequestingAiAssist.value = false;
         })
-        
+
 }
 
 async function addResume() {
@@ -819,33 +810,40 @@ async function addResume() {
     }
 
     if (selectedWorkExperience.value !== null) {
-    for (let [key, value] of Object.entries(selectedWorkExperience.value)) {
-        expArr.push(value);
-    }}
+        for (let [key, value] of Object.entries(selectedWorkExperience.value)) {
+            expArr.push(value);
+        }
+    }
     if (selectedLeadershipExperience.value !== null) {
-    for (let [key, value] of Object.entries(selectedLeadershipExperience.value)) {
-        expArr.push(value);
-    }}
+        for (let [key, value] of Object.entries(selectedLeadershipExperience.value)) {
+            expArr.push(value);
+        }
+    }
     if (selectedActivitiesExperience.value !== null) {
-    for (let [key, value] of Object.entries(selectedActivitiesExperience.value)) {
-        expArr.push(value);
-    }}
+        for (let [key, value] of Object.entries(selectedActivitiesExperience.value)) {
+            expArr.push(value);
+        }
+    }
     if (selectedVolunteerExperience.value !== null) {
-    for (let [key, value] of Object.entries(selectedVolunteerExperience.value)) {
-        expArr.push(value);
-    }}
+        for (let [key, value] of Object.entries(selectedVolunteerExperience.value)) {
+            expArr.push(value);
+        }
+    }
     if (selectedHonorExperience.value !== null) {
-    for (let [key, value] of Object.entries(selectedHonorExperience.value)) {
-        expArr.push(value);
-    }}
+        for (let [key, value] of Object.entries(selectedHonorExperience.value)) {
+            expArr.push(value);
+        }
+    }
     if (selectedAwardExperience.value !== null) {
-    for (let [key, value] of Object.entries(selectedAwardExperience.value)) {
-        expArr.push(value);
-    }}
+        for (let [key, value] of Object.entries(selectedAwardExperience.value)) {
+            expArr.push(value);
+        }
+    }
     if (selectedProjectExperience.value !== null) {
-    for (let [key, value] of Object.entries(selectedProjectExperience.value)) {
-        expArr.push(value);
-    }}
+        for (let [key, value] of Object.entries(selectedProjectExperience.value)) {
+            expArr.push(value);
+        }
+    }
     console.log(expArr);
 
     if (selectedSkills.value !== null) {
@@ -854,9 +852,9 @@ async function addResume() {
         }
     }
 
-    await ResumeServices.addResume(title.value, goalArr, expArr, skillArr, 
-                eduArr, linkArr, false, selectedResumeTemplate.value, 
-                parseInt(account.value.id))
+    await ResumeServices.addResume(title.value, goalArr, expArr, skillArr,
+        eduArr, linkArr, false, selectedResumeTemplate.value,
+        parseInt(account.value.id))
         .then(() => {
             makeSnackbar("green", "Resume Created!")
             clearAllSelected();
@@ -883,34 +881,34 @@ function clearAllSelected() {
     toggleSelectPreview();
 }
 
-function clearGoalAiAssist(){
+function clearGoalAiAssist() {
     aiGoalExperiences.value = null;
     aiGoalAchievements.value = null;
     aiGoalTitle.value = null;
     isRequestingAiAssist.value = false;
 }
 
-async function aiGoalAssist(){
+async function aiGoalAssist() {
     isRequestingAiAssist.value = true;
-    await GoalServices.goalAiAssist(aiGoalTitle.value, aiGoalExperiences.value.split(","), aiGoalAchievements.value.split(",") )
-        .then((response) =>{
+    await GoalServices.goalAiAssist(aiGoalTitle.value, aiGoalExperiences.value.split(","), aiGoalAchievements.value.split(","))
+        .then((response) => {
             goalDescription.value = response.data.description
             goalChatHistory.push(response.data.chatHistory[0])
             goalChatHistory.push(response.data.chatHistory[1])
             clearGoalAiAssist();
         })
-        
-    }
-        
-async function experienceAIAssist(){
+
+}
+
+async function experienceAIAssist() {
     isRequestingAiAssist.value = true;
     await ExperienceServices.experienceAiAssist(jobDescription.value)
         .then((response) => {
-        jobDescription.value = response.data.description
-        experienceChatHistory.push(response.data.chatHistory[0])
-        experienceChatHistory.push(response.data.chatHistory[1])  
-        isRequestingAiAssist.value = false;       
-    })
+            jobDescription.value = response.data.description
+            experienceChatHistory.push(response.data.chatHistory[0])
+            experienceChatHistory.push(response.data.chatHistory[1])
+            isRequestingAiAssist.value = false;
+        })
 }
 
 
@@ -918,7 +916,7 @@ const editDialog = ref(false);
 const editedItem = ref(null);
 
 function openEditDialog(item) {
-    editedItem.value = {...item};
+    editedItem.value = { ...item };
     editDialog.value = true;
 }
 
@@ -968,1154 +966,1183 @@ export default {
                             <v-tab value="6" @click="getExperiences()">Others</v-tab>
                         </v-tabs>
 
-        <v-tabs-window v-model="tab">
+                        <v-tabs-window v-model="tab">
 
-            <DeleteDialog v-model="isDeleted" :isDeleted="isDeleted" @update:isDeleted="value => isDeleted = value"
-                               :tab="tab" :deleteItemId="deleteItemId" :account="account" :makeSnackbar="makeSnackbar"
-                               :getLinks="getLinks" :getGoals="getGoals" :getEducationInfo="getEducationInfo"
-                               :getExperiences="getExperiences" :getSkills="getSkills" ></DeleteDialog>
+                            <DeleteDialog v-model="isDeleted" :isDeleted="isDeleted"
+                                @update:isDeleted="value => isDeleted = value" :tab="tab" :deleteItemId="deleteItemId"
+                                :account="account" :makeSnackbar="makeSnackbar" :getLinks="getLinks"
+                                :getGoals="getGoals" :getEducationInfo="getEducationInfo"
+                                :getExperiences="getExperiences" :getSkills="getSkills"></DeleteDialog>
 
 
-        <!-- Personal Info -->
-        <v-tabs-window-item value="1" style="padding: 50px">
-            <v-row>
-                <v-col>
-                    <v-text-field v-model="firstName" label="First Name" readonly></v-text-field>
-                </v-col>
-                <v-col>
-                    <v-text-field v-model="lastName" label="Last Name" readonly></v-text-field>
-                </v-col>
-            </v-row>
-            <!-- <v-row>
+                            <!-- Personal Info -->
+                            <v-tabs-window-item value="1" style="padding: 50px">
+                                <v-row>
+                                    <v-col>
+                                        <v-text-field v-model="firstName" label="First Name" readonly></v-text-field>
+                                    </v-col>
+                                    <v-col>
+                                        <v-text-field v-model="lastName" label="Last Name" readonly></v-text-field>
+                                    </v-col>
+                                </v-row>
+                                <!-- <v-row>
                 <v-col>
                     <v-text-field v-model="jobtitle" label="Job Title"></v-text-field>
                 </v-col>
             </v-row>  -->
-            <v-row>
-                <v-col>
-                    <v-text-field v-model="address" label="Address" readonly></v-text-field>
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col>
-                    <v-text-field v-model="phoneNumber" label="Phone Number" readonly></v-text-field>
-                </v-col>
-                <v-col>
-                    <v-text-field v-model="email" label="Email Address" readonly></v-text-field>
-                </v-col>
-            </v-row>
+                                <v-row>
+                                    <v-col>
+                                        <v-text-field v-model="address" label="Address" readonly></v-text-field>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col>
+                                        <v-text-field v-model="phoneNumber" label="Phone Number"
+                                            readonly></v-text-field>
+                                    </v-col>
+                                    <v-col>
+                                        <v-text-field v-model="email" label="Email Address" readonly></v-text-field>
+                                    </v-col>
+                                </v-row>
 
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-            <v-divider></v-divider>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-            <v-row>
-                <v-col>
-                    <v-card-title align="LEFT">Links</v-card-title>
-                </v-col>
-            </v-row>
-
-            <v-data-table v-model="selectedLinks" :items="links" item-value="id" :headers="[{ title: 'Description', value: 'type' },
-            { title: 'URL', value: 'url' }, { title: 'Delete', value: 'delete' }]" show-select hide-default-footer>
-            <template v-slot:item.delete = "{ item }">
-                <v-btn  variant="text" @click="openDelete(item)" icon>
-                    <v-icon>mdi-delete</v-icon>
-                </v-btn>
-            </template>
-
-            </v-data-table>
-
-            <v-dialog v-model="editDialog" persistent>
-                <v-card>
-                    <v-card-title>
-                        <span class="headline">Edit Item</span>
-                    </v-card-title>
-                    <v-card-text>
-                        <v-text-field v-model="editedItem.type" label="Description"></v-text-field>
-                        <v-text-field v-model="editedItem.url" label="URL"></v-text-field>
-                    </v-card-text>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="blue darken-1" text @click="closeEditDialog">Cancel</v-btn>
-                        <v-btn color="blue darken-1" text @click="saveEdit">Save</v-btn>
-                    </v-card-actions>
-                </v-card>
-              </v-dialog>
-
-
-            <v-btn variant="text" @click="setNewLinkVisible()">
-                + Add New link
-            </v-btn>
-
-            <v-container v-if="isNewLinkVisible">
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="linkDescription" label="Description"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="link" label="Link"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-col>
-
-                </v-col>
-                <v-btn variant="tonal" @click="closeNewLink()">
-                    Cancel
-                </v-btn>
-                &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" :disabled="!isLinked" @click="addNewLink()">
-                    Submit
-                </v-btn>
-            </v-container>
-
-
-            <div align="right">
-
-                <v-btn variant="tonal" @click="navigateNextTab(1)">
-                    Next
-                </v-btn>
-            </div>
-        </v-tabs-window-item>
-
-        <!-- Professional Summary/Goals -->
-        <v-tabs-window-item value="2" style="padding: 50px">
-
-            <div align="left">
-                <v-text class="headline mb-2">Select Summary: </v-text>
-                <v-data-table v-model="selectedGoals" :items="goals" item-value="id" :headers="[{ title: 'Title', value: 'title' },
-                { title: 'Summary', value: 'description' }, { title: 'Delete', value: 'delete' }]" show-select hide-default-footer select-strategy="single">
-                            <template v-slot:item.delete = "{ item }">
-                                <v-btn  variant="text" @click="openDelete(item)" icon>
-                                    <v-icon>mdi-delete</v-icon>
-                                </v-btn>
-                            </template>
-                </v-data-table>
-
-                <div class="mb-10">
-                    <v-spacer></v-spacer>
-                </div>
-
-                <div align="center" >
-                    <v-btn variant="text" @click="setNewGoalVisible()">
-                        + Add New Summary
-                    </v-btn>
-                </div>
-                <v-container v-if="isNewGoalVisible">
-                <v-row>
-                <v-col>
-                    <v-skeleton-loader v-if="isRequestingAiAssist" type="paragraph"></v-skeleton-loader>
-                    <v-text-field v-if="!isRequestingAiAssist" v-model="goalTitle" label="Title">
-                    </v-text-field>
-                </v-col>
-            </v-row>
-            <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
-                <v-row>
-                    <v-textarea v-if="!isRequestingAiAssist" v-model="goalDescription" label="A brief overview of your skills and experiences">
-                        <template #append-inner>
-                            <div class="text-center pa-4">
-                                <v-dialog v-model="dialog" persistent>
-                                <template v-slot:activator="{ props: activatorProps }">
-                                    <v-btn color="secondary" rounded="xl" value="Ai Assist" v-bind="activatorProps">
-                                            AI Assist
-                                        </v-btn>
-                                </template>
-
-                                <v-card
-                                    text="Please list your Experiences and Achievements that you want to include in the summary, separated by commas(,) ."
-                                    title="Goal Ai Assist"
-                                >
-                                    <template v-slot:actions>
+                                <div class="mb-10">
                                     <v-spacer></v-spacer>
-                                    <v-container>
+                                </div>
 
-                                        <v-row>
-                                            <v-text-field label="Experiences" v-model="aiGoalExperiences" variant="outlined" style="width: 30%;">
-                                            </v-text-field>
-                                        </v-row>
-                                        <v-row>
-                                            <v-text-field label="Achievements" v-model="aiGoalAchievements" variant="outlined" style="width: 30%;">
-                                            </v-text-field>
-                                        </v-row>
-                                        <v-row>
-                                            <v-text-field label="Professional title" v-model="aiGoalTitle" variant="outlined" style="width: 30%;">
+                                <v-divider></v-divider>
 
-                                            </v-text-field>
-                                        </v-row>
-                                        <div align="center">
-                                            <v-row style="width:50%">
-                                                <v-col>
-                                                    <v-btn @click="clearGoalAiAssist(), dialog = false"> Cancel </v-btn>
-                                                </v-col>
-                                                <v-col >
-                                                    <v-btn @click="aiGoalAssist(), dialog = false"> Confirm </v-btn>
-                                                </v-col>
-                                                                                    
-                                            </v-row>                                            
-                                        </div>
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
 
-                                    </v-container>
+                                <v-row>
+                                    <v-col>
+                                        <v-card-title align="LEFT">Links</v-card-title>
+                                    </v-col>
+                                </v-row>
+
+                                <v-data-table v-model="selectedLinks" :items="links" item-value="id" :headers="[{ title: 'Description', value: 'type' },
+                                { title: 'URL', value: 'url' }, { title: 'Delete', value: 'delete' }]" show-select hide-default-footer>
+                                    <template v-slot:item.delete="{ item }">
+                                        <v-btn variant="text" @click="openDelete(item)" icon>
+                                            <v-icon>mdi-delete</v-icon>
+                                        </v-btn>
                                     </template>
-                                </v-card>
+
+                                </v-data-table>
+
+                                <v-dialog v-model="editDialog" persistent>
+                                    <v-card>
+                                        <v-card-title>
+                                            <span class="headline">Edit Item</span>
+                                        </v-card-title>
+                                        <v-card-text>
+                                            <v-text-field v-model="editedItem.type" label="Description"></v-text-field>
+                                            <v-text-field v-model="editedItem.url" label="URL"></v-text-field>
+                                        </v-card-text>
+                                        <v-card-actions>
+                                            <v-spacer></v-spacer>
+                                            <v-btn color="blue darken-1" text @click="closeEditDialog">Cancel</v-btn>
+                                            <v-btn color="blue darken-1" text @click="saveEdit">Save</v-btn>
+                                        </v-card-actions>
+                                    </v-card>
                                 </v-dialog>
-                            </div>
-
-                        </template>
-                    </v-textarea>
-                </v-row>
-                <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="closeNewGoal()">
-                    Cancel
-                </v-btn>
-                &nbsp;&nbsp;&nbsp;
-                <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isGoals" @click="addNewGoal()">
-                    Submit
-                </v-btn>
-            </v-container>
-                <div align="right">
-
-                    <v-btn variant="tonal" @click="navigateNextTab(2)">
-                        Next
-                    </v-btn>
-                </div>
-            </div>
-
-        </v-tabs-window-item>
-
-        <!-- Education -->
-        <v-tabs-window-item value="3" style="padding: 50px">
-
-            <div align="left">
-                <v-text class="headline mb-2">Select Education: </v-text>
-
-                <v-container>
-                    <v-data-table v-model="selectedEducation" :items="educationInfo" item-value="id"
-                        :headers="[{ title: 'Organization', value: 'organization' }, { title: 'Degree', value: 'description' },
-                        { title: 'Start Date', value: 'startDate' }, { title: 'End Date', value: 'endDate' }, { title: 'Delete', value: 'delete' }]"
-                        show-select hide-default-footer>
-                        <template v-slot:item.delete = "{ item }">
-                            <v-btn  variant="text" @click="openDelete(item)" icon>
-                                <v-icon>mdi-delete</v-icon>
-                            </v-btn>
-                        </template>
-                    </v-data-table>
-                </v-container>
-
-            </div>
-
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-            <v-divider></v-divider>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-
-            <v-btn variant="tonal" @click="setNewEduVisible">
-                Add New Education
-            </v-btn>
-
-
-            <v-container v-if="isNewEduVisible">
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="schoolName" label="School Name"></v-text-field>
-                    </v-col>
-
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="schoolCity" label="City"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="schoolState" label="State"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="gpa" label="GPA"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="maxGpa" label="Max GPA"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row class="mb-1" v-if="degreeTitle != ''">
-
-                    <v-card-subtitle align="center"
-                        v-if="degreeTitle != 'High School Diploma'">Displayed as: {{ degreeTitle }}
-                        of {{ degreeType }} in {{ degree }}</v-card-subtitle>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-combobox v-model="degreeTitle" label="Title of Degree"
-                            :items="['Bachelor', 'Masters', 'Associates', 'PhD', 'Certificate', 'High School Diploma']"></v-combobox>
-                    </v-col>
-                    <v-col>
-                        <v-combobox v-model="degreeType" label="Degree Type"
-                            :items="['Science', 'Arts', 'Fine Arts', 'Architecture']"
-                            :disabled="degreeTitle == 'High School Diploma'"></v-combobox>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="degree" label="Degree"
-                            :disabled="degreeTitle == 'High School Diploma'"></v-text-field>
-                    </v-col>
-                </v-row>
-
-
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="schoolStart" label="Start Date"
-                            hint="Ex: Aug 2024"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="schoolEnd" v-if="!isAttending" label="End Date"
-                            hint="Ex: Aug 2024"></v-text-field>
-                        <v-text-field v-model="schoolGrad" v-if="isAttending" label="Grad Date"
-                            hint="Ex: Aug 2024"></v-text-field>
-                        <v-switch v-model="attending" label="Still Attending" color="primary"
-                            @click="toggleIsAttending()"></v-switch>
-                    </v-col>
-                </v-row>
 
-                <v-row>
-                    <v-container align="center">
-                        <v-btn variant="text" @click="showMinors">
-                            Add Minor
-                        </v-btn>
-                        <div class="mb-6">
-                            <v-spacer></v-spacer>
-                        </div>
 
-                        <div v-if="isMinors">
-
-
-                            <v-text-field label=" Minor(s)" v-model="minors"
-                                hint="If multiple, format as: Minor #1, Minor #2">
-
-                            </v-text-field>
-
-                        </div>
-
-                        <v-btn variant="text" @click="showCourses">
-                            Add Courses
-                        </v-btn>
-
-                        <div class="mb-6">
-                            <v-spacer></v-spacer>
-                        </div>
-                        <div v-if="isCourses">
-
-
-                            <v-text-field label="Course(s)" v-model="courses"
-                                hint="If multiple, format as: Course name, Course name">
-
-                            </v-text-field>
-
-                        </div>
-
-                        <v-btn variant="text" @click="showAwards">
-                            Add Awards
-                        </v-btn>
-
-                        <div class="mb-6">
-                            <v-spacer></v-spacer>
-                        </div>
-                        <div v-if="isAwards">
-
-
-                            <v-text-field label="Award(s)" v-model="awards"
-                                hint="If multiple, format as: Award, Award">
-
-                            </v-text-field>
-
-                        </div>
-
-                        <v-btn variant="text" @click="showStudyAbroad">
-                            Add Study Abroad
-                        </v-btn>
-
-                        <div class="mb-6">
-                            <v-spacer></v-spacer>
-                        </div>
-                        <div v-if="isStudyAbroad">
-                            <v-row>
-                                <v-text-field label="Title" v-model="studyAbroadTitle"
-                                hint="Name of Study Abroad Program">
-                            </v-text-field>
-                            </v-row>
-                        <v-row>
-                            <v-col>
-                                <v-text-field v-model="studyAbroadOrganization" label="Organization" hint="Ex) Capital Normal"></v-text-field>
-                            </v-col>
-                            <v-col>
-                                <v-text-field v-model="studyAbroadLocation" label="Location" hint="Ex) Beijing, China"></v-text-field>
-                            </v-col>
-                        </v-row>
-                        <v-row>
-                            <v-col>
-                                <v-text-field v-model="studyAbroadTime" label="Term" hint="Ex) Fall Semester"></v-text-field>
-                            </v-col>
-                            <v-col>
-                                <v-text-field v-model="studyAbroadYear" label="Year" hint="Ex) 2018"></v-text-field>
-                            </v-col>
-                        </v-row>
-
-
-
-                        </div>
-
-                    </v-container>
-
-
-
-
-                </v-row>
-
-                <v-col>
-
-                </v-col>
-                <v-btn variant="tonal" @click="closeEducation()">
-                    Cancel
-                </v-btn>
-                &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" :disabled="!isEducationFilled" @click="addNewEducation()">
-                    Submit
-                </v-btn>
-            </v-container>
-
-            <div align="right">
-
-                <div class="mb-10">
-                    <v-spacer></v-spacer>
-                </div>
-                <v-btn variant="tonal" @click="navigateNextTab(3)">
-                    Next
-                </v-btn>
-            </div>
-
-
-        </v-tabs-window-item>
-
-        <!-- Experience -->
-        <v-tabs-window-item value="4" style="padding: 50px">
-            <div align="left">
-                <v-text class="headline mb-2">Select Work Experiences: </v-text>
-                <v-container>
-                    <v-data-table v-model="selectedWorkExperience" :items="experiences"
-                        item-value="id" :search="'1'"
-                        :custom-filter="filterPerfectMatch"
-                        :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Delete', value: 'delete' } ]"
-                        show-select hide-default-footer>
-                        <template v-slot:item.delete = "{ item }">
-                <v-btn  variant="text" @click="openDelete(item)" icon>
-                    <v-icon>mdi-delete</v-icon>
-                </v-btn>
-            </template>
-                    </v-data-table>
-                </v-container>
-
-            </div>
-
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-            <v-divider></v-divider>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-
-            <v-btn variant="tonal" @click="toggleExperience(1)">
-                Add New Job Experience
-            </v-btn>
-
-            <v-container v-if="isJobExperience">
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="jobExperienceTitle"
-                            label="Position Title"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="jobCompany" label="Company Name"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="jobCity" label="City"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="jobState" label="State"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date"></v-text-field>
-                        <v-switch v-model="isCurrent" label="Present Job" color="primary"></v-switch>
-                    </v-col>
-                </v-row>
-                <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
-                <v-row>
-                    <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription" label="Work Summary">
-                        <template #append-inner>
-                            <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="experienceAIAssist()">
-                                AI Assist
-                            </v-btn>
-                        </template>
-                    </v-textarea>
-                </v-row>
-
-                <v-col>
-
-                </v-col>
-                <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(1)">
-                    Cancel
-                </v-btn>
-                &nbsp;&nbsp;&nbsp;
-                <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced" @click="addNewExperience(1)">
-                    Submit
-                </v-btn>
-            </v-container>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-            <v-divider></v-divider>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-
-            <div align="left">
-                <v-text class="headline mb-2">Select Leadership Experience: </v-text>
-
-                <v-container>
-                    <v-data-table v-model="selectedLeadershipExperience" :items="experiences"
-                        item-value="id" :search="'2'"
-                        :custom-filter="filterPerfectMatch"
-                        :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Delete', value: 'delete' }]"
-                        show-select hide-default-footer>
-                        <template v-slot:item.delete = "{ item }">
-                <v-btn  variant="text" @click="openDelete(item)" icon>
-                    <v-icon>mdi-delete</v-icon>
-                </v-btn>
-            </template>
-                    </v-data-table>
-                </v-container>
-
-            </div>
-
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-            <v-divider></v-divider>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-
-            <v-btn variant="tonal" @click="toggleExperience(2)">
-                Add New Leadership Experience
-            </v-btn>
-
-            <v-container v-if="isLeadershipExperience">
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="jobExperienceTitle" label="Position"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="jobCompany" label="Organization Name"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="jobCity" label="City"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="jobState" label="State"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date"></v-text-field>
-                        <v-switch v-model="isCurrent" label="Present Role" color="primary"></v-switch>
-                    </v-col>
-                </v-row>
-
-                <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
-                <v-row>
-                    <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription" label="Role Summary">
-                        <template #append-inner>
-                            <v-btn color="secondary" rounded="xl" value="Ai Assist"  @click="experienceAIAssist()">
-                                AI Assist
-                            </v-btn>
-                        </template>
-                    </v-textarea>
-                </v-row>
-
-                <v-col>
-
-                </v-col>
-                <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(2)">
-                    Cancel
-                </v-btn>
-                &nbsp;&nbsp;&nbsp;
-                <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced" @click="addNewExperience(2)">
-                    Submit
-                </v-btn>
-            </v-container>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-            <v-divider></v-divider>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-
-            <div align="left">
-                <v-text class="headline mb-2">Select Activities: </v-text>
-
-                <v-container>
-                    <v-data-table v-model="selectedActivitiesExperience" :items="experiences"
-                        item-value="id" :search="'3'"
-                        :custom-filter="filterPerfectMatch"
-                        :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Delete', value: 'delete' }]"
-                        show-select hide-default-footer>
-                        <template v-slot:item.delete = "{ item }">
-                <v-btn  variant="text" @click="openDelete(item)" icon>
-                    <v-icon>mdi-delete</v-icon>
-                </v-btn>
-            </template>
-                    </v-data-table>
-                </v-container>
-
-            </div>
-
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-            <v-divider></v-divider>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-
-            <v-btn variant="tonal" @click="toggleExperience(3)">
-                Add New Activities
-            </v-btn>
-
-            <v-container v-if="isActivitiesExperience">
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="jobExperienceTitle" label="Position"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="jobCompany" label="Organization Name"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="jobCity" label="City"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="jobState" label="State"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date"></v-text-field>
-                        <v-switch v-model="isCurrent" label="Present Role" color="primary"></v-switch>
-                    </v-col>
-                </v-row>
-
-                <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
-                <v-row>
-                    <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription" label="Role Summary">
-                        <template #append-inner>
-                            <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="experienceAIAssist()">
-                                AI Assist
-                            </v-btn>
-                        </template>
-                    </v-textarea>
-                </v-row>
-
-                <v-col>
-
-                </v-col>
-                <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(3)">
-                    Cancel
-                </v-btn>
-                &nbsp;&nbsp;&nbsp;
-                <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced" @click="addNewExperience(3)">
-                    Submit
-                </v-btn>
-            </v-container>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-            <v-divider></v-divider>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-
-            <div align="left">
-                <v-text class="headline mb-2">Select Volunteer Work: </v-text>
-
-                <v-container>
-                    <v-data-table v-model="selectedVolunteerExperience" :items="experiences"
-                        item-value="id" :search="'4'"
-                        :custom-filter="filterPerfectMatch"
-                        :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Delete', value: 'delete' }]"
-                        show-select hide-default-footer>
-                        <template v-slot:item.delete = "{ item }">
-                <v-btn  variant="text" @click="openDelete(item)" icon>
-                    <v-icon>mdi-delete</v-icon>
-                </v-btn>
-            </template>
-                    </v-data-table>
-                </v-container>
-
-            </div>
-
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-            <v-divider></v-divider>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-
-            <v-btn variant="tonal" @click="toggleExperience(4)">
-                Add New Volunteer
-            </v-btn>
-
-            <v-container v-if="isVolunteerExperience">
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="jobExperienceTitle" label="Position"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="jobCompany" label="Organization Name"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="jobCity" label="City"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="jobState" label="State"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date"></v-text-field>
-                        <v-switch v-model="isCurrent" label="Present Role" color="primary"></v-switch>
-                    </v-col>
-                </v-row>
-                
-                <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
-                <v-row>
-                    <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription" label="Role Summary">
-                        <template #append-inner>
-                            <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="experienceAIAssist()">
-                                AI Assist
-                            </v-btn>
-                        </template>
-                    </v-textarea>
-                </v-row>
-
-                <v-col>
-
-                </v-col>
-                <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(4)">
-                    Cancel
-                </v-btn>
-                &nbsp;&nbsp;&nbsp;
-                <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced" @click="addNewExperience(4)">
-                    Submit
-                </v-btn>
-            </v-container>
-
-
-
-
-            <div align="right">
-
-                <v-btn variant="tonal" @click="navigateNextTab(4)">
-                    Next
-                </v-btn>
-            </div>
-        </v-tabs-window-item>
-
-        <!-- Skills -->
-        <v-tabs-window-item value="5" style="padding: 50px">
-            <div align="left">
-                <v-text class="headline mb-2">Select Skill(s): </v-text>
-                <v-container>
-                    <v-data-table v-model="selectedSkills" :items="skills"
-                        item-value="id"
-                        :headers="[{ title: 'Title', value: 'title'}, { title: 'Description', value: 'description' }, { title: 'Delete', value: 'delete' }]"
-                        show-select hide-default-footer>
-                        <template v-slot:item.delete = "{ item }">
-                <v-btn  variant="text" @click="openDelete(item)" icon>
-                    <v-icon>mdi-delete</v-icon>
-                </v-btn>
-            </template>
-                    </v-data-table>
-                </v-container>
-            </div>
-
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-            <v-divider></v-divider>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-
-            <v-btn variant="text" @click="setNewskillVisible()">
-                + Add New Skill
-            </v-btn>
-
-            <v-container v-if="isNewSkillVisible">
-                <v-skeleton-loader v-if="isRequestingAiAssist" type="paragraph"></v-skeleton-loader>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-if="!isRequestingAiAssist" v-model="skillTitle" label="Skill"></v-text-field>
-                    </v-col>
-                </v-row>
-                
-                <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
-                <v-row>
-                    <v-col>
-                        <v-textarea v-if="!isRequestingAiAssist" v-model="skillDescription" label="Brief Description/Proficientcy Level, click AI assist button along with your input to help create a better description">
-                        <template #append-inner>
-                            <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="skillAiAssist()">
-                                AI Assist
-                            </v-btn>
-                        </template>
-                    </v-textarea>         
-                    </v-col>
-                </v-row>
-                <v-col>
-
-                </v-col>
-                <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="closeNewSkill()">
-                    Cancel
-                </v-btn>
-                &nbsp;&nbsp;&nbsp;
-                <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isSkilled" @click="addNewSkill()">
-                    Submit
-                </v-btn>
-            </v-container>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-            <div align="right">
-
-                <v-btn variant="tonal" @click="navigateNextTab(5)">
-                    Next
-                </v-btn>
-            </div>
-        </v-tabs-window-item>
-
-        <!-- Others -->
-        <v-tabs-window-item value="6" style="padding: 50px">
-            Other Resume Parts
-
-            <div align="left">
-                <v-text class="headline mb-2">Select Honors: </v-text>
-                <v-container>
-                    <v-data-table v-model="selectedHonorExperience" :items="experiences"
-                        item-value="id" :search="'5'"
-                        :custom-filter="filterPerfectMatch"
-                        :headers="[{ title: 'experienceTypeId', text: 'experienceTypeId',  value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Delete', value: 'delete' }]"
-                        show-select hide-default-footer>
-                        <template v-slot:item.delete = "{ item }">
-                <v-btn  variant="text" @click="openDelete(item)" icon>
-                    <v-icon>mdi-delete</v-icon>
-                </v-btn>
-            </template>
-                    </v-data-table>
-                </v-container>
-
-            </div>
-
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-            <v-divider></v-divider>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-
-            <v-btn variant="tonal" @click="toggleExperience(5)">
-                Add New Honor
-            </v-btn>
-
-            <v-container v-if="isHonorExperience">
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="jobExperienceTitle"
-                            label="Honor Title"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="jobStart" label="Date Awarded" hint="Aug 2024"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-text-field v-model="jobDescription" label="Honor Description"></v-text-field>
-                </v-row>
-
-                <v-col>
-
-                </v-col>
-                <v-btn variant="tonal" @click="toggleExperience(5)">
-                    Cancel
-                </v-btn>
-                &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" :disabled="!isOthered" @click="addNewExperience(5)">
-                    Submit
-                </v-btn>
-            </v-container>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-            <v-divider></v-divider>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-            <div align="left">
-                <v-text class="headline mb-2">Select Awards: </v-text>
-                <v-container>
-                    <v-data-table v-model="selectedAwardExperience" :items="experiences"
-                        item-value="id" :search="'6'"
-                        :custom-filter="filterPerfectMatch"
-                        :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Delete', value: 'delete' }]"
-                        show-select hide-default-footer>
-                        <template v-slot:item.delete = "{ item }">
-                <v-btn  variant="text" @click="openDelete(item)" icon>
-                    <v-icon>mdi-delete</v-icon>
-                </v-btn>
-            </template>
-                    </v-data-table>
-                </v-container>
-
-            </div>
-
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-            <v-divider></v-divider>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-
-            <v-btn variant="tonal" @click="toggleExperience(6)">
-                Add New Award
-            </v-btn>
-
-            <v-container v-if="isAwardExperience">
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="jobExperienceTitle"
-                            label="Award Title"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="jobStart" label="Date Awarded" hint="Aug 2024"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-text-field v-model="jobDescription" label="Award Description"></v-text-field>
-                </v-row>
-
-                <v-col>
-
-                </v-col>
-                <v-btn variant="tonal" @click="toggleExperience(6)">
-                    Cancel
-                </v-btn>
-                &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" :disabled="!isOthered" @click="addNewExperience(6)">
-                    Submit
-                </v-btn>
-            </v-container>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-            <v-divider></v-divider>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-            <div align="left">
-                <v-text class="headline mb-2">Select Projects: </v-text>
-                <v-container>
-                    <v-data-table v-model="selectedProjectExperience" :items="experiences"
-                        item-value="id" :search="'7'"
-                        :custom-filter="filterPerfectMatch"
-                        :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Delete', value: 'delete' }]"
-                        show-select hide-default-footer>
-                        <template v-slot:item.delete = "{ item }">
-                <v-btn  variant="text" @click="openDelete(item)" icon>
-                    <v-icon>mdi-delete</v-icon>
-                </v-btn>
-            </template>
-                    </v-data-table>
-                </v-container>
-
-            </div>
-
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-            <v-divider></v-divider>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-
-            <v-btn variant="tonal" @click="toggleExperience(7)">
-                Add New Project
-            </v-btn>
-
-            <v-container v-if="isProjectExperience">
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="jobExperienceTitle" label="Position"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="jobCompany" label="Organization Name"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="jobCity" label="City"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="jobState" label="State"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date"></v-text-field>
-                        <v-switch v-model="isCurrent" label="Present Role" color="primary"></v-switch>
-                    </v-col>
-                </v-row>
-
-                <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
-                <v-row>
-                    <v-textarea v-if="!isRequestingAiAssist" label="Project Summary" v-model="jobDescription">
-                        <template #append-inner>
-                            <v-btn color="secondary" rounded="xl" value="Ai Assist" @click="experienceAIAssist()">
-                                AI Assist
-                            </v-btn>
-                        </template>
-                    </v-textarea>
-                </v-row>
-
-                <v-col>
-
-                </v-col>
-                <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(7)">
-                    Cancel
-                </v-btn>
-                &nbsp;&nbsp;&nbsp;
-                <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced" @click="addNewExperience(7)">
-                    Submit
-                </v-btn>
-            </v-container>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-            <v-divider></v-divider>
-
-            <div class="mb-10">
-                <v-spacer></v-spacer>
-            </div>
-
-            <div align="right">
-
-            </div>
-
-        </v-tabs-window-item>
-
-        </v-tabs-window>
-        </v-sheet>
-        </v-card>
+                                <v-btn variant="text" @click="setNewLinkVisible()">
+                                    + Add New link
+                                </v-btn>
+
+
+                                <NewLink v-if="isNewLinkVisible" :isNewLinkVisible="isNewLinkVisible"
+                                    @update:isNewLinkVisible="value => isNewLinkVisible = value" :account="account"
+                                    :makeSnackbar="makeSnackbar" :getLinks="getLinks"></NewLink>
+
+
+                                <div align="right">
+
+                                    <v-btn variant="tonal" @click="navigateNextTab(1)">
+                                        Next
+                                    </v-btn>
+                                </div>
+                            </v-tabs-window-item>
+
+                            <!-- Professional Summary/Goals -->
+                            <v-tabs-window-item value="2" style="padding: 50px">
+
+                                <div align="left">
+                                    <v-text class="headline mb-2">Select Summary: </v-text>
+                                    <v-data-table v-model="selectedGoals" :items="goals" item-value="id" :headers="[{ title: 'Title', value: 'title' },
+                                    { title: 'Summary', value: 'description' }, { title: 'Delete', value: 'delete' }]" show-select
+                                        hide-default-footer select-strategy="single">
+                                        <template v-slot:item.delete="{ item }">
+                                            <v-btn variant="text" @click="openDelete(item)" icon>
+                                                <v-icon>mdi-delete</v-icon>
+                                            </v-btn>
+                                        </template>
+                                    </v-data-table>
+
+                                    <div class="mb-10">
+                                        <v-spacer></v-spacer>
+                                    </div>
+
+                                    <div align="center">
+                                        <v-btn variant="text" @click="setNewGoalVisible()">
+                                            + Add New Summary
+                                        </v-btn>
+                                    </div>
+                                    <v-container v-if="isNewGoalVisible">
+                                        <v-row>
+                                            <v-col>
+                                                <v-skeleton-loader v-if="isRequestingAiAssist"
+                                                    type="paragraph"></v-skeleton-loader>
+                                                <v-text-field v-if="!isRequestingAiAssist" v-model="goalTitle"
+                                                    label="Title">
+                                                </v-text-field>
+                                            </v-col>
+                                        </v-row>
+                                        <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
+                                        <v-row>
+                                            <v-textarea v-if="!isRequestingAiAssist" v-model="goalDescription"
+                                                label="A brief overview of your skills and experiences">
+                                                <template #append-inner>
+                                                    <div class="text-center pa-4">
+                                                        <v-dialog v-model="dialog" persistent>
+                                                            <template v-slot:activator="{ props: activatorProps }">
+                                                                <v-btn color="secondary" rounded="xl" value="Ai Assist"
+                                                                    v-bind="activatorProps">
+                                                                    AI Assist
+                                                                </v-btn>
+                                                            </template>
+
+                                                            <v-card
+                                                                text="Please list your Experiences and Achievements that you want to include in the summary, separated by commas(,) ."
+                                                                title="Goal Ai Assist">
+                                                                <template v-slot:actions>
+                                                                    <v-spacer></v-spacer>
+                                                                    <v-container>
+
+                                                                        <v-row>
+                                                                            <v-text-field label="Experiences"
+                                                                                v-model="aiGoalExperiences"
+                                                                                variant="outlined" style="width: 30%;">
+                                                                            </v-text-field>
+                                                                        </v-row>
+                                                                        <v-row>
+                                                                            <v-text-field label="Achievements"
+                                                                                v-model="aiGoalAchievements"
+                                                                                variant="outlined" style="width: 30%;">
+                                                                            </v-text-field>
+                                                                        </v-row>
+                                                                        <v-row>
+                                                                            <v-text-field label="Professional title"
+                                                                                v-model="aiGoalTitle" variant="outlined"
+                                                                                style="width: 30%;">
+
+                                                                            </v-text-field>
+                                                                        </v-row>
+                                                                        <div align="center">
+                                                                            <v-row style="width:50%">
+                                                                                <v-col>
+                                                                                    <v-btn
+                                                                                        @click="clearGoalAiAssist(), dialog = false">
+                                                                                        Cancel </v-btn>
+                                                                                </v-col>
+                                                                                <v-col>
+                                                                                    <v-btn
+                                                                                        @click="aiGoalAssist(), dialog = false">
+                                                                                        Confirm </v-btn>
+                                                                                </v-col>
+
+                                                                            </v-row>
+                                                                        </div>
+
+                                                                    </v-container>
+                                                                </template>
+                                                            </v-card>
+                                                        </v-dialog>
+                                                    </div>
+
+                                                </template>
+                                            </v-textarea>
+                                        </v-row>
+                                        <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="closeNewGoal()">
+                                            Cancel
+                                        </v-btn>
+                                        &nbsp;&nbsp;&nbsp;
+                                        <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isGoals"
+                                            @click="addNewGoal()">
+                                            Submit
+                                        </v-btn>
+                                    </v-container>
+                                    <div align="right">
+
+                                        <v-btn variant="tonal" @click="navigateNextTab(2)">
+                                            Next
+                                        </v-btn>
+                                    </div>
+                                </div>
+
+                            </v-tabs-window-item>
+
+                            <!-- Education -->
+                            <v-tabs-window-item value="3" style="padding: 50px">
+
+                                <div align="left">
+                                    <v-text class="headline mb-2">Select Education: </v-text>
+
+                                    <v-container>
+                                        <v-data-table v-model="selectedEducation" :items="educationInfo" item-value="id"
+                                            :headers="[{ title: 'Organization', value: 'organization' }, { title: 'Degree', value: 'description' },
+                                            { title: 'Start Date', value: 'startDate' }, { title: 'End Date', value: 'endDate' }, { title: 'Delete', value: 'delete' }]"
+                                            show-select hide-default-footer>
+                                            <template v-slot:item.delete="{ item }">
+                                                <v-btn variant="text" @click="openDelete(item)" icon>
+                                                    <v-icon>mdi-delete</v-icon>
+                                                </v-btn>
+                                            </template>
+                                        </v-data-table>
+                                    </v-container>
+
+                                </div>
+
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+                                <v-divider></v-divider>
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+
+                                <v-btn variant="tonal" @click="setNewEduVisible">
+                                    Add New Education
+                                </v-btn>
+
+
+                                <v-container v-if="isNewEduVisible">
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="schoolName" label="School Name"></v-text-field>
+                                        </v-col>
+
+                                    </v-row>
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="schoolCity" label="City"></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field v-model="schoolState" label="State"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="gpa" label="GPA"></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field v-model="maxGpa" label="Max GPA"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row class="mb-1" v-if="degreeTitle != ''">
+
+                                        <v-card-subtitle align="center"
+                                            v-if="degreeTitle != 'High School Diploma'">Displayed as: {{ degreeTitle }}
+                                            of {{ degreeType }} in {{ degree }}</v-card-subtitle>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col>
+                                            <v-combobox v-model="degreeTitle" label="Title of Degree"
+                                                :items="['Bachelor', 'Masters', 'Associates', 'PhD', 'Certificate', 'High School Diploma']"></v-combobox>
+                                        </v-col>
+                                        <v-col>
+                                            <v-combobox v-model="degreeType" label="Degree Type"
+                                                :items="['Science', 'Arts', 'Fine Arts', 'Architecture']"
+                                                :disabled="degreeTitle == 'High School Diploma'"></v-combobox>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field v-model="degree" label="Degree"
+                                                :disabled="degreeTitle == 'High School Diploma'"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+
+
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="schoolStart" label="Start Date"
+                                                hint="Ex: Aug 2024"></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field v-model="schoolEnd" v-if="!isAttending" label="End Date"
+                                                hint="Ex: Aug 2024"></v-text-field>
+                                            <v-text-field v-model="schoolGrad" v-if="isAttending" label="Grad Date"
+                                                hint="Ex: Aug 2024"></v-text-field>
+                                            <v-switch v-model="attending" label="Still Attending" color="primary"
+                                                @click="toggleIsAttending()"></v-switch>
+                                        </v-col>
+                                    </v-row>
+
+                                    <v-row>
+                                        <v-container align="center">
+                                            <v-btn variant="text" @click="showMinors">
+                                                Add Minor
+                                            </v-btn>
+                                            <div class="mb-6">
+                                                <v-spacer></v-spacer>
+                                            </div>
+
+                                            <div v-if="isMinors">
+
+
+                                                <v-text-field label=" Minor(s)" v-model="minors"
+                                                    hint="If multiple, format as: Minor #1, Minor #2">
+
+                                                </v-text-field>
+
+                                            </div>
+
+                                            <v-btn variant="text" @click="showCourses">
+                                                Add Courses
+                                            </v-btn>
+
+                                            <div class="mb-6">
+                                                <v-spacer></v-spacer>
+                                            </div>
+                                            <div v-if="isCourses">
+
+
+                                                <v-text-field label="Course(s)" v-model="courses"
+                                                    hint="If multiple, format as: Course name, Course name">
+
+                                                </v-text-field>
+
+                                            </div>
+
+                                            <v-btn variant="text" @click="showAwards">
+                                                Add Awards
+                                            </v-btn>
+
+                                            <div class="mb-6">
+                                                <v-spacer></v-spacer>
+                                            </div>
+                                            <div v-if="isAwards">
+
+
+                                                <v-text-field label="Award(s)" v-model="awards"
+                                                    hint="If multiple, format as: Award, Award">
+
+                                                </v-text-field>
+
+                                            </div>
+
+                                            <v-btn variant="text" @click="showStudyAbroad">
+                                                Add Study Abroad
+                                            </v-btn>
+
+                                            <div class="mb-6">
+                                                <v-spacer></v-spacer>
+                                            </div>
+                                            <div v-if="isStudyAbroad">
+                                                <v-row>
+                                                    <v-text-field label="Title" v-model="studyAbroadTitle"
+                                                        hint="Name of Study Abroad Program">
+                                                    </v-text-field>
+                                                </v-row>
+                                                <v-row>
+                                                    <v-col>
+                                                        <v-text-field v-model="studyAbroadOrganization"
+                                                            label="Organization"
+                                                            hint="Ex) Capital Normal"></v-text-field>
+                                                    </v-col>
+                                                    <v-col>
+                                                        <v-text-field v-model="studyAbroadLocation" label="Location"
+                                                            hint="Ex) Beijing, China"></v-text-field>
+                                                    </v-col>
+                                                </v-row>
+                                                <v-row>
+                                                    <v-col>
+                                                        <v-text-field v-model="studyAbroadTime" label="Term"
+                                                            hint="Ex) Fall Semester"></v-text-field>
+                                                    </v-col>
+                                                    <v-col>
+                                                        <v-text-field v-model="studyAbroadYear" label="Year"
+                                                            hint="Ex) 2018"></v-text-field>
+                                                    </v-col>
+                                                </v-row>
+
+
+
+                                            </div>
+
+                                        </v-container>
+
+
+
+
+                                    </v-row>
+
+                                    <v-col>
+
+                                    </v-col>
+                                    <v-btn variant="tonal" @click="closeEducation()">
+                                        Cancel
+                                    </v-btn>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <v-btn variant="tonal" :disabled="!isEducationFilled" @click="addNewEducation()">
+                                        Submit
+                                    </v-btn>
+                                </v-container>
+
+                                <div align="right">
+
+                                    <div class="mb-10">
+                                        <v-spacer></v-spacer>
+                                    </div>
+                                    <v-btn variant="tonal" @click="navigateNextTab(3)">
+                                        Next
+                                    </v-btn>
+                                </div>
+
+
+                            </v-tabs-window-item>
+
+                            <!-- Experience -->
+                            <v-tabs-window-item value="4" style="padding: 50px">
+                                <div align="left">
+                                    <v-text class="headline mb-2">Select Work Experiences: </v-text>
+                                    <v-container>
+                                        <v-data-table v-model="selectedWorkExperience" :items="experiences"
+                                            item-value="id" :search="'1'" :custom-filter="filterPerfectMatch"
+                                            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Delete', value: 'delete' }]"
+                                            show-select hide-default-footer>
+                                            <template v-slot:item.delete="{ item }">
+                                                <v-btn variant="text" @click="openDelete(item)" icon>
+                                                    <v-icon>mdi-delete</v-icon>
+                                                </v-btn>
+                                            </template>
+                                        </v-data-table>
+                                    </v-container>
+
+                                </div>
+
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+                                <v-divider></v-divider>
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+
+                                <v-btn variant="tonal" @click="toggleExperience(1)">
+                                    Add New Job Experience
+                                </v-btn>
+
+                                <v-container v-if="isJobExperience">
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="jobExperienceTitle"
+                                                label="Position Title"></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field v-model="jobCompany" label="Company Name"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="jobCity" label="City"></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field v-model="jobState" label="State"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field :disabled="isCurrent" v-model="jobEnd"
+                                                label="End Date"></v-text-field>
+                                            <v-switch v-model="isCurrent" label="Present Job"
+                                                color="primary"></v-switch>
+                                        </v-col>
+                                    </v-row>
+                                    <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
+                                    <v-row>
+                                        <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription"
+                                            label="Work Summary">
+                                            <template #append-inner>
+                                                <v-btn color="secondary" rounded="xl" value="Ai Assist"
+                                                    @click="experienceAIAssist()">
+                                                    AI Assist
+                                                </v-btn>
+                                            </template>
+                                        </v-textarea>
+                                    </v-row>
+
+                                    <v-col>
+
+                                    </v-col>
+                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(1)">
+                                        Cancel
+                                    </v-btn>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced"
+                                        @click="addNewExperience(1)">
+                                        Submit
+                                    </v-btn>
+                                </v-container>
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+                                <v-divider></v-divider>
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+
+                                <div align="left">
+                                    <v-text class="headline mb-2">Select Leadership Experience: </v-text>
+
+                                    <v-container>
+                                        <v-data-table v-model="selectedLeadershipExperience" :items="experiences"
+                                            item-value="id" :search="'2'" :custom-filter="filterPerfectMatch"
+                                            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Delete', value: 'delete' }]"
+                                            show-select hide-default-footer>
+                                            <template v-slot:item.delete="{ item }">
+                                                <v-btn variant="text" @click="openDelete(item)" icon>
+                                                    <v-icon>mdi-delete</v-icon>
+                                                </v-btn>
+                                            </template>
+                                        </v-data-table>
+                                    </v-container>
+
+                                </div>
+
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+                                <v-divider></v-divider>
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+
+                                <v-btn variant="tonal" @click="toggleExperience(2)">
+                                    Add New Leadership Experience
+                                </v-btn>
+
+                                <v-container v-if="isLeadershipExperience">
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="jobExperienceTitle" label="Position"></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field v-model="jobCompany" label="Organization Name"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="jobCity" label="City"></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field v-model="jobState" label="State"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field :disabled="isCurrent" v-model="jobEnd"
+                                                label="End Date"></v-text-field>
+                                            <v-switch v-model="isCurrent" label="Present Role"
+                                                color="primary"></v-switch>
+                                        </v-col>
+                                    </v-row>
+
+                                    <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
+                                    <v-row>
+                                        <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription"
+                                            label="Role Summary">
+                                            <template #append-inner>
+                                                <v-btn color="secondary" rounded="xl" value="Ai Assist"
+                                                    @click="experienceAIAssist()">
+                                                    AI Assist
+                                                </v-btn>
+                                            </template>
+                                        </v-textarea>
+                                    </v-row>
+
+                                    <v-col>
+
+                                    </v-col>
+                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(2)">
+                                        Cancel
+                                    </v-btn>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced"
+                                        @click="addNewExperience(2)">
+                                        Submit
+                                    </v-btn>
+                                </v-container>
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+                                <v-divider></v-divider>
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+
+                                <div align="left">
+                                    <v-text class="headline mb-2">Select Activities: </v-text>
+
+                                    <v-container>
+                                        <v-data-table v-model="selectedActivitiesExperience" :items="experiences"
+                                            item-value="id" :search="'3'" :custom-filter="filterPerfectMatch"
+                                            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Delete', value: 'delete' }]"
+                                            show-select hide-default-footer>
+                                            <template v-slot:item.delete="{ item }">
+                                                <v-btn variant="text" @click="openDelete(item)" icon>
+                                                    <v-icon>mdi-delete</v-icon>
+                                                </v-btn>
+                                            </template>
+                                        </v-data-table>
+                                    </v-container>
+
+                                </div>
+
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+                                <v-divider></v-divider>
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+
+                                <v-btn variant="tonal" @click="toggleExperience(3)">
+                                    Add New Activities
+                                </v-btn>
+
+                                <v-container v-if="isActivitiesExperience">
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="jobExperienceTitle" label="Position"></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field v-model="jobCompany" label="Organization Name"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="jobCity" label="City"></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field v-model="jobState" label="State"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field :disabled="isCurrent" v-model="jobEnd"
+                                                label="End Date"></v-text-field>
+                                            <v-switch v-model="isCurrent" label="Present Role"
+                                                color="primary"></v-switch>
+                                        </v-col>
+                                    </v-row>
+
+                                    <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
+                                    <v-row>
+                                        <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription"
+                                            label="Role Summary">
+                                            <template #append-inner>
+                                                <v-btn color="secondary" rounded="xl" value="Ai Assist"
+                                                    @click="experienceAIAssist()">
+                                                    AI Assist
+                                                </v-btn>
+                                            </template>
+                                        </v-textarea>
+                                    </v-row>
+
+                                    <v-col>
+
+                                    </v-col>
+                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(3)">
+                                        Cancel
+                                    </v-btn>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced"
+                                        @click="addNewExperience(3)">
+                                        Submit
+                                    </v-btn>
+                                </v-container>
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+                                <v-divider></v-divider>
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+
+                                <div align="left">
+                                    <v-text class="headline mb-2">Select Volunteer Work: </v-text>
+
+                                    <v-container>
+                                        <v-data-table v-model="selectedVolunteerExperience" :items="experiences"
+                                            item-value="id" :search="'4'" :custom-filter="filterPerfectMatch"
+                                            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Delete', value: 'delete' }]"
+                                            show-select hide-default-footer>
+                                            <template v-slot:item.delete="{ item }">
+                                                <v-btn variant="text" @click="openDelete(item)" icon>
+                                                    <v-icon>mdi-delete</v-icon>
+                                                </v-btn>
+                                            </template>
+                                        </v-data-table>
+                                    </v-container>
+
+                                </div>
+
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+                                <v-divider></v-divider>
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+
+                                <v-btn variant="tonal" @click="toggleExperience(4)">
+                                    Add New Volunteer
+                                </v-btn>
+
+                                <v-container v-if="isVolunteerExperience">
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="jobExperienceTitle" label="Position"></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field v-model="jobCompany" label="Organization Name"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="jobCity" label="City"></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field v-model="jobState" label="State"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field :disabled="isCurrent" v-model="jobEnd"
+                                                label="End Date"></v-text-field>
+                                            <v-switch v-model="isCurrent" label="Present Role"
+                                                color="primary"></v-switch>
+                                        </v-col>
+                                    </v-row>
+
+                                    <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
+                                    <v-row>
+                                        <v-textarea v-if="!isRequestingAiAssist" v-model="jobDescription"
+                                            label="Role Summary">
+                                            <template #append-inner>
+                                                <v-btn color="secondary" rounded="xl" value="Ai Assist"
+                                                    @click="experienceAIAssist()">
+                                                    AI Assist
+                                                </v-btn>
+                                            </template>
+                                        </v-textarea>
+                                    </v-row>
+
+                                    <v-col>
+
+                                    </v-col>
+                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(4)">
+                                        Cancel
+                                    </v-btn>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced"
+                                        @click="addNewExperience(4)">
+                                        Submit
+                                    </v-btn>
+                                </v-container>
+
+
+
+
+                                <div align="right">
+
+                                    <v-btn variant="tonal" @click="navigateNextTab(4)">
+                                        Next
+                                    </v-btn>
+                                </div>
+                            </v-tabs-window-item>
+
+                            <!-- Skills -->
+                            <v-tabs-window-item value="5" style="padding: 50px">
+                                <div align="left">
+                                    <v-text class="headline mb-2">Select Skill(s): </v-text>
+                                    <v-container>
+                                        <v-data-table v-model="selectedSkills" :items="skills" item-value="id"
+                                            :headers="[{ title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Delete', value: 'delete' }]"
+                                            show-select hide-default-footer>
+                                            <template v-slot:item.delete="{ item }">
+                                                <v-btn variant="text" @click="openDelete(item)" icon>
+                                                    <v-icon>mdi-delete</v-icon>
+                                                </v-btn>
+                                            </template>
+                                        </v-data-table>
+                                    </v-container>
+                                </div>
+
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+                                <v-divider></v-divider>
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+
+                                <v-btn variant="text" @click="setNewskillVisible()">
+                                    + Add New Skill
+                                </v-btn>
+
+                                <v-container v-if="isNewSkillVisible">
+                                    <v-skeleton-loader v-if="isRequestingAiAssist" type="paragraph"></v-skeleton-loader>
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-if="!isRequestingAiAssist" v-model="skillTitle"
+                                                label="Skill"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+
+                                    <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
+                                    <v-row>
+                                        <v-col>
+                                            <v-textarea v-if="!isRequestingAiAssist" v-model="skillDescription"
+                                                label="Brief Description/Proficientcy Level, click AI assist button along with your input to help create a better description">
+                                                <template #append-inner>
+                                                    <v-btn color="secondary" rounded="xl" value="Ai Assist"
+                                                        @click="skillAiAssist()">
+                                                        AI Assist
+                                                    </v-btn>
+                                                </template>
+                                            </v-textarea>
+                                        </v-col>
+                                    </v-row>
+                                    <v-col>
+
+                                    </v-col>
+                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="closeNewSkill()">
+                                        Cancel
+                                    </v-btn>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isSkilled"
+                                        @click="addNewSkill()">
+                                        Submit
+                                    </v-btn>
+                                </v-container>
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+                                <div align="right">
+
+                                    <v-btn variant="tonal" @click="navigateNextTab(5)">
+                                        Next
+                                    </v-btn>
+                                </div>
+                            </v-tabs-window-item>
+
+                            <!-- Others -->
+                            <v-tabs-window-item value="6" style="padding: 50px">
+                                Other Resume Parts
+
+                                <div align="left">
+                                    <v-text class="headline mb-2">Select Honors: </v-text>
+                                    <v-container>
+                                        <v-data-table v-model="selectedHonorExperience" :items="experiences"
+                                            item-value="id" :search="'5'" :custom-filter="filterPerfectMatch"
+                                            :headers="[{ title: 'experienceTypeId', text: 'experienceTypeId', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Delete', value: 'delete' }]"
+                                            show-select hide-default-footer>
+                                            <template v-slot:item.delete="{ item }">
+                                                <v-btn variant="text" @click="openDelete(item)" icon>
+                                                    <v-icon>mdi-delete</v-icon>
+                                                </v-btn>
+                                            </template>
+                                        </v-data-table>
+                                    </v-container>
+
+                                </div>
+
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+                                <v-divider></v-divider>
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+
+                                <v-btn variant="tonal" @click="toggleExperience(5)">
+                                    Add New Honor
+                                </v-btn>
+
+                                <v-container v-if="isHonorExperience">
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="jobExperienceTitle"
+                                                label="Honor Title"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="jobStart" label="Date Awarded"
+                                                hint="Aug 2024"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-text-field v-model="jobDescription" label="Honor Description"></v-text-field>
+                                    </v-row>
+
+                                    <v-col>
+
+                                    </v-col>
+                                    <v-btn variant="tonal" @click="toggleExperience(5)">
+                                        Cancel
+                                    </v-btn>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <v-btn variant="tonal" :disabled="!isOthered" @click="addNewExperience(5)">
+                                        Submit
+                                    </v-btn>
+                                </v-container>
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+                                <v-divider></v-divider>
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+                                <div align="left">
+                                    <v-text class="headline mb-2">Select Awards: </v-text>
+                                    <v-container>
+                                        <v-data-table v-model="selectedAwardExperience" :items="experiences"
+                                            item-value="id" :search="'6'" :custom-filter="filterPerfectMatch"
+                                            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Delete', value: 'delete' }]"
+                                            show-select hide-default-footer>
+                                            <template v-slot:item.delete="{ item }">
+                                                <v-btn variant="text" @click="openDelete(item)" icon>
+                                                    <v-icon>mdi-delete</v-icon>
+                                                </v-btn>
+                                            </template>
+                                        </v-data-table>
+                                    </v-container>
+
+                                </div>
+
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+                                <v-divider></v-divider>
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+
+                                <v-btn variant="tonal" @click="toggleExperience(6)">
+                                    Add New Award
+                                </v-btn>
+
+                                <v-container v-if="isAwardExperience">
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="jobExperienceTitle"
+                                                label="Award Title"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="jobStart" label="Date Awarded"
+                                                hint="Aug 2024"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-text-field v-model="jobDescription" label="Award Description"></v-text-field>
+                                    </v-row>
+
+                                    <v-col>
+
+                                    </v-col>
+                                    <v-btn variant="tonal" @click="toggleExperience(6)">
+                                        Cancel
+                                    </v-btn>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <v-btn variant="tonal" :disabled="!isOthered" @click="addNewExperience(6)">
+                                        Submit
+                                    </v-btn>
+                                </v-container>
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+                                <v-divider></v-divider>
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+                                <div align="left">
+                                    <v-text class="headline mb-2">Select Projects: </v-text>
+                                    <v-container>
+                                        <v-data-table v-model="selectedProjectExperience" :items="experiences"
+                                            item-value="id" :search="'7'" :custom-filter="filterPerfectMatch"
+                                            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Delete', value: 'delete' }]"
+                                            show-select hide-default-footer>
+                                            <template v-slot:item.delete="{ item }">
+                                                <v-btn variant="text" @click="openDelete(item)" icon>
+                                                    <v-icon>mdi-delete</v-icon>
+                                                </v-btn>
+                                            </template>
+                                        </v-data-table>
+                                    </v-container>
+
+                                </div>
+
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+                                <v-divider></v-divider>
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+
+                                <v-btn variant="tonal" @click="toggleExperience(7)">
+                                    Add New Project
+                                </v-btn>
+
+                                <v-container v-if="isProjectExperience">
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="jobExperienceTitle" label="Position"></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field v-model="jobCompany" label="Organization Name"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="jobCity" label="City"></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field v-model="jobState" label="State"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field :disabled="isCurrent" v-model="jobEnd"
+                                                label="End Date"></v-text-field>
+                                            <v-switch v-model="isCurrent" label="Present Role"
+                                                color="primary"></v-switch>
+                                        </v-col>
+                                    </v-row>
+
+                                    <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
+                                    <v-row>
+                                        <v-textarea v-if="!isRequestingAiAssist" label="Project Summary"
+                                            v-model="jobDescription">
+                                            <template #append-inner>
+                                                <v-btn color="secondary" rounded="xl" value="Ai Assist"
+                                                    @click="experienceAIAssist()">
+                                                    AI Assist
+                                                </v-btn>
+                                            </template>
+                                        </v-textarea>
+                                    </v-row>
+
+                                    <v-col>
+
+                                    </v-col>
+                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="toggleExperience(7)">
+                                        Cancel
+                                    </v-btn>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <v-btn v-if="!isRequestingAiAssist" variant="tonal" :disabled="!isExperienced"
+                                        @click="addNewExperience(7)">
+                                        Submit
+                                    </v-btn>
+                                </v-container>
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+                                <v-divider></v-divider>
+
+                                <div class="mb-10">
+                                    <v-spacer></v-spacer>
+                                </div>
+
+                                <div align="right">
+
+                                </div>
+
+                            </v-tabs-window-item>
+
+                        </v-tabs-window>
+                    </v-sheet>
+                </v-card>
 
             </v-col>
 
@@ -2150,7 +2177,7 @@ export default {
                     </div>
                 </v-card>
 
-                <v-card  v-if="isPreviewResume">
+                <v-card v-if="isPreviewResume">
 
                     <div style="padding: 3%;">
                         <div align="center">
@@ -2167,22 +2194,30 @@ export default {
                         </div>
                         <div v-if="selectedResumeTemplate == 1">
                             <v-container>
-                                <PreviewTemplate1 :links="displayLinks" :goal="displayGoal" :education="displayEducation" :experience="displayExperience" :skills="displaySkills"></PreviewTemplate1>
+                                <PreviewTemplate1 :links="displayLinks" :goal="displayGoal"
+                                    :education="displayEducation" :experience="displayExperience"
+                                    :skills="displaySkills"></PreviewTemplate1>
                             </v-container>
                         </div>
                         <div v-if="selectedResumeTemplate == 2">
                             <v-container>
-                                <PreviewTemplate2 :links="displayLinks" :goal="displayGoal" :education="displayEducation" :experience="displayExperience" :skills="displaySkills"></PreviewTemplate2>
+                                <PreviewTemplate2 :links="displayLinks" :goal="displayGoal"
+                                    :education="displayEducation" :experience="displayExperience"
+                                    :skills="displaySkills"></PreviewTemplate2>
                             </v-container>
                         </div>
                         <div v-if="selectedResumeTemplate == 3">
                             <v-container>
-                                <PreviewTemplate3 :links="displayLinks" :goal="displayGoal" :education="displayEducation" :experience="displayExperience" :skills="displaySkills"></PreviewTemplate3>
+                                <PreviewTemplate3 :links="displayLinks" :goal="displayGoal"
+                                    :education="displayEducation" :experience="displayExperience"
+                                    :skills="displaySkills"></PreviewTemplate3>
                             </v-container>
                         </div>
                         <div v-if="selectedResumeTemplate == 4">
                             <v-container>
-                                <PreviewTemplate4 :links="displayLinks" :goal="displayGoal" :education="displayEducation" :experience="displayExperience" :skills="displaySkills"></PreviewTemplate4>
+                                <PreviewTemplate4 :links="displayLinks" :goal="displayGoal"
+                                    :education="displayEducation" :experience="displayExperience"
+                                    :skills="displaySkills"></PreviewTemplate4>
                             </v-container>
                         </div>
                     </div>
@@ -2202,7 +2237,7 @@ export default {
         </v-row>
 
         <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
-        @update:show="value => snackbarValue = value"></Snackbar>
+            @update:show="value => snackbarValue = value"></Snackbar>
 
     </v-container>
 

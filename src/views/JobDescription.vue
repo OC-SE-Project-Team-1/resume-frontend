@@ -8,7 +8,7 @@ import template1 from "../components/Template1.vue";
 import template2 from "../components/Template2.vue";
 import template3 from "../components/Template3.vue";
 import template4 from "../components/Template4.vue";
-
+import Snackbar from "../components/Snackbar.vue";
 const router = useRouter();
 const isRequestingFeedback = ref(false);
 

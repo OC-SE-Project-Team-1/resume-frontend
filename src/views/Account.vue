@@ -2,7 +2,7 @@
 import { computed, onMounted } from "vue";
 import { ref } from "vue";
 import UserServices from "../services/UserServices";
-
+import Snackbar from "../components/Snackbar.vue";
 
 const account = ref(null);
 const valid = ref(false);
@@ -84,9 +84,6 @@ const confirmPasswordRules = computed(() => [
   v => !!v || 'Confirm Password is required',
   v => v === newPassword.value || 'Passwords must match'
 ]);
-
-
-// LIN'S SECTION AND VARIABLES THAT IS PROB WHAT HE NEEDS
 
 const newUsername = ref();
 const newPassword = ref();

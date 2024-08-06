@@ -18,17 +18,16 @@ watch(() => props.show, (newValue) => {
 function closeSnackbar() {
   show.value = false;
   emit('update:show', false);
-  console.log(props.show);
 }
 
 </script>
-
+<!-- its not a bug its a feature -->
 <template>
-    <v-snackbar v-model="show" rounded="pill" >
+    <v-snackbar v-model="show" rounded="pill" timeout=-1>
             {{ message }}
 
         <template v-slot:actions>
-            <v-btn :color="color" @click="closeSnackbar">Close</v-btn>
+            <v-btn persistence :color="color" @click="closeSnackbar">Close</v-btn>
         </template>
     </v-snackbar>
 </template>

@@ -8,6 +8,7 @@ import template3 from "../components/Template3.vue";
 import template4 from "../components/Template4.vue";
 import ResumeServices from "../services/ResumeServices";
 import ResumeExport from "../reports/ResumeExport";
+import Snackbar from "../components/Snackbar.vue";
 
 const router = useRouter();
 const account = ref(null);

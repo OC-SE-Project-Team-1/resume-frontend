@@ -16,6 +16,7 @@ import PreviewTemplate1 from "../components/PreviewTemplate1.vue";
 import PreviewTemplate2 from "../components/PreviewTemplate2.vue";
 import PreviewTemplate3 from "../components/PreviewTemplate3.vue";
 import PreviewTemplate4 from "../components/PreviewTemplate4.vue";
+import Snackbar from "../components/Snackbar.vue";
 
 const account = ref();
 const title = ref("");

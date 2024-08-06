@@ -7,6 +7,7 @@ import GoalServices from "../services/GoalServices.js";
 import SkillServices from "../services/SkillServices.js";
 import EducationServices from "../services/EducationServices.js";
 import ExperienceServices from "../services/ExperienceServices.js";
+import Snackbar from "../components/Snackbar.vue";
 
 const account = ref();
 //Snackbar to display errors

@@ -3,6 +3,7 @@ import { onMounted } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import ResumeServices from "../services/ResumeServices";
+import Snackbar from "../components/Snackbar.vue";
 
 const router = useRouter();
 const isDeleted = ref(false);

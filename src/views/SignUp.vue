@@ -3,6 +3,7 @@ import { onMounted } from "vue";
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import UserServices from "../services/UserServices.js";
+import Snackbar from "../components/Snackbar.vue";
 
 const router = useRouter();
 const confirmPassword = ref('');

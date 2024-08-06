@@ -54,7 +54,7 @@ async function getUser() {
                   <a v-if="props.links && props.links.length > 0"> | </a><a v-if="props.links && props.links.length > 0" v-for="(link, index) in links">
                     {{ link.type }}: {{ link.url }}<a v-if="index !== links.length - 1"> | </a></a></p>
             </header>
-            <section v-if="props.goal && goal !== []">
+            <section v-if="props.goal && goal.length > 0">
                 <h2 style="font-family: 'Calibri';">PROFESSIONAL SUMMARY</h2>
                 <p>{{ goal }}</p>
             </section>

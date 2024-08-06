@@ -2,15 +2,19 @@
 import { computed, onMounted } from "vue";
 import { ref } from "vue";
 import UserServices from "../services/UserServices";
-
+import Snackbar from "../components/Snackbar.vue";
 
 const account = ref(null);
 const valid = ref(false);
-const snackbar = ref({
-  value: false,
-  color: "",
-  text: "",
-});
+const snackbarValue = ref(false);
+const snackbarColor = ref("");
+const snackbarText = ref("");
+
+function makeSnackbar(color, text){
+  snackbarValue.value = true;
+  snackbarColor.value = color;
+  snackbarText.value = text;
+}
 
 const isAccountEditable = ref(false);
 
@@ -27,12 +31,6 @@ onMounted(async () => {
 
 
 });
-
-function makeSnackbar(color, text){
-    snackbar.value.value = true;
-    snackbar.value.color = color;
-    snackbar.value.text = text;
-}
 
 async function populateAccount(){
   newUsername.value = accountData.value.userName;
@@ -53,10 +51,6 @@ async function getAccount() {
       console.log(error);
       makeSnackbar(true, "error", error.response.data.message)
     });
-}
-
-function closeSnackBar() {
-  snackbar.value.value = false;
 }
 
 //Edit Account Name or Email
@@ -90,9 +84,6 @@ const confirmPasswordRules = computed(() => [
   v => !!v || 'Confirm Password is required',
   v => v === newPassword.value || 'Passwords must match'
 ]);
-
-
-// LIN'S SECTION AND VARIABLES THAT IS PROB WHAT HE NEEDS
 
 const newUsername = ref();
 const newPassword = ref();
@@ -140,7 +131,7 @@ async function changePassword() {
 async function updateAccount() {
   await UserServices.updateAccount(account.value.id, newUsername.value, newEmail.value, newFirstName.value, newLastName.value, newAddress.value, newPhoneNumber.value)
   .then((response) => {
-      makeSnackbar("green", response)
+      makeSnackbar("green", "Account updated!")
       accountData.value.token = JSON.parse(localStorage.getItem("account")).token //keep token
       window.localStorage.setItem("account", JSON.stringify(accountData.value));
       account.value = JSON.parse(localStorage.getItem("account"));
@@ -271,15 +262,8 @@ export default {
 
   </div>
 
-  <v-snackbar v-model="snackbar.value" rounded="pill">
-    {{ snackbar.text }}
-
-    <template v-slot:actions>
-      <v-btn :color="snackbar.color" variant="text" @click="closeSnackBar()">
-        Close
-      </v-btn>
-    </template>
-  </v-snackbar>
+  <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
+  @update:show="value => snackbarValue = value"></Snackbar>
 
   <v-dialog v-model="changePasswordDialog" persistent>
 <v-form ref="form" v-model="valid">

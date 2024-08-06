@@ -3,17 +3,17 @@ import { onMounted } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import UserServices from "../services/UserServices.js";
+import Snackbar from "../components/Snackbar.vue";
 
 const router = useRouter();
-const snackbar = ref({
-  value: false,
-  color: "",
-  text: "",
-});
+const snackbarValue = ref(false);
+const snackbarColor = ref("");
+const snackbarText = ref("");
+
 function makeSnackbar(color, text){
-    snackbar.value.value = true;
-    snackbar.value.color = color;
-    snackbar.value.text = text;
+  snackbarValue.value = true;
+  snackbarColor.value = color;
+  snackbarText.value = text;
 }
 const account = ref({
   userName: "",
@@ -43,9 +43,6 @@ async function login() {
     });
 }
 
-function closeSnackBar() {
-  snackbar.value.value = false;
-}
 </script>
 
 <script>
@@ -92,15 +89,9 @@ export default {
         </div>
       </form>
 
-      <v-snackbar v-model="snackbar.value" rounded="pill">
-        {{ snackbar.text }}
-
-        <template v-slot:actions>
-          <v-btn :color="snackbar.color" variant="text" @click="closeSnackBar()">
-            Close
-          </v-btn>
-        </template>
-      </v-snackbar>
+      <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
+      @update:show="value => snackbarValue = value"></Snackbar>
+      
     </div>
   </v-container>
 </template>

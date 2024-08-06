@@ -12,6 +12,7 @@ import GoalServices from "../services/GoalServices.js";
 import SkillServices from "../services/SkillServices.js";
 import EducationServices from "../services/EducationServices.js";
 import ExperienceServices from "../services/ExperienceServices.js";
+import Snackbar from "../components/Snackbar.vue";
 
 const router = useRouter();
 const title = ref();
@@ -21,11 +22,15 @@ const resumeData = ref(null);
 const templateId = ref(0);
 const isAttending = ref(false);
 const feedback = ref("");
-const snackbar = ref({
-  value: false,
-  color: "",
-  text: "",
-});
+const snackbarValue = ref(false);
+const snackbarColor = ref("");
+const snackbarText = ref("");
+
+function makeSnackbar(color, text){
+  snackbarValue.value = true;
+  snackbarColor.value = color;
+  snackbarText.value = text;
+}
 
 const links = ref([]);
 const goal = ref([]);
@@ -89,16 +94,8 @@ async function getResume() {
     })
     .catch((error) => {
       console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
+      makeSnackbar("error", error.response.data.message)
     });
-}
-
-function makeSnackbar(value, color, text) {
-  snackbar.value.value = value;
-  snackbar.value.color = color;
-  snackbar.value.text = text;
 }
 
 async function sortData() {
@@ -296,11 +293,11 @@ async function saveEditLinks() {
       if (index !== -1) {
         links.value[index] = { ...editedItem.value };
       }
-      makeSnackbar(true, "green", "Link Updated!");
+      makeSnackbar("green", "Link Updated!");
     })
     .catch((error) => {
       console.log(error);
-      makeSnackbar(true, "error", error.response.data.message);
+      makeSnackbar("error", error.response.data.message);
     });
   getResume();
   closeEditLinksDialog();
@@ -327,11 +324,11 @@ async function saveEditProfSum() {
       if (index !== -1) {
         goal.value[index] = { ...editedItem.value };
       }
-      makeSnackbar(true, "green", "Professional Summary Updated!");
+      makeSnackbar("green", "Professional Summary Updated!");
     })
     .catch((error) => {
       console.log(error);
-      makeSnackbar(true, "error", error.response.data.message);
+      makeSnackbar("error", error.response.data.message);
     });
   closeEditProfSumDialog();
 }
@@ -397,11 +394,11 @@ async function saveEditEducation() {
       if (index !== -1) {
         education.value[index] = { ...editedItem.value };
       }
-      makeSnackbar(true, "green", "Education Updated!");
+      makeSnackbar("green", "Education Updated!");
     })
     .catch((error) => {
       console.log(error);
-      makeSnackbar(true, "error", error.response.data.message);
+      makeSnackbar("error", error.response.data.message);
     });
   closeEditEducationDialog();
 }
@@ -477,14 +474,11 @@ async function saveEditExperience() {
         }
       }
 
-
-
-
-      makeSnackbar(true, "green", "Experience Updated!");
+      makeSnackbar("green", "Experience Updated!");
     })
     .catch((error) => {
       console.log(error);
-      makeSnackbar(true, "error", error.response.data.message);
+      makeSnackbar("error", error.response.data.message);
     });
   closeEditExperienceDialog();
 }
@@ -506,7 +500,7 @@ function closeEditSkillsDialog() {
 async function saveEditSkills() {
   await SkillServices.updateSkill(editedItem.value.id, editedItem.value.title, editedItem.value.description, editedItem.value.chatHistory, account.value.id)
     .then(() => {
-      makeSnackbar(true, "green", "Skill Updated!");
+      makeSnackbar("green", "Skill Updated!");
       const index = skills.value.findIndex(skills => skills.id === editedItem.value.id);
       if (index !== -1) {
         skills.value[index] = { ...editedItem.value };
@@ -515,11 +509,10 @@ async function saveEditSkills() {
     })
     .catch((error) => {
       console.log(error);
-      makeSnackbar(true, "error", error.response.data.message);
+      makeSnackbar("error", error.response.data.message);
     });
   closeEditSkillsDialog();
 }
-
 
 function navigateToView() {
   router.push({ name: "view" });
@@ -993,9 +986,7 @@ function navigateToView() {
     </v-card>
   </v-dialog>
 
-
-
-
-
+  <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
+  @update:show="value => snackbarValue = value"></Snackbar>
 
 </template>

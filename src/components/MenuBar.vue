@@ -13,12 +13,6 @@ const theme = useTheme();
 const accountData = ref(null);
 const isDark = ref(null);
 
-const snackbar = ref({
-  value: false,
-  color: "",
-  text: "",
-});
-
 onMounted(async () => {
   logoURL.value = ftLogo;
   account.value = JSON.parse(localStorage.getItem("account"));
@@ -61,9 +55,6 @@ async function getAccount() {
     })
     .catch((error) => {
       console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
     });
 }
 
@@ -122,10 +113,7 @@ async function updateDarkMode() {
   .then ((response) => {
     })
     .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
+      console.log(error)
     });
 }
 

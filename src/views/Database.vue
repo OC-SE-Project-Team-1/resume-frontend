@@ -7,6 +7,7 @@ import GoalServices from "../services/GoalServices.js";
 import SkillServices from "../services/SkillServices.js";
 import EducationServices from "../services/EducationServices.js";
 import ExperienceServices from "../services/ExperienceServices.js";
+import Snackbar from "../components/Snackbar.vue";
 import DeleteDialog from "../components/DeleteDialog.vue";
 import { useRouter } from "vue-router";
 
@@ -15,11 +16,15 @@ const router = useRouter();
 
 const account = ref();
 //Snackbar to display errors
-const snackbar = ref({
-    value: false,
-    color: "",
-    text: "",
-});
+const snackbarValue = ref(false);
+const snackbarColor = ref("");
+const snackbarText = ref("");
+
+function makeSnackbar(color, text){
+  snackbarValue.value = true;
+  snackbarColor.value = color;
+  snackbarText.value = text;
+}
 const isNewLinkVisible = ref(false);
 const isNewEduVisible = ref(false);
 const tabs = ref();
@@ -2374,15 +2379,9 @@ export default {
             </v-col>
         </v-row>
 
-        <v-snackbar v-model="snackbar.value" rounded="pill">
-            {{ snackbar.text }}
+        <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
+        @update:show="value => snackbarValue = value"></Snackbar>
 
-            <template v-slot:actions>
-                <v-btn :color="snackbar.color" variant="text" @click="closeSnackBar()">
-                    Close
-                </v-btn>
-            </template>
-        </v-snackbar>
     </v-container>
 
 

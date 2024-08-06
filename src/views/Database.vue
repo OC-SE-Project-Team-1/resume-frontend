@@ -7,6 +7,11 @@ import GoalServices from "../services/GoalServices.js";
 import SkillServices from "../services/SkillServices.js";
 import EducationServices from "../services/EducationServices.js";
 import ExperienceServices from "../services/ExperienceServices.js";
+import DeleteDialog from "../components/DeleteDialog.vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
 
 const account = ref();
 //Snackbar to display errors
@@ -178,8 +183,8 @@ function closeSnackBar() {
     snackbar.value.value = false;
 }
 
-function makeSnackbar(value, color, text) {
-    snackbar.value.value = value;
+function makeSnackbar(color, text) {
+    snackbar.value.value = true;
     snackbar.value.color = color;
     snackbar.value.text = text;
 }
@@ -859,49 +864,6 @@ const isDeleted = ref(null);
 function openDelete(item) {
     deleteItemId = item.id
     isDeleted.value = true;
-}
-
-function closeDelete() {
-    isDeleted.value = false;
-}
-
-async function deleteItem() {
-    switch (parseInt(tab.value)) {
-        case 1:
-            await deleting(LinkServices.deleteLink);
-            getLinks();
-            break;
-        case 2:
-            await deleting(GoalServices.deleteGoal);
-            getGoals();
-            break;
-        case 3:
-            await deleting(EducationServices.deleteEducation);
-            getEducationInfo();
-            break;
-        case 4: case 5: case 6: case 7: case 9: case 10: case 11:
-            await deleting(ExperienceServices.deleteExperience);
-            getExperiences();
-            break;
-        case 8:
-            await deleting(SkillServices.deleteSkill);
-            getSkills();
-            break;
-    }
-
-    closeDelete();
-}
-
-async function deleting(deleteItem) {
-    await deleteItem(deleteItemId, account.value.id)
-        .then(() => {
-            makeSnackbar("green", "Item Deleted!");
-        })
-        .catch((error) => {
-            console.log(error);
-            makeSnackbar("error", error.response.data.message);
-        });
-
 }
 
 </script>
@@ -2398,21 +2360,11 @@ export default {
                                 </v-card>
                             </v-dialog>
 
+                            <DeleteDialog v-model="isDeleted" :isDeleted="isDeleted" @update:isDeleted="value => isDeleted = value"
+                               :tab="tab" :deleteItemId="deleteItemId" :account="account" :makeSnackbar="makeSnackbar"
+                               :getLinks="getLinks" :getGoals="getGoals" :getEducationInfo="getEducationInfo"
+                               :getExperiences="getExperiences" :getSkills="getSkills" ></DeleteDialog>
 
-                            <!-- DELETE DIALOG -->
-                            <v-dialog persistent v-model="isDeleted" width="800">
-                                <v-card class="rounded-lg elevation-5">
-                                    <v-card-title class="text-center headline mb-2">Delete Item?</v-card-title>
-                                    <v-text align="center">You will be unable to retrieve this item once
-                                        deleted!</v-text>
-
-                                    <v-card-actions>
-                                        <v-btn variant="flat" color="primary" @click="deleteItem()">Delete</v-btn>
-                                        <v-spacer></v-spacer>
-                                        <v-btn variant="flat" color="secondary" @click="closeDelete()">Close</v-btn>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-dialog>
 
 
                         </v-tabs-window>

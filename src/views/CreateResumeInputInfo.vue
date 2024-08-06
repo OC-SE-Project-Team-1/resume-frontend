@@ -16,6 +16,7 @@ import PreviewTemplate1 from "../components/PreviewTemplate1.vue";
 import PreviewTemplate2 from "../components/PreviewTemplate2.vue";
 import PreviewTemplate3 from "../components/PreviewTemplate3.vue";
 import PreviewTemplate4 from "../components/PreviewTemplate4.vue";
+import DeleteDialog from "../components/DeleteDialog.vue";
 
 const account = ref();
 const title = ref("");
@@ -946,49 +947,6 @@ function openDelete(item) {
     isDeleted.value = true;
 }
 
-function closeDelete() {
-    isDeleted.value = false;
-}
-
-async function deleteItem(){
-    switch(parseInt(tab.value)){
-        case 1: 
-            await deleting(LinkServices.deleteLink);
-            getLinks();
-            break;
-        case 2: 
-            await deleting(GoalServices.deleteGoal);
-            getGoals();
-            break;
-        case 3: 
-            await deleting(EducationServices.deleteEducation);
-            getEducationInfo();
-            break;
-        case 4:  case 6:  
-            await deleting(ExperienceServices.deleteExperience);
-            getExperiences();
-            break;
-        case 5: 
-            await deleting(SkillServices.deleteSkill);
-            getSkills();
-            break;
-    }
-    
-    closeDelete();
-}
-
-async function deleting(deleteItem){
-    await deleteItem(deleteItemId, account.value.id)
-    .then(() => {
-            makeSnackbar(true, "green", "Item Deleted!");
-        })
-        .catch((error) => {
-            console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
-        });
-    
-}
-
 </script>
 
 <script>
@@ -1017,19 +975,11 @@ export default {
 
         <v-tabs-window v-model="tab">
 
-            <v-dialog persistent v-model="isDeleted" width="800">
-                                <v-card class="rounded-lg elevation-5">
-                                    <v-card-title class="text-center headline mb-2">Delete Item?</v-card-title>
-                                    <v-text align="center">You will be unable to retrieve this item once
-                                        deleted!</v-text>
+            <DeleteDialog v-model="isDeleted" :isDeleted="isDeleted" @update:isDeleted="value => isDeleted = value"
+                               :tab="tab" :deleteItemId="deleteItemId" :account="account" :makeSnackbar="makeSnackbar"
+                               :getLinks="getLinks" :getGoals="getGoals" :getEducationInfo="getEducationInfo"
+                               :getExperiences="getExperiences" :getSkills="getSkills" ></DeleteDialog>
 
-                                    <v-card-actions>
-                                        <v-btn variant="flat" color="primary" @click="deleteItem()">Delete</v-btn>
-                                        <v-spacer></v-spacer>
-                                        <v-btn variant="flat" color="secondary" @click="closeDelete()">Close</v-btn>
-                                    </v-card-actions>
-                                </v-card>
-</v-dialog>
 
         <!-- Personal Info -->
         <v-tabs-window-item value="1" style="padding: 50px">

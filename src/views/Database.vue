@@ -7,11 +7,17 @@ import GoalServices from "../services/GoalServices.js";
 import SkillServices from "../services/SkillServices.js";
 import EducationServices from "../services/EducationServices.js";
 import ExperienceServices from "../services/ExperienceServices.js";
+import LinksEdit from "../components/LinksEdit.vue";
+import EducationEdit from "../components/EducationEdit.vue";
+import ExperienceEdit from "../components/ExperienceEdit.vue";
+import GoalsEdit from "../components/GoalsEdit.vue";
+import SkillsEdit from "../components/SkillsEdit.vue";
 import Snackbar from "../components/Snackbar.vue";
 import DeleteDialog from "../components/DeleteDialog.vue";
 import { useRouter } from "vue-router";
 import NewLink from "../components/NewLink.vue";
 import NewGoal from "../components/NewGoal.vue";
+import NewEducation from "../components/NewEducation.vue";
 import NewExperience from "../components/NewExperience.vue";
 
 const router = useRouter();
@@ -54,19 +60,7 @@ let goalChatHistory = [];
 
 const educationInfo = ref();
 const selectedEducation = ref(null);
-const schoolName = ref("");
-const schoolCity = ref("");
-const schoolState = ref("");
-const gpa = ref("");
-const maxGpa = ref("");
-const degree = ref("");
-const schoolStart = ref("");
-const schoolEnd = ref("");
 const schoolGrad = ref(null);
-const degreeTitle = ref("");
-const degreeType = ref("");
-const minors = ref(null);
-const courses = ref(null);
 const attending = ref(false);
 const awards = ref(null);
 const studyAbroadTitle = ref(null);
@@ -74,11 +68,21 @@ const studyAbroadOrganization = ref(null);
 const studyAbroadLocation = ref(null);
 const studyAbroadTime = ref(null);
 const studyAbroadYear = ref(null);
-const editedStudyAbroadTitle = ref(null);
-const editedStudyAbroadOrganization = ref(null);
-const editedStudyAbroadLocation = ref(null);
-const editedStudyAbroadTime = ref(null);
-const editedStudyAbroadYear = ref(null);
+const editstudyAbroadTitle = computed(() => {
+  return editedItem.value.studyAbroad?.title || '';
+});
+const editstudyAbroadOrganization = computed(() => {
+  return editedItem.value.studyAbroad?.organization || '';
+});
+const editstudyAbroadLocation= computed(() => {
+  return editedItem.value.studyAbroad?.location || '';
+});
+const editstudyAbroadTime = computed(() => {
+  return editedItem.value.studyAbroad?.term || '';
+});
+const editstudyAbroadYear= computed(() => {
+  return editedItem.value.studyAbroad?.year || '';
+});
 
 const experiences = ref();
 const selectedWorkExperience = ref(null);
@@ -115,11 +119,6 @@ let skillHistory = [];
 const selectedSkills = ref(null);
 const isNewSkillVisible = ref(false);
 
-const isMinors = ref(false);
-const isCourses = ref(false);
-const isStudyAbroad = ref(false);
-const isAwards = ref(false);
-
 const isAttending = ref(false);
 
 let deleteItemId = 0;
@@ -131,20 +130,7 @@ const isSkilled = computed(() => {
         skillDescription.value !== ""
     )
 });
-const isEducationFilled = computed(() => {
-    var endGrad = isAttending.value ? (schoolGrad.value !== "" && schoolGrad.value !== null) :
-        (schoolEnd.value !== "" && schoolEnd.value !== null)
-    var isdegree = degreeTitle.value == 'High School Diploma' || (degree.value !== "" && degree.value !== null &&
-        degreeTitle.value !== "" && degreeTitle.value !== null &&
-        degreeType.value !== "" && degreeType.value !== null)
-    return (
-        schoolName.value !== "" && schoolName.value !== null &&
-        schoolCity.value !== "" && schoolCity.value !== null &&
-        schoolState.value !== "" && schoolState.value !== null &&
-        schoolStart.value !== "" && schoolStart.value !== null &&
-        isdegree && endGrad
-    )
-})
+
 
 const isExperienced = computed(() => {
     var isEndDate = isCurrent.value ? true : (jobEnd.value !== "" && jobEnd.value !== null)
@@ -210,7 +196,6 @@ async function navigateNextTab(value) {
 }
 
 async function resetNewInput() {
-    closeEducation();
     clearExperienceData();
     closeNewJobExperience();
     closeNewLeadershipExperience();
@@ -315,41 +300,6 @@ function toggleExperience(value) {
 }
 
 
-function showMinors() {
-    isMinors.value = !isMinors.value;
-
-    if (isMinors.value == false) {
-        minors.value = null;
-    }
-}
-
-function showCourses() {
-    isCourses.value = !isCourses.value;
-
-    if (isCourses.value == false) {
-        courses.value = null;
-    }
-}
-function showStudyAbroad() {
-    isStudyAbroad.value = !isStudyAbroad.value;
-
-    if (isStudyAbroad.value == false) {
-        studyAbroadTitle.value = null;
-        studyAbroadOrganization.value = null;
-        studyAbroadLocation.value = null;
-        studyAbroadTime.value = null;
-        studyAbroadYear.value = null;
-    }
-}
-
-function showAwards() {
-    isAwards.value = !isAwards.value;
-
-    if (isAwards.value == false) {
-        awards.value = null;
-    }
-}
-
 async function getPersonalInfo() {
     resetNewInput()
     await UserServices.getUser(parseInt(account.value.id))
@@ -393,70 +343,11 @@ async function getEducationInfo() {
         });
 }
 
-async function addNewEducation() {
-    var tempTitle = schoolState.value + " " + schoolStart.value + " " + gpa.value;
-    var tempDegree = degreeTitle.value + " of " + degreeType.value + " in " + degree.value;
-    var studyAbroad = null;
-    if (studyAbroadTitle !== null && studyAbroadTitle !== "") {
-        studyAbroad = {
-            "title": studyAbroadTitle.value,
-            "organization": studyAbroadOrganization.value,
-            "location": studyAbroadLocation.value,
-            "term": studyAbroadTime.value,
-            "year": studyAbroadYear.value
-        }
-    }
-
-    if (degreeTitle.value == "High School Diploma") {
-        tempDegree = degreeTitle.value;
-    }
-
-    if (schoolGrad.value !== null) {
-        schoolEnd.value = schoolGrad.value;
-    }
-
-    await EducationServices.addEducation(tempTitle, tempDegree, account.value.id,
-        schoolStart.value, schoolEnd.value, schoolGrad.value, gpa.value, schoolName.value,
-        schoolCity.value, schoolState.value, courses.value, minors.value, maxGpa.value, awards.value, studyAbroad)
-        .then(() => {
-            makeSnackbar("green", "Education Added!");
-            closeEducation();
-            getEducationInfo();
-        })
-        .catch((error) => {
-            console.log(error);
-            makeSnackbar("error", error.response.data.message);
-        });
-}
 
 async function setNewEduVisible() {
     isNewEduVisible.value = true;
 }
 
-async function closeEducation() {
-    isNewEduVisible.value = false;
-    isCourses.value = false;
-    isMinors.value = false;
-    schoolStart.value = null;
-    schoolEnd.value = null;
-    schoolGrad.value = null;
-    gpa.value = null;
-    schoolName.value = null;
-    schoolCity.value = null;
-    schoolState.value = null;
-    courses.value = null;
-    minors.value = null;
-    maxGpa.value = null;
-    degree.value = null;
-    degreeTitle.value = "";
-    degreeType.value = null;
-    awards.value = null;
-    studyAbroadTitle.value = null;
-    studyAbroadOrganization.value = null;
-    studyAbroadLocation.value = null;
-    studyAbroadTime.value = null;
-    studyAbroadYear.value = null;
-}
 
 async function getExperiences() {
     await ExperienceServices.getExperiencesForUser(account.value.id)
@@ -626,21 +517,9 @@ function openEditLinksDialog(item) {
     editLinksDialog.value = true;
 }
 
-function closeEditLinksDialog() {
-    editLinksDialog.value = false;
-}
-
-async function saveEditLinks() {
-    await LinkServices.updateLink(editedItem.value.id, editedItem.value.type, editedItem.value.url, account.value.id)
-        .then(() => {
-            makeSnackbar("green", "Link Updated!");
-        })
-        .catch((error) => {
-            console.log(error);
-            makeSnackbar("error", error.response.data.message);
-        });
-    getLinks();
-    closeEditLinksDialog();
+function updateEditLinksDialog(newState) {
+  editLinksDialog.value = newState;
+  getLinks();
 }
 
 // professional summary dialog stuff
@@ -651,22 +530,9 @@ function openEditProfSumDialog(item) {
     editProfSumDialog.value = true;
 }
 
-function closeEditProfSumDialog() {
-    editProfSumDialog.value = false;
-}
-
-async function saveEditProfSum() {
-    console.log(editedItem.value)
-    await GoalServices.updateGoal(editedItem.value.id, editedItem.value.title, editedItem.value.description, account.value.id)
-        .then(() => {
-            makeSnackbar("green", "Professional Summary Updated!");
-        })
-        .catch((error) => {
-            console.log(error);
-            makeSnackbar("error", error.response.data.message);
-        });
+function updateEditProfSumDialog(newState) {
+    editProfSumDialog.value = newState;
     getGoals();
-    closeEditProfSumDialog();
 }
 
 // education dialog stuff
@@ -674,65 +540,19 @@ const editEducationDialog = ref(false);
 
 function openEditEducationDialog(item) {
     editedItem.value = { ...item };
+    isAttending.value = editedItem.value.gradDate !== null;
     editEducationDialog.value = true;
 }
 
-function closeEditEducationDialog() {
-    editEducationDialog.value = false;
-    editedStudyAbroadTitle.value = null;
-    editedStudyAbroadOrganization.value = null;
-    editedStudyAbroadLocation.value = null;
-    editedStudyAbroadTime.value = null;
-    editedStudyAbroadYear.value = null;
+function updateEditEducationDialog(newState) {
+  editEducationDialog.value = newState;
+  getEducationInfo();
 }
 
-async function saveEditEducation() {
-    var studyAbroad = null;
-    if (editedItem.value.studyAbroad == null && editedStudyAbroadTitle.value !== "" && editedStudyAbroadTitle.value !== null) {
-        studyAbroad = {
-            "title": editedStudyAbroadTitle.value,
-            "organization": editedStudyAbroadOrganization.value,
-            "location": editedStudyAbroadLocation.value,
-            "term": editedStudyAbroadTime.value,
-            "year": editedStudyAbroadYear.value
-        }
-    }
-    else {
-        studyAbroad = {
-            "title": editedItem.value.studyAbroad.title,
-            "organization": editedItem.value.studyAbroad.organization,
-            "location": editedItem.value.studyAbroad.location,
-            "term": editedItem.value.studyAbroad.term,
-            "year": editedItem.value.studyAbroad.year
-        }
-    }
-    if (editedItem.value.minor == '') {
-        editedItem.value.minor = null;
-    }
-    if (editedItem.value.courses == '') {
-        editedItem.value.courses = null;
-    }
-    if (editedItem.value.awards == '') {
-        editedItem.value.awards = null;
-    }
-
-    if (editedItem.value.gradDate !== null) {
-        editedItem.value.endDate = editedItem.value.gradDate;
-    }
-    await EducationServices.updateEducation(editedItem.value.title, editedItem.value.description, editedItem.value.startDate, editedItem.value.endDate,
-        editedItem.value.gradDate, editedItem.value.gpa, editedItem.value.organization, editedItem.value.city, editedItem.value.state,
-        editedItem.value.courses, editedItem.value.minor, editedItem.value.totalGPA, editedItem.value.awards, studyAbroad, account.value.id, editedItem.value.id
-    )
-        .then(() => {
-            makeSnackbar("green", "Education Updated!");
-        })
-        .catch((error) => {
-            console.log(error);
-            makeSnackbar("error", error.response.data.message);
-        });
-    getEducationInfo();
-    closeEditEducationDialog();
+function updateIsAttending(newValue) {
+  isAttending.value = newValue;
 }
+
 
 // all types of experience dialog stuff
 const editExperienceDialog = ref(false);
@@ -742,28 +562,10 @@ function openEditExperienceDialog(item) {
     editExperienceDialog.value = true;
 }
 
-function closeEditExperienceDialog() {
+function updateEditExperienceDialog() {
     experienceChatHistory = [];
     editExperienceDialog.value = false;
-}
-
-async function saveEditExperience() {
-    if (editedItem.value.current == true) {
-        editedItem.value.endDate = null;
-    }
-    await ExperienceServices.updateExperience(editedItem.value.title, editedItem.value.description, editedItem.value.startDate, editedItem.value.endDate,
-        editedItem.value.current, editedItem.value.city, editedItem.value.state, editedItem.value.organization, editedItem.value.chatHistory,
-        account.value.id, editedItem.value.id
-    )
-        .then(() => {
-            makeSnackbar("green", "Experience Updated!");
-        })
-        .catch((error) => {
-            console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
-        });
     getExperiences();
-    closeEditExperienceDialog();
 }
 
 // skills dialog stuff
@@ -774,22 +576,10 @@ function openEditSkillsDialog(item) {
     editSkillsDialog.value = true;
 }
 
-function closeEditSkillsDialog() {
+function updateEditSkillsDialog() {
     skillHistory = []
     editSkillsDialog.value = false;
-}
-
-async function saveEditSkills() {
-    await SkillServices.updateSkill(editedItem.value.id, editedItem.value.title, editedItem.value.description, editedItem.value.chatHistory, account.value.id)
-        .then(() => {
-            makeSnackbar("green", "Skill Updated!");
-        })
-        .catch((error) => {
-            console.log(error);
-            makeSnackbar("error", error.response.data.message);
-        });
     getSkills();
-    closeEditSkillsDialog();
 }
 
 // delete dialog stuff
@@ -952,179 +742,10 @@ export default {
                                     Add New Education
                                 </v-btn>
 
-
-                                <v-container v-if="isNewEduVisible">
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="schoolName" label="School Name"></v-text-field>
-                                        </v-col>
-
-                                    </v-row>
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="schoolCity" label="City"></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field v-model="schoolState" label="State"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="gpa" label="GPA"></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field v-model="maxGpa" label="Max GPA"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row class="mb-1" v-if="degreeTitle != ''">
-
-                                        <v-card-subtitle align="center"
-                                            v-if="degreeTitle != 'High School Diploma'">Displayed as: {{ degreeTitle }}
-                                            of {{ degreeType }} in {{ degree }}</v-card-subtitle>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col>
-                                            <v-combobox v-model="degreeTitle" label="Title of Degree"
-                                                :items="['Bachelor', 'Masters', 'Associates', 'PhD', 'Certificate', 'High School Diploma']"></v-combobox>
-                                        </v-col>
-                                        <v-col>
-                                            <v-combobox v-model="degreeType" label="Degree Type"
-                                                :items="['Science', 'Arts', 'Fine Arts', 'Architecture']"
-                                                :disabled="degreeTitle == 'High School Diploma'"></v-combobox>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field v-model="degree" label="Degree"
-                                                :disabled="degreeTitle == 'High School Diploma'"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-
-
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="schoolStart" label="Start Date"
-                                                hint="Ex: Aug 2024"></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field v-model="schoolEnd" v-if="!isAttending" label="End Date"
-                                                hint="Ex: Aug 2024"></v-text-field>
-                                            <v-text-field v-model="schoolGrad" v-if="isAttending" label="Grad Date"
-                                                hint="Ex: Aug 2024"></v-text-field>
-                                            <v-switch v-model="attending" label="Still Attending" color="primary"
-                                                @click="toggleIsAttending()"></v-switch>
-                                        </v-col>
-                                    </v-row>
-
-                                    <v-row>
-                                        <v-container align="center">
-                                            <v-btn variant="text" @click="showMinors">
-                                                Add Minor
-                                            </v-btn>
-                                            <div class="mb-6">
-                                                <v-spacer></v-spacer>
-                                            </div>
-
-                                            <div v-if="isMinors">
-
-
-                                                <v-text-field label=" Minor(s)" v-model="minors"
-                                                    hint="If multiple, format as: Minor #1, Minor #2">
-
-                                                </v-text-field>
-
-                                            </div>
-
-                                            <v-btn variant="text" @click="showCourses">
-                                                Add Courses
-                                            </v-btn>
-
-                                            <div class="mb-6">
-                                                <v-spacer></v-spacer>
-                                            </div>
-                                            <div v-if="isCourses">
-
-
-                                                <v-text-field label="Course(s)" v-model="courses"
-                                                    hint="If multiple, format as: Course name, Course name">
-
-                                                </v-text-field>
-
-                                            </div>
-                                            <v-btn variant="text" @click="showAwards">
-                                                Add Awards
-                                            </v-btn>
-
-                                            <div class="mb-6">
-                                                <v-spacer></v-spacer>
-                                            </div>
-                                            <div v-if="isAwards">
-
-
-                                                <v-text-field label="Award(s)" v-model="awards"
-                                                    hint="If multiple, format as: Award, Award">
-
-                                                </v-text-field>
-
-                                            </div>
-
-                                            <v-btn variant="text" @click="showStudyAbroad">
-                                                Add Study Abroad
-                                            </v-btn>
-
-                                            <div class="mb-6">
-                                                <v-spacer></v-spacer>
-                                            </div>
-                                            <div v-if="isStudyAbroad">
-                                                <v-row>
-                                                    <v-text-field label="Title" v-model="studyAbroadTitle"
-                                                        hint="Name of Study Abroad Program">
-                                                    </v-text-field>
-                                                </v-row>
-                                                <v-row>
-                                                    <v-col>
-                                                        <v-text-field v-model="studyAbroadOrganization"
-                                                            label="Organization"
-                                                            hint="Ex) Capital Normal"></v-text-field>
-                                                    </v-col>
-                                                    <v-col>
-                                                        <v-text-field v-model="studyAbroadLocation" label="Location"
-                                                            hint="Ex) Beijing, China"></v-text-field>
-                                                    </v-col>
-                                                </v-row>
-                                                <v-row>
-                                                    <v-col>
-                                                        <v-text-field v-model="studyAbroadTime" label="Term"
-                                                            hint="Ex) Fall Semester"></v-text-field>
-                                                    </v-col>
-                                                    <v-col>
-                                                        <v-text-field v-model="studyAbroadYear" label="Year"
-                                                            hint="Ex) 2018"></v-text-field>
-                                                    </v-col>
-                                                </v-row>
-
-
-
-                                            </div>
-
-                                        </v-container>
-
-
-
-
-                                    </v-row>
-
-                                    <v-col>
-
-                                    </v-col>
-                                    <v-btn variant="tonal" @click="closeEducation()">
-                                        Cancel
-                                    </v-btn>
-                                    &nbsp;&nbsp;&nbsp;
-                                    <v-btn variant="tonal" :disabled="!isEducationFilled" @click="addNewEducation()">
-                                        Submit
-                                    </v-btn>
-                                </v-container>
-
-
+                                <NewEducation v-if="isNewEduVisible" :isNewEduVisible="isNewEduVisible"
+                                        @update:isNewEduVisible="value => isNewEduVisible = value" :account="account"
+                                        :makeSnackbar="makeSnackbar" :getEducationInfo="getEducationInfo"
+                                ></NewEducation>
 
                                 <div align="right">
 
@@ -1456,50 +1077,6 @@ export default {
                                     </v-btn>
                                 </v-container>
 
-                                <v-dialog v-model="editSkillsDialog" persistent>
-                                    <v-card>
-                                        <v-card-title>
-                                            <span class="headline">Edit Item</span>
-                                        </v-card-title>
-                                        <v-card-text>
-
-
-                                            <v-container>
-                                                <v-row>
-                                                    <v-col>
-                                                        <v-text-field v-model="editedItem.title"
-                                                            label="Skill"></v-text-field>
-                                                    </v-col>
-                                                </v-row>
-                                                <v-skeleton-loader v-if="isRequestingAiAssist"
-                                                    type="card"></v-skeleton-loader>
-                                                <v-row>
-                                                    <v-col>
-                                                        <v-textarea v-if="!isRequestingAiAssist"
-                                                            v-model="editedItem.description"
-                                                            label="Brief Description/Proficientcy Level, click AI assist button along with your input to help create a better description">
-                                                            <template #append-inner>
-                                                                <v-btn color="secondary" rounded="xl" value="Ai Assist"
-                                                                    @click="skillAiAssist(true)">
-                                                                    AI Assist
-                                                                </v-btn>
-                                                            </template>
-                                                        </v-textarea>
-                                                    </v-col>
-                                                </v-row>
-
-                                            </v-container>
-                                        </v-card-text>
-                                        <v-card-actions>
-                                            <v-spacer></v-spacer>
-                                            <v-btn v-if="!isRequestingAiAssist" color="blue darken-1" text
-                                                @click="closeEditSkillsDialog">Cancel</v-btn>
-                                            <v-btn v-if="!isRequestingAiAssist" color="blue darken-1" text
-                                                @click="saveEditSkills">Save</v-btn>
-                                        </v-card-actions>
-                                    </v-card>
-                                </v-dialog>
-
                                 <div align="right">
 
                                     <v-btn variant="tonal" @click="navigateNextTab(8)">
@@ -1669,266 +1246,55 @@ export default {
 
                             <!-- LINKS DIALOG -->
                             <v-dialog v-model="editLinksDialog" persistent>
-                                <v-card>
-                                    <v-card-title>
-                                        <span class="headline">Edit Item</span>
-                                    </v-card-title>
-                                    <v-card-text>
-                                        <v-text-field v-model="editedItem.type" label="Description"></v-text-field>
-                                        <v-text-field v-model="editedItem.url" label="URL"></v-text-field>
-                                    </v-card-text>
-                                    <v-card-actions>
-                                        <v-spacer></v-spacer>
-                                        <v-btn color="blue darken-1" text @click="closeEditLinksDialog">Cancel</v-btn>
-                                        <v-btn color="blue darken-1" text @click="saveEditLinks">Save</v-btn>
-                                    </v-card-actions>
-                                </v-card>
+                                <LinksEdit :makeSnackbar="makeSnackbar" :url="editedItem.url" 
+                                :description="editedItem.type" 
+                                :linkId="editedItem.id" 
+                                :editLinksDialog="editLinksDialog"
+                                @update:editLinksDialog="updateEditLinksDialog" ></LinksEdit>
                             </v-dialog>
 
                             <!-- PROFESSIONAL SUMMARY DIALOG -->
-
-                            <v-dialog v-model="editProfSumDialog" persistent>
-                                <v-card>
-                                    <v-card-title>
-                                        <span class="headline">Edit Item</span>
-                                    </v-card-title>
-                                    <v-card-text>
-                                        <v-text-field v-model="editedItem.title" label="Title"></v-text-field>
-                                        <v-textarea v-model="editedItem.description" label="Description"></v-textarea>
-                                    </v-card-text>
-                                    <v-card-actions>
-                                        <v-spacer></v-spacer>
-                                        <v-btn color="blue darken-1" text @click="closeEditProfSumDialog">Cancel</v-btn>
-                                        <v-btn color="blue darken-1" text @click="saveEditProfSum">Save</v-btn>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-dialog>
+                            <div v-if="editProfSumDialog">
+                            <GoalsEdit :makeSnackbar="makeSnackbar" :editingItem="editedItem"
+                                       :editProfSumDialog="editProfSumDialog"
+                                       @update:editProfSumDialog="updateEditProfSumDialog"
+                            ></GoalsEdit>
+                            </div>  
 
                             <!-- EDUCATION DIALOG -->
-                            <v-dialog v-model="editEducationDialog" persistent>
-                                <v-card>
-                                    <v-card-title>
-                                        <span class="headline">Edit Item</span>
-                                    </v-card-title>
-                                    <v-card-text>
-
-                                        <v-container>
-                                            <v-row>
-                                                <v-col>
-                                                    <v-text-field v-model="editedItem.organization"
-                                                        label="School Name"></v-text-field>
-                                                </v-col>
-
-                                            </v-row>
-                                            <v-row>
-                                                <v-col>
-                                                    <v-text-field v-model="editedItem.city" label="City"></v-text-field>
-                                                </v-col>
-                                                <v-col>
-                                                    <v-text-field v-model="editedItem.state"
-                                                        label="State"></v-text-field>
-                                                </v-col>
-                                            </v-row>
-                                            <v-row>
-                                                <v-col>
-                                                    <v-text-field v-model="editedItem.gpa" label="GPA"></v-text-field>
-                                                </v-col>
-                                                <v-col>
-                                                    <v-text-field v-model="editedItem.totalGPA"
-                                                        label="Max GPA"></v-text-field>
-                                                </v-col>
-                                            </v-row>
-                                            <v-row>
-                                                <v-col>
-                                                    <v-text-field v-model="editedItem.description"
-                                                        label="Title of Degree"></v-text-field>
-                                                </v-col>
-                                            </v-row>
-                                            <v-row>
-                                                <v-col>
-                                                    <v-text-field v-model="editedItem.startDate" label="Start Date"
-                                                        hint="Ex: Aug 2024"></v-text-field>
-                                                </v-col>
-                                                <v-col>
-                                                    <v-text-field v-model="editedItem.endDate" v-if="!isAttending"
-                                                        label="End Date" hint="Ex: Aug 2024"></v-text-field>
-                                                    <v-text-field v-model="editedItem.gradDate" v-if="isAttending"
-                                                        label="Grad Date" hint="Ex: Aug 2024"></v-text-field>
-                                                    <v-switch v-model="attending" label="Still Attending"
-                                                        color="primary" @click="toggleIsAttending()"></v-switch>
-                                                </v-col>
-                                            </v-row>
-                                            <v-row>
-                                                <v-col>
-                                                    <v-text-field v-model="editedItem.courses"
-                                                        label="Course(s)"></v-text-field>
-                                                </v-col>
-                                            </v-row>
-                                            <v-row>
-                                                <v-col>
-                                                    <v-text-field v-model="editedItem.minor"
-                                                        label="Minor(s)"></v-text-field>
-                                                </v-col>
-                                            </v-row>
-                                            <v-row>
-                                                <v-col>
-                                                    <v-text-field v-model="editedItem.awards"
-                                                        label="Award(s)"></v-text-field>
-                                                </v-col>
-                                            </v-row>
-                                            <div v-if="editedItem.studyAbroad !== null">
-                                                <v-row>
-                                                    <v-text-field label="Study Abroad Title"
-                                                        v-model="editedItem.studyAbroad.title"
-                                                        hint="Name of Study Abroad Program">
-                                                    </v-text-field>
-                                                </v-row>
-                                                <v-row>
-                                                    <v-col>
-                                                        <v-text-field v-model="editedItem.studyAbroad.organization"
-                                                            label="Study Abroad Organization"
-                                                            hint="Ex) Capital Normal"></v-text-field>
-                                                    </v-col>
-                                                    <v-col>
-                                                        <v-text-field v-model="editedItem.studyAbroad.location"
-                                                            label="Study Abroad Location"
-                                                            hint="Ex) Beijing, China"></v-text-field>
-                                                    </v-col>
-                                                </v-row>
-                                                <v-row>
-                                                    <v-col>
-                                                        <v-text-field v-model="editedItem.studyAbroad.term"
-                                                            label="Study Abroad Term"
-                                                            hint="Ex) Fall Semester"></v-text-field>
-                                                    </v-col>
-                                                    <v-col>
-                                                        <v-text-field v-model="editedItem.studyAbroad.year"
-                                                            label="Study Abroad Year" hint="Ex) 2018"></v-text-field>
-                                                    </v-col>
-                                                </v-row>
-                                            </div>
-                                            <div v-else>
-                                                <v-row>
-                                                    <v-text-field label="Study Abroad Title"
-                                                        v-model="editedStudyAbroadTitle"
-                                                        hint="Name of Study Abroad Program">
-                                                    </v-text-field>
-                                                </v-row>
-                                                <v-row>
-                                                    <v-col>
-                                                        <v-text-field v-model="editedStudyAbroadOrganization"
-                                                            label="Study Abroad Organization"
-                                                            hint="Ex) Capital Normal"></v-text-field>
-                                                    </v-col>
-                                                    <v-col>
-                                                        <v-text-field v-model="editedStudyAbroadLocation"
-                                                            label="Study Abroad Location"
-                                                            hint="Ex) Beijing, China"></v-text-field>
-                                                    </v-col>
-                                                </v-row>
-                                                <v-row>
-                                                    <v-col>
-                                                        <v-text-field v-model="editedStudyAbroadTime"
-                                                            label="Study Abroad Term"
-                                                            hint="Ex) Fall Semester"></v-text-field>
-                                                    </v-col>
-                                                    <v-col>
-                                                        <v-text-field v-model="editedStudyAbroadYear"
-                                                            label="Study Abroad Year" hint="Ex) 2018"></v-text-field>
-                                                    </v-col>
-                                                </v-row>
-                                            </div>
-
-
-                                        </v-container>
-
-
-                                    </v-card-text>
-                                    <v-card-actions>
-                                        <v-spacer></v-spacer>
-                                        <v-btn color="blue darken-1" text
-                                            @click="closeEditEducationDialog">Cancel</v-btn>
-                                        <v-btn color="blue darken-1" text @click="saveEditEducation">Save</v-btn>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-dialog>
+                            <div v-if="editEducationDialog">
+                                <EducationEdit :makeSnackbar="makeSnackbar" :editingItem="editedItem"
+                                            :studyAbroadTitle="editstudyAbroadTitle"
+                                            :studyAbroadOrganization="editstudyAbroadOrganization"
+                                            :studyAbroadLocation="editstudyAbroadLocation"
+                                            :studyAbroadTime="editstudyAbroadTime"
+                                            :studyAbroadYear="editstudyAbroadYear"
+                                            :isAttending="isAttending"
+                                            :editEducationDialog="editEducationDialog"
+                                            @update:editEducationDialog="updateEditEducationDialog"
+                                            @update:isAttending="updateIsAttending"
+                                            ></EducationEdit>
+                                </div>
 
                             <!-- EXPERIENCE DIALOG-->
-                            <v-dialog v-model="editExperienceDialog" persistent>
-                                <v-card>
-                                    <v-card-title>
-                                        <span class="headline">Edit Item</span>
-                                    </v-card-title>
-                                    <v-card-text>
+                            <div v-if="editExperienceDialog">
+                                <ExperienceEdit :makeSnackbar="makeSnackbar" :editingItem="editedItem"
+                                                :editExperienceDialog="editExperienceDialog"
+                                                :experienceAIAssist="experienceAIAssist"
+                                                :isRequestingAiAssist="isRequestingAiAssist"
+                                                @update:editExperienceDialog="updateEditExperienceDialog"
+                                ></ExperienceEdit>
+                            </div>
 
-
-                                        <v-container>
-                                            <v-row>
-                                                <v-col>
-                                                    <v-text-field v-model="editedItem.title"
-                                                        label="Position Title"></v-text-field>
-                                                </v-col>
-                                                <v-col
-                                                    v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">
-                                                    <v-text-field v-model="editedItem.organization"
-                                                        label="Company Name"></v-text-field>
-                                                </v-col>
-                                            </v-row>
-                                            <v-row
-                                                v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">
-                                                <v-col>
-                                                    <v-text-field v-model="editedItem.city" label="City"></v-text-field>
-                                                </v-col>
-                                                <v-col>
-                                                    <v-text-field v-model="editedItem.state"
-                                                        label="State"></v-text-field>
-                                                </v-col>
-                                            </v-row>
-                                            <v-row>
-                                                <v-col>
-                                                    <v-text-field v-model="editedItem.startDate"
-                                                        label="Start Date"></v-text-field>
-                                                </v-col>
-                                                <v-col
-                                                    v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">
-                                                    <v-text-field :disabled="editedItem.current"
-                                                        v-model="editedItem.endDate" label="End Date"></v-text-field>
-                                                    <v-switch v-model="editedItem.current" label="Present Job"
-                                                        color="primary"></v-switch>
-                                                </v-col>
-                                            </v-row>
-                                            <v-skeleton-loader v-if="isRequestingAiAssist"
-                                                type="card"></v-skeleton-loader>
-                                            <v-row>
-
-                                                <v-textarea v-if="!isRequestingAiAssist"
-                                                    v-model="editedItem.description" label="Summary/Description">
-
-                                                    <template #append-inner>
-                                                        <div
-                                                            v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">
-                                                            <v-btn color="secondary" rounded="xl" value="Ai Assist"
-                                                                @click="experienceAIAssist(true)">
-                                                                AI Assist
-                                                            </v-btn>
-                                                        </div>
-                                                    </template>
-                                                </v-textarea>
-                                            </v-row>
-                                            <v-col>
-                                            </v-col>
-
-                                        </v-container>
-                                    </v-card-text>
-                                    <v-card-actions>
-                                        <v-spacer></v-spacer>
-                                        <v-btn v-if="!isRequestingAiAssist" color="blue darken-1" text
-                                            @click="closeEditExperienceDialog">Cancel</v-btn>
-                                        <v-btn v-if="!isRequestingAiAssist" color="blue darken-1" text
-                                            @click="saveEditExperience">Save</v-btn>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-dialog>
+                            <!-- SKILLS DIALOG-->
+                            <div v-if="editSkillsDialog">
+                                <SkillsEdit :makeSnackbar="makeSnackbar" :editingItem="editedItem"
+                                            :editSkillsDialog="editSkillsDialog"
+                                            :skillAiAssist="skillAiAssist"
+                                            :isRequestingAiAssist="isRequestingAiAssist"
+                                            @update:editSkillsDialog="updateEditSkillsDialog"
+                                ></SkillsEdit>
+                            </div>
 
                             <DeleteDialog v-model="isDeleted" :isDeleted="isDeleted"
                                 @update:isDeleted="value => isDeleted = value" :tab="tab" :deleteItemId="deleteItemId"

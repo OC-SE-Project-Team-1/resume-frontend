@@ -13,6 +13,7 @@ import SkillServices from "../services/SkillServices.js";
 import EducationServices from "../services/EducationServices.js";
 import ExperienceServices from "../services/ExperienceServices.js";
 import LinksEdit from "../components/LinksEdit.vue";
+import EducationEdit from "../components/EducationEdit.vue";
 
 const router = useRouter();
 const title = ref();
@@ -40,11 +41,21 @@ const volunteer = ref([]);
 const honors = ref([]);
 const awards = ref([]);
 const projects = ref([]);
-const editedStudyAbroadTitle = ref(null);
-const editedStudyAbroadOrganization = ref(null);
-const editedStudyAbroadLocation = ref(null);
-const editedStudyAbroadTime = ref(null);
-const editedStudyAbroadYear = ref(null);
+const studyAbroadTitle = computed(() => {
+  return editedItem.value.studyAbroad?.title || '';
+});
+const studyAbroadOrganization = computed(() => {
+  return editedItem.value.studyAbroad?.organization || '';
+});
+const studyAbroadLocation= computed(() => {
+  return editedItem.value.studyAbroad?.location || '';
+});
+const studyAbroadTime = computed(() => {
+  return editedItem.value.studyAbroad?.term || '';
+});
+const studyAbroadYear= computed(() => {
+  return editedItem.value.studyAbroad?.year || '';
+});
 
 let experienceChatHistory = [];
 let skillHistory = [];
@@ -66,18 +77,8 @@ onMounted(async () => {
   resumeId.value = JSON.parse(localStorage.getItem("resumeId"));
   await getResume();
   await sortData();
+  await mapData();
 
-  selectedLinks.value = links.value.map(link => link.id);
-  selectedGoals.value = goal.value.map(goal => goal.id);
-  selectedEducation.value = education.value.map(education => education.id);
-  selectedWorkExperience.value = work.value.map(work => work.id);
-  selectedLeadershipExperience.value = leadership.value.map(leadership => leadership.id);
-  selectedActivitiesExperience.value = activities.value.map(activities => activities.id);
-  selectedVolunteerExperience.value = volunteer.value.map(volunteer => volunteer.id);
-  selectedSkills.value = skills.value.map(skills => skills.id);
-  selectedHonorExperience.value = honors.value.map(honors => honors.id);
-  selectedAwardExperience.value = awards.value.map(awards => awards.id);
-  selectedProjectExperience.value = projects.value.map(projects => projects.id);
 });
 
 async function getResume() {
@@ -85,7 +86,6 @@ async function getResume() {
     .then((response) => {
       resumeData.value = response.data;
       templateId.value = resumeData.value.template;
-      feedback.value = resumeData.value.comments;
       title.value = resumeData.value.title;
     })
     .catch((error) => {
@@ -136,6 +136,20 @@ async function sortData() {
   }
 
   skills.value = resumeData.value.Skill;
+}
+
+async function mapData() {
+  selectedLinks.value = links.value.map(link => link.id);
+  selectedGoals.value = goal.value.map(goal => goal.id);
+  selectedEducation.value = education.value.map(education => education.id);
+  selectedWorkExperience.value = work.value.map(work => work.id);
+  selectedLeadershipExperience.value = leadership.value.map(leadership => leadership.id);
+  selectedActivitiesExperience.value = activities.value.map(activities => activities.id);
+  selectedVolunteerExperience.value = volunteer.value.map(volunteer => volunteer.id);
+  selectedSkills.value = skills.value.map(skills => skills.id);
+  selectedHonorExperience.value = honors.value.map(honors => honors.id);
+  selectedAwardExperience.value = awards.value.map(awards => awards.id);
+  selectedProjectExperience.value = projects.value.map(projects => projects.id);
 }
 
 const displayLinks = computed(() => {
@@ -297,7 +311,7 @@ function updateUrl(newUrl) {
   editedItem.value.url = newUrl;
 }
 
-function updateDescription(newDescription) {
+function updateLinkDescription(newDescription) {
   editedItem.value.type = newDescription;
 }
 
@@ -350,64 +364,89 @@ function openEditEducationDialog(item) {
   isAttending.value = editedItem.value.gradDate !== null;
 }
 
-function closeEditEducationDialog() {
-  editEducationDialog.value = false;
-  editedStudyAbroadTitle.value = null;
-  editedStudyAbroadOrganization.value = null;
-  editedStudyAbroadLocation.value = null;
-  editedStudyAbroadTime.value = null;
-  editedStudyAbroadYear.value = null;
+function updateEditEducationDialog(newState) {
+  editEducationDialog.value = newState;
+  updateEditEducation()
 }
 
-async function saveEditEducation() {
-  var studyAbroad = null;
-  if (editedItem.value.studyAbroad == null) {
-    studyAbroad = {
-      "title": editedStudyAbroadTitle.value,
-      "organization": editedStudyAbroadOrganization.value,
-      "location": editedStudyAbroadLocation.value,
-      "term": editedStudyAbroadTime.value,
-      "year": editedStudyAbroadYear.value
-    }
-  }
-  else if (editedItem.value.studyAbroad.title !== "" && editedItem.value.studyAbroad.title !== null) {
-    studyAbroad = {
-      "title": editedItem.value.studyAbroad.title,
-      "organization": editedItem.value.studyAbroad.organization,
-      "location": editedItem.value.studyAbroad.location,
-      "term": editedItem.value.studyAbroad.term,
-      "year": editedItem.value.studyAbroad.year
-    }
-  }
-  if (editedItem.value.minor == '') {
-    editedItem.value.minor = null;
-  }
-  if (editedItem.value.courses == '') {
-    editedItem.value.courses = null;
-  }
-  if (editedItem.value.awards == '') {
-    editedItem.value.awards = null;
-  }
+function updateOrganization(newValue) {
+  editedItem.value.organization = newValue;
+}
 
-  if (editedItem.value.gradDate !== null) {
-    editedItem.value.endDate = editedItem.value.gradDate;
+function updateCity(newValue) {
+  editedItem.value.city = newValue;
+}
+
+function updateState(newValue) {
+  editedItem.value.state = newValue;
+}
+
+function updateGpa(newValue) {
+  editedItem.value.gpa = newValue;
+}
+
+function updateTotalGPA(newValue) {
+  editedItem.value.totalGPA = newValue;
+}
+
+function updateDescription(newValue) {
+  editedItem.value.description = newValue;
+}
+
+function updateStartDate(newValue) {
+  editedItem.value.startDate = newValue;
+}
+
+function updateEndDate(newValue) {
+  editedItem.value.endDate = newValue;
+}
+
+function updateGradDate(newValue) {
+  editedItem.value.gradDate = newValue;
+}
+
+function updateCourses(newValue) {
+  editedItem.value.courses = newValue;
+}
+
+function updateMinor(newValue) {
+  editedItem.value.minor = newValue;
+}
+
+function updateAwards(newValue) {
+  editedItem.value.awards = newValue;
+}
+
+function updateStudyAbroadTitle(newValue) {
+  editedItem.value.studyAbroad.title = newValue;
+}
+
+function updateStudyAbroadOrganization(newValue) {
+  editedItem.value.studyAbroad.organization = newValue;
+}
+
+function updateStudyAbroadLocation(newValue) {
+  editedItem.value.studyAbroad.location = newValue;
+}
+
+function updateStudyAbroadTime(newValue) {
+  editedItem.value.studyAbroad.term = newValue;
+}
+
+function updateStudyAbroadYear(newValue) {
+  editedItem.value.studyAbroad.year = newValue;
+}
+
+function updateIsAttending(newValue) {
+  isAttending.value = newValue;
+}
+
+async function updateEditEducation() {
+  const index = education.value.findIndex(education => education.id === editedItem.value.id);
+  if (index !== -1) {
+    education.value[index] = { ...editedItem.value };
   }
-  await EducationServices.updateEducation(editedItem.value.title, editedItem.value.description, editedItem.value.startDate, editedItem.value.endDate,
-    editedItem.value.gradDate, editedItem.value.gpa, editedItem.value.organization, editedItem.value.city, editedItem.value.state,
-    editedItem.value.courses, editedItem.value.minor, editedItem.value.totalGPA, editedItem.value.awards, studyAbroad, account.value.id, editedItem.value.id
-  )
-    .then(() => {
-      const index = education.value.findIndex(education => education.id === editedItem.value.id);
-      if (index !== -1) {
-        education.value[index] = { ...editedItem.value };
-      }
-      makeSnackbar(true, "green", "Education Updated!");
-    })
-    .catch((error) => {
-      console.log(error);
-      makeSnackbar(true, "error", error.response.data.message);
-    });
-  closeEditEducationDialog();
+  getResume();
 }
 
 async function toggleIsAttending() {
@@ -755,7 +794,7 @@ function navigateToView() {
       :linkId="editedItem.id" 
       :editLinksDialog="editLinksDialog"
       @update:url="updateUrl"
-      @update:description="updateDescription"
+      @update:description="updateLinkDescription"
       @update:editLinksDialog="updateEditLinksDialog" ></LinksEdit>
   </v-dialog>
 
@@ -779,135 +818,50 @@ function navigateToView() {
   </v-dialog>
 
   <!-- EDUCATION DIALOG -->
-  <v-dialog v-model="editEducationDialog" persistent>
-    <v-card>
-      <v-card-title>
-        <span class="headline">Edit Item</span>
-      </v-card-title>
-      <v-card-text>
-
-        <v-container>
-          <v-row>
-            <v-col>
-              <v-text-field v-model="editedItem.organization" label="School Name"></v-text-field>
-            </v-col>
-
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-text-field v-model="editedItem.city" label="City"></v-text-field>
-            </v-col>
-            <v-col>
-              <v-text-field v-model="editedItem.state" label="State"></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-text-field v-model="editedItem.gpa" label="GPA"></v-text-field>
-            </v-col>
-            <v-col>
-              <v-text-field v-model="editedItem.totalGPA" label="Max GPA"></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-text-field v-model="editedItem.description" label="Title of Degree"></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-text-field v-model="editedItem.startDate" label="Start Date" hint="Ex: Aug 2024"></v-text-field>
-            </v-col>
-            <v-col>
-              <v-text-field v-model="editedItem.endDate" v-if="!isAttending" label="End Date"
-                hint="Ex: Aug 2024"></v-text-field>
-              <v-text-field v-model="editedItem.gradDate" v-if="isAttending" label="Grad Date"
-                hint="Ex: Aug 2024"></v-text-field>
-              <v-switch v-model="isAttending" label="Still Attending" color="primary"
-                @click="toggleIsAttending()"></v-switch>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-text-field v-model="editedItem.courses" label="Course(s)"></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-text-field v-model="editedItem.minor" label="Minor(s)"></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-text-field v-model="editedItem.awards" label="Award(s)"></v-text-field>
-            </v-col>
-          </v-row>
-          <div v-if="editedItem.studyAbroad !== null">
-            <v-row>
-              <v-text-field label="Study Abroad Title" v-model="editedItem.studyAbroad.title"
-                hint="Name of Study Abroad Program">
-              </v-text-field>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-text-field v-model="editedItem.studyAbroad.organization" label="Study Abroad Organization"
-                  hint="Ex) Capital Normal"></v-text-field>
-              </v-col>
-              <v-col>
-                <v-text-field v-model="editedItem.studyAbroad.location" label="Study Abroad Location"
-                  hint="Ex) Beijing, China"></v-text-field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-text-field v-model="editedItem.studyAbroad.term" label="Study Abroad Term"
-                  hint="Ex) Fall Semester"></v-text-field>
-              </v-col>
-              <v-col>
-                <v-text-field v-model="editedItem.studyAbroad.year" label="Study Abroad Year"
-                  hint="Ex) 2018"></v-text-field>
-              </v-col>
-            </v-row>
-          </div>
-          <div v-else>
-            <v-row>
-              <v-text-field label="Study Abroad Title" v-model="editedStudyAbroadTitle"
-                hint="Name of Study Abroad Program">
-              </v-text-field>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-text-field v-model="editedStudyAbroadOrganization" label="Study Abroad Organization"
-                  hint="Ex) Capital Normal"></v-text-field>
-              </v-col>
-              <v-col>
-                <v-text-field v-model="editedStudyAbroadLocation" label="Study Abroad Location"
-                  hint="Ex) Beijing, China"></v-text-field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-text-field v-model="editedStudyAbroadTime" label="Study Abroad Term"
-                  hint="Ex) Fall Semester"></v-text-field>
-              </v-col>
-              <v-col>
-                <v-text-field v-model="editedStudyAbroadYear" label="Study Abroad Year" hint="Ex) 2018"></v-text-field>
-              </v-col>
-            </v-row>
-          </div>
-
-        </v-container>
-
-
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" text @click="closeEditEducationDialog">Cancel</v-btn>
-        <v-btn color="blue darken-1" text @click="saveEditEducation">Save</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
-
+  <div v-if="editEducationDialog">
+    <EducationEdit :eduId="editedItem.id"
+                   :title="editedItem.title"
+                   :organization="editedItem.organization"
+                   :city="editedItem.city"
+                   :state="editedItem.state"
+                   :gpa="editedItem.gpa"
+                   :totalGPA="editedItem.totalGPA"
+                   :description="editedItem.description"
+                   :startDate="editedItem.startDate"
+                   :endDate="editedItem.endDate"
+                   :gradDate="editedItem.gradDate"
+                   :courses="editedItem.courses"
+                   :awards="editedItem.awards"
+                   :minor="editedItem.minor"
+                   :studyAbroadTitle="studyAbroadTitle"
+                   :studyAbroadOrganization="studyAbroadOrganization"
+                   :studyAbroadLocation="studyAbroadLocation"
+                   :studyAbroadTime="studyAbroadTime"
+                   :studyAbroadYear="studyAbroadYear"
+                   :isAttending="isAttending"
+                   :editEducationDialog="editEducationDialog"
+                   @update:editEducationDialog="updateEditEducationDialog"
+                   @update:organization="updateOrganization"
+                   @update:city="updateCity"
+                   @update:state="updateState"
+                   @update:gpa="updateGpa"
+                   @update:totalGPA="updateTotalGPA"
+                   @update:description="updateDescription"
+                   @update:startDate="updateStartDate"
+                   @update:endDate="updateEndDate"
+                   @update:gradDate="updateGradDate"
+                   @update:courses="updateCourses"
+                   @update:minor="updateMinor"
+                   @update:awards="updateAwards"
+                   @update:studyAbroadTitle="updateStudyAbroadTitle"
+                   @update:studyAbroadOrganization="updateStudyAbroadOrganization"
+                   @update:studyAbroadLocation="updateStudyAbroadLocation"
+                   @update:studyAbroadTime="updateStudyAbroadTime"
+                   @update:studyAbroadYear="updateStudyAbroadYear"
+                   @update:isAttending="updateIsAttending"
+                   ></EducationEdit>
+    </div>
+    
   <!-- EXPERIENCE DIALOG-->
   <v-dialog v-model="editExperienceDialog" persistent>
     <v-card>

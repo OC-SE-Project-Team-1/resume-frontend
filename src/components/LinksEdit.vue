@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch, defineEmits } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import LinkServices from '../services/LinkServices';
 
 // Define props

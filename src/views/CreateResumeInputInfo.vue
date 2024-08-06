@@ -975,11 +975,11 @@ async function deleteItem(){
 async function deleting(deleteItem){
     await deleteItem(deleteItemId, account.value.id)
     .then(() => {
-            makeSnackbar(true, "green", "Item Deleted!");
+            makeSnackbar("green", "Item Deleted!");
         })
         .catch((error) => {
             console.log(error);
-            makeSnackbar(true, "error", error.response.data.message);
+            makeSnackbar("error", error.response.data.message);
         });
     
 }

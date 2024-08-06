@@ -15,6 +15,7 @@ import ExperienceServices from "../services/ExperienceServices.js";
 import LinksEdit from "../components/LinksEdit.vue";
 import EducationEdit from "../components/EducationEdit.vue";
 import ExperienceEdit from "../components/ExperienceEdit.vue";
+import GoalsEdit from "../components/GoalsEdit.vue";
 
 const router = useRouter();
 const title = ref();
@@ -321,7 +322,6 @@ async function updateEditLinks() {
   if (index !== -1) {
     links.value[index] = { ...editedItem.value };
   }
-  makeSnackbar(true, "green", "Link Updated!");
   getResume();
 }
 
@@ -333,26 +333,16 @@ function openEditProfSumDialog(item) {
   editProfSumDialog.value = true;
 }
 
-function closeEditProfSumDialog() {
+function updateEditProfSumDialog() {
   editProfSumDialog.value = false;
+  updateEditProfSum();
 }
 
-async function saveEditProfSum() {
-  console.log(editedItem.value)
-  await GoalServices.updateGoal(editedItem.value.id, editedItem.value.title, editedItem.value.description, account.value.id)
-    .then(() => {
-
-      const index = goal.value.findIndex(goal => goal.id === editedItem.value.id);
-      if (index !== -1) {
-        goal.value[index] = { ...editedItem.value };
-      }
-      makeSnackbar(true, "green", "Professional Summary Updated!");
-    })
-    .catch((error) => {
-      console.log(error);
-      makeSnackbar(true, "error", error.response.data.message);
-    });
-  closeEditProfSumDialog();
+async function updateEditProfSum() {
+  const index = goal.value.findIndex(goal => goal.id === editedItem.value.id);
+  if (index !== -1) {
+    goal.value[index] = { ...editedItem.value };
+  }
 }
 
 
@@ -742,23 +732,10 @@ function navigateToView() {
   </v-dialog>
 
   <!-- PROFESSIONAL SUMMARY DIALOG -->
-
-  <v-dialog v-model="editProfSumDialog" persistent>
-    <v-card>
-      <v-card-title>
-        <span class="headline">Edit Item</span>
-      </v-card-title>
-      <v-card-text>
-        <v-text-field v-model="editedItem.title" label="Title"></v-text-field>
-        <v-textarea v-model="editedItem.description" label="Description"></v-textarea>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" text @click="closeEditProfSumDialog">Cancel</v-btn>
-        <v-btn color="blue darken-1" text @click="saveEditProfSum">Save</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+  <div v-if="editProfSumDialog">
+    <GoalsEdit :editingItem="editedItem" :editProfSumDialog="editProfSumDialog"
+      @update:editProfSumDialog="updateEditProfSumDialog"></GoalsEdit>
+  </div>
 
   <!-- EDUCATION DIALOG -->
   <div v-if="editEducationDialog">

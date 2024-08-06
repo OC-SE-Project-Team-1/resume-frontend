@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, defineEmits } from 'vue';
 import LinkServices from '../services/LinkServices';
 
 // Define props
@@ -11,7 +11,11 @@ const props = defineProps({
 });
 
 // Define emits
-const emit = defineEmits(['update:editLinksDialog']);
+const emit = defineEmits([
+  'update:editLinksDialog',
+  'update:url',
+  'update:description'
+]);
 
 // Local state for editing
 const account = ref(null);
@@ -30,6 +34,15 @@ watch(() => props.url, (newValue) => {
 
 watch(() => props.editLinksDialog, (newValue) => {
   localEditLinksDialog.value = newValue;
+});
+
+// Watch for changes in local state and emit updates
+watch(localDescription, (newValue) => {
+  emit('update:description', newValue);
+});
+
+watch(localUrl, (newValue) => {
+  emit('update:url', newValue);
 });
 
 // Fetch account info

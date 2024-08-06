@@ -293,14 +293,21 @@ function updateEditLinksDialog(newState) {
   editLinksDialog.value = newState;
   updateEditLinks();
 }
+function updateUrl(newUrl) {
+  editedItem.value.url = newUrl;
+}
+
+function updateDescription(newDescription) {
+  editedItem.value.type = newDescription;
+}
 
 async function updateEditLinks() {
+      const index = links.value.findIndex(link => link.id === editedItem.value.id);
+      if (index !== -1) {
+        links.value[index] = { ...editedItem.value };
+      }
+      makeSnackbar(true, "green", "Link Updated!");
   getResume();
-    const index = links.value.findIndex(link => link.id === editedItem.value.id);
-    if (index !== -1) {
-      links.value[index] = { ...editedItem.value };
-    }
-    selectedLinks.value = links.value.map(link => link.id);
 }
 
 // professional summary dialog stuff
@@ -747,6 +754,8 @@ function navigateToView() {
       :description="editedItem.type" 
       :linkId="editedItem.id" 
       :editLinksDialog="editLinksDialog"
+      @update:url="updateUrl"
+      @update:description="updateDescription"
       @update:editLinksDialog="updateEditLinksDialog" ></LinksEdit>
   </v-dialog>
 

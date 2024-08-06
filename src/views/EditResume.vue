@@ -12,6 +12,7 @@ import GoalServices from "../services/GoalServices.js";
 import SkillServices from "../services/SkillServices.js";
 import EducationServices from "../services/EducationServices.js";
 import ExperienceServices from "../services/ExperienceServices.js";
+import LinksEdit from "../components/LinksEdit.vue";
 
 const router = useRouter();
 const title = ref();
@@ -275,6 +276,9 @@ const displaySkills = computed(() => {
   )
 })
 
+function filterPerfectMatch(value, search) {
+    return value != null && String(value) === search
+}
 
 // links dialog stuff
 const editLinksDialog = ref(false);
@@ -285,25 +289,18 @@ function openEditLinksDialog(item) {
   editLinksDialog.value = true;
 }
 
-function closeEditLinksDialog() {
-  editLinksDialog.value = false;
+function updateEditLinksDialog(newState) {
+  editLinksDialog.value = newState;
+  updateEditLinks();
 }
 
-async function saveEditLinks() {
-  await LinkServices.updateLink(editedItem.value.id, editedItem.value.type, editedItem.value.url, account.value.id)
-    .then(() => {
-      const index = links.value.findIndex(link => link.id === editedItem.value.id);
-      if (index !== -1) {
-        links.value[index] = { ...editedItem.value };
-      }
-      makeSnackbar(true, "green", "Link Updated!");
-    })
-    .catch((error) => {
-      console.log(error);
-      makeSnackbar(true, "error", error.response.data.message);
-    });
+async function updateEditLinks() {
   getResume();
-  closeEditLinksDialog();
+    const index = links.value.findIndex(link => link.id === editedItem.value.id);
+    if (index !== -1) {
+      links.value[index] = { ...editedItem.value };
+    }
+    selectedLinks.value = links.value.map(link => link.id);
 }
 
 // professional summary dialog stuff
@@ -746,20 +743,11 @@ function navigateToView() {
 
   <!-- LINKS DIALOG -->
   <v-dialog v-model="editLinksDialog" persistent>
-    <v-card>
-      <v-card-title>
-        <span class="headline">Edit Item</span>
-      </v-card-title>
-      <v-card-text>
-        <v-text-field v-model="editedItem.type" label="Description"></v-text-field>
-        <v-text-field v-model="editedItem.url" label="URL"></v-text-field>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" text @click="closeEditLinksDialog">Cancel</v-btn>
-        <v-btn color="blue darken-1" text @click="saveEditLinks">Save</v-btn>
-      </v-card-actions>
-    </v-card>
+      <LinksEdit :url="editedItem.url" 
+      :description="editedItem.type" 
+      :linkId="editedItem.id" 
+      :editLinksDialog="editLinksDialog"
+      @update:editLinksDialog="updateEditLinksDialog" ></LinksEdit>
   </v-dialog>
 
   <!-- PROFESSIONAL SUMMARY DIALOG -->

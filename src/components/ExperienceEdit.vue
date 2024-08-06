@@ -95,16 +95,16 @@ async function saveEditExperience() {
                 <v-text-field v-model="editedItem.city" label="City"></v-text-field>
               </v-col>
               <v-col>
-                <v-text-field v-model="editedItem.state" label="State"></v-text-field>
+                <v-text-field v-model="editedItem.state" label="State" hint="Two letters for State"></v-text-field>
               </v-col>
             </v-row>
             <v-row>
               <v-col>
-                <v-text-field v-model="editedItem.startDate" label="Start Date"></v-text-field>
+                <v-text-field v-model="editedItem.startDate" label="Start Date" hint="Ex: Aug 2024"></v-text-field>
               </v-col>
               <v-col v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">
                 <v-text-field :disabled="editedItem.current" v-model="editedItem.endDate"
-                  label="End Date"></v-text-field>
+                  label="End Date" hint="Ex: Aug 2024"></v-text-field>
                 <v-switch v-model="editedItem.current" label="Present Job" color="primary"></v-switch>
               </v-col>
             </v-row>

@@ -187,15 +187,15 @@ function showAwards() {
                                             <v-text-field v-model="schoolCity" label="City"></v-text-field>
                                         </v-col>
                                         <v-col>
-                                            <v-text-field v-model="schoolState" label="State"></v-text-field>
+                                            <v-text-field v-model="schoolState" label="State" hint="Two letters for State"></v-text-field>
                                         </v-col>
                                     </v-row>
                                     <v-row>
                                         <v-col>
-                                            <v-text-field v-model="gpa" label="GPA"></v-text-field>
+                                            <v-text-field v-model="gpa" label="GPA" hint="Ex: 3.67"></v-text-field>
                                         </v-col>
                                         <v-col>
-                                            <v-text-field v-model="maxGpa" label="Max GPA"></v-text-field>
+                                            <v-text-field v-model="maxGpa" label="Max GPA" hint="Ex: 3.67"></v-text-field>
                                         </v-col>
                                     </v-row>
                                     <v-row class="mb-1" v-if="degreeTitle != ''">

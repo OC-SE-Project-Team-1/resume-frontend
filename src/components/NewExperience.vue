@@ -172,15 +172,15 @@ async function closeNewJobExperience() {
                 <v-text-field v-model="jobCity" label="City"></v-text-field>
             </v-col>
             <v-col>
-                <v-text-field v-model="jobState" label="State"></v-text-field>
+                <v-text-field v-model="jobState" label="State" hint="Two letters for State"></v-text-field>
             </v-col>
         </v-row>
         <v-row>
             <v-col>
-                <v-text-field v-model="jobStart" label="Start Date"></v-text-field>
+                <v-text-field v-model="jobStart" label="Start Date" hint="Ex: Aug 2024"></v-text-field>
             </v-col>
             <v-col v-if="props.whichExperience !== 5 && props.whichExperience !== 6">
-                <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date"></v-text-field>
+                <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date" hint="Ex: Aug 2024"></v-text-field>
                 <v-switch v-model="isCurrent" label="Present Job" color="primary"></v-switch>
             </v-col>
         </v-row>

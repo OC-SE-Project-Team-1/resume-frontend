@@ -154,15 +154,15 @@ async function saveEditEducation() {
                 <v-text-field v-model="editedItem.city" label="City"></v-text-field>
               </v-col>
               <v-col>
-                <v-text-field v-model="editedItem.state" label="State"></v-text-field>
+                <v-text-field v-model="editedItem.state" label="State" hint="Two letters for State"></v-text-field>
               </v-col>
             </v-row>
             <v-row>
               <v-col>
-                <v-text-field v-model="editedItem.gpa" label="GPA"></v-text-field>
+                <v-text-field v-model="editedItem.gpa" label="GPA" hint="Ex: 3.67"></v-text-field>
               </v-col>
               <v-col>
-                <v-text-field v-model="editedItem.totalGPA" label="Max GPA"></v-text-field>
+                <v-text-field v-model="editedItem.totalGPA" label="Max GPA" hint="Ex: 3.67"></v-text-field>
               </v-col>
             </v-row>
             <v-row>

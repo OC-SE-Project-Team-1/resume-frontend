@@ -77,7 +77,7 @@ async function sortData() {
                   <a v-if="links.length > 0"> | </a><a v-if="links.length > 0" v-for="(link, index) in links">
                     {{ link.type }}: {{ link.url }}<a v-if="index !== links.length - 1"> | </a></a></p>
             </header>
-            <section v-if="goal !== []">
+            <section v-if="goal.length > 0">
                 <h2 style="font-family: 'Calibri';">PROFESSIONAL SUMMARY</h2>
                 <p>{{ goal }}</p>
             </section>

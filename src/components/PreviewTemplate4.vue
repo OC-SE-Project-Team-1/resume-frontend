@@ -27,7 +27,7 @@ const props = defineProps({links: Array,
 
 const isExists = computed(() => {
   var temp = false;
-  if (typeof props.experience !== "undefined" && props.experience !== null && props.experience !== []) {
+  if (typeof props.experience !== "undefined" && props.experience !== null && props.experience.length > 0) {
     for (let [key, value] of Object.entries(props.experience.value)) {
       if (value.experienceTypeId == 1) {
         console.log(value.experienceTypeId);

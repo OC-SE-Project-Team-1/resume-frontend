@@ -4,6 +4,7 @@ import SkillServices from '../services/SkillServices';
 
 // Define props
 const props = defineProps({
+  makeSnackbar: Function,
   editingItem: Object,
   editSkillsDialog: Boolean,
   isRequestingAiAssist: Boolean,
@@ -52,11 +53,11 @@ function closeEditSkillsDialog() {
 async function saveEditSkills() {
     await SkillServices.updateSkill(editedItem.value.id, editedItem.value.title, editedItem.value.description, editedItem.value.chatHistory, account.value.id)
         .then(() => {
-            // makeSnackbar("green", "Skill Updated!");
+          props.makeSnackbar("green", "Skill Updated!");
         })
         .catch((error) => {
             console.log(error);
-            // makeSnackbar("error", error.response.data.message);
+            props.makeSnackbar("error", props.error.response.data.message);
         });
     closeEditSkillsDialog();
 }

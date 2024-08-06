@@ -4,6 +4,7 @@ import ExperienceServices from '../services/ExperienceServices';
 
 // Define props
 const props = defineProps({
+  makeSnackbar: Function,
   editingItem: Object,
   editExperienceDialog: Boolean,
   isRequestingAiAssist: Boolean,
@@ -59,11 +60,11 @@ async function saveEditExperience() {
     account.value.id, editedItem.value.id
   )
     .then(() => {
-      // makeSnackbar("green", "Experience Updated!");
+      props.makeSnackbar("green", "Experience Updated!");
     })
     .catch((error) => {
       console.log(error);
-      // makeSnackbar(true, "error", error.response.data.message);
+      props.makeSnackbar("error", props.error.response.data.message);
     });
   closeEditExperienceDialog();
 }

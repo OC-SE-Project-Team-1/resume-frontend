@@ -1816,7 +1816,7 @@ export default {
 
                             <!-- LINKS DIALOG -->
                             <v-dialog v-model="editLinksDialog" persistent>
-                                <LinksEdit :url="editedItem.url" 
+                                <LinksEdit :makeSnackbar="makeSnackbar" :url="editedItem.url" 
                                 :description="editedItem.type" 
                                 :linkId="editedItem.id" 
                                 :editLinksDialog="editLinksDialog"
@@ -1825,7 +1825,7 @@ export default {
 
                             <!-- PROFESSIONAL SUMMARY DIALOG -->
                             <div v-if="editProfSumDialog">
-                            <GoalsEdit :editingItem="editedItem"
+                            <GoalsEdit :makeSnackbar="makeSnackbar" :editingItem="editedItem"
                                        :editProfSumDialog="editProfSumDialog"
                                        @update:editProfSumDialog="updateEditProfSumDialog"
                             ></GoalsEdit>
@@ -1833,7 +1833,7 @@ export default {
 
                             <!-- EDUCATION DIALOG -->
                             <div v-if="editEducationDialog">
-                                <EducationEdit :editingItem="editedItem"
+                                <EducationEdit :makeSnackbar="makeSnackbar" :editingItem="editedItem"
                                             :studyAbroadTitle="editstudyAbroadTitle"
                                             :studyAbroadOrganization="editstudyAbroadOrganization"
                                             :studyAbroadLocation="editstudyAbroadLocation"
@@ -1848,7 +1848,7 @@ export default {
 
                             <!-- EXPERIENCE DIALOG-->
                             <div v-if="editExperienceDialog">
-                                <ExperienceEdit :editingItem="editedItem"
+                                <ExperienceEdit :makeSnackbar="makeSnackbar" :editingItem="editedItem"
                                                 :editExperienceDialog="editExperienceDialog"
                                                 :experienceAIAssist="experienceAIAssist"
                                                 :isRequestingAiAssist="isRequestingAiAssist"
@@ -1858,7 +1858,7 @@ export default {
 
                             <!-- SKILLS DIALOG-->
                             <div v-if="editSkillsDialog">
-                                <SkillsEdit :editingItem="editedItem"
+                                <SkillsEdit :makeSnackbar="makeSnackbar" :editingItem="editedItem"
                                             :editSkillsDialog="editSkillsDialog"
                                             :skillAiAssist="skillAiAssist"
                                             :isRequestingAiAssist="isRequestingAiAssist"

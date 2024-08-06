@@ -728,20 +728,20 @@ function navigateToView() {
 
   <!-- LINKS DIALOG -->
   <v-dialog v-model="editLinksDialog" persistent>
-    <LinksEdit :url="editedItem.url" :description="editedItem.type" :linkId="editedItem.id"
+    <LinksEdit :makeSnackbar="makeSnackbar" :url="editedItem.url" :description="editedItem.type" :linkId="editedItem.id"
       :editLinksDialog="editLinksDialog" @update:url="updateUrl" @update:description="updateLinkDescription"
       @update:editLinksDialog="updateEditLinksDialog"></LinksEdit>
   </v-dialog>
 
   <!-- PROFESSIONAL SUMMARY DIALOG -->
   <div v-if="editProfSumDialog">
-    <GoalsEdit :editingItem="editedItem" :editProfSumDialog="editProfSumDialog"
+    <GoalsEdit :makeSnackbar="makeSnackbar" :editingItem="editedItem" :editProfSumDialog="editProfSumDialog"
       @update:editProfSumDialog="updateEditProfSumDialog"></GoalsEdit>
   </div>
 
   <!-- EDUCATION DIALOG -->
   <div v-if="editEducationDialog">
-    <EducationEdit :editingItem="editedItem" :studyAbroadTitle="studyAbroadTitle"
+    <EducationEdit :makeSnackbar="makeSnackbar" :editingItem="editedItem" :studyAbroadTitle="studyAbroadTitle"
       :studyAbroadOrganization="studyAbroadOrganization" :studyAbroadLocation="studyAbroadLocation"
       :studyAbroadTime="studyAbroadTime" :studyAbroadYear="studyAbroadYear" :isAttending="isAttending"
       :editEducationDialog="editEducationDialog" @update:editEducationDialog="updateEditEducationDialog"
@@ -753,14 +753,14 @@ function navigateToView() {
 
   <!-- EXPERIENCE DIALOG-->
   <div v-if="editExperienceDialog">
-    <ExperienceEdit :editingItem="editedItem" :editExperienceDialog="editExperienceDialog"
+    <ExperienceEdit :makeSnackbar="makeSnackbar" :editingItem="editedItem" :editExperienceDialog="editExperienceDialog"
       :experienceAIAssist="experienceAIAssist" :isRequestingAiAssist="isRequestingAiAssist"
       @update:editExperienceDialog="updateEditExperienceDialog"></ExperienceEdit>
   </div>
 
   <!-- SKILLS DIALOG-->
   <div v-if="editSkillsDialog">
-    <SkillsEdit :editingItem="editedItem" :editSkillsDialog="editSkillsDialog" :skillAiAssist="skillAiAssist"
+    <SkillsEdit :makeSnackbar="makeSnackbar" :editingItem="editedItem" :editSkillsDialog="editSkillsDialog" :skillAiAssist="skillAiAssist"
       :isRequestingAiAssist="isRequestingAiAssist" @update:editSkillsDialog="updateEditSkillsDialog"></SkillsEdit>
   </div>
 

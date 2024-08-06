@@ -4,6 +4,7 @@ import LinkServices from '../services/LinkServices';
 
 // Define props
 const props = defineProps({
+  makeSnackbar: Function,
   url: String,
   description: String,
   linkId: Number,
@@ -56,15 +57,16 @@ function closeEditLinksDialog() {
 }
 
 async function saveEditLinks() {
-  try {
-    await LinkServices.updateLink(props.linkId, localDescription.value, localUrl.value, account.value.id);
-    // makeSnackbar("green", "Link Updated!");
-  } catch (error) {
-    console.log(error);
-    // makeSnackbar("error", error.response.data.message);
-  } finally {
-    closeEditLinksDialog();
-  }
+  await LinkServices.updateLink(props.linkId, localDescription.value, localUrl.value, account.value.id)
+    .then(() => {
+      props.makeSnackbar("green", "Link Updated!");
+    })
+    .catch((error) => {
+      console.log(error);
+      props.makeSnackbar("error", props.error.response.data.message);
+    });
+  closeEditLinksDialog();
+
 }
 </script>
 

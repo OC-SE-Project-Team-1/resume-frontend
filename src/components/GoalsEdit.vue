@@ -4,6 +4,7 @@ import GoalServices from '../services/GoalServices';
 
 // Define props
 const props = defineProps({
+  makeSnackbar: Function,
   editingItem: Object,
   editProfSumDialog: Boolean,
 });
@@ -44,11 +45,11 @@ function closeEditProfSumDialog() {
 async function saveEditProfSum() {
   await GoalServices.updateGoal(editedItem.value.id, editedItem.value.title, editedItem.value.description, account.value.id)
     .then(() => {
-      // makeSnackbar("green", "Professional Summary Updated!");
+      props.makeSnackbar("green", "Professional Summary Updated!");
     })
     .catch((error) => {
       console.log(error);
-      // makeSnackbar("error", error.response.data.message);
+      props.makeSnackbar("error", props.error.response.data.message);
     });
     closeEditProfSumDialog();
 }

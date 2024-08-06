@@ -16,6 +16,7 @@ import LinksEdit from "../components/LinksEdit.vue";
 import EducationEdit from "../components/EducationEdit.vue";
 import ExperienceEdit from "../components/ExperienceEdit.vue";
 import GoalsEdit from "../components/GoalsEdit.vue";
+import SkillsEdit from "../components/SkillsEdit.vue";
 
 const router = useRouter();
 const title = ref();
@@ -473,31 +474,36 @@ async function updateEditExperience() {
 // skills dialog stuff
 const editSkillsDialog = ref(false);
 
+async function skillAiAssist(edit) {
+  isRequestingAiAssist.value = true;
+  if (edit) {
+    await SkillServices.skillAiAssist(editedItem.value.description, editedItem.value.chatHistory)
+      .then((response) => {
+        editedItem.value.description = response.data.description
+        editedItem.value.chatHistory = response.data.chatHistory
+        skillHistory = response.data.chatHistory
+        isRequestingAiAssist.value = false;
+      })
+  }
+}
+
 function openEditSkillsDialog(item) {
   editedItem.value = { ...item };
   editSkillsDialog.value = true;
 }
 
-function closeEditSkillsDialog() {
+function updateEditSkillsDialog() {
   skillHistory = []
   editSkillsDialog.value = false;
+  updateEditSkills();
 }
 
-async function saveEditSkills() {
-  await SkillServices.updateSkill(editedItem.value.id, editedItem.value.title, editedItem.value.description, editedItem.value.chatHistory, account.value.id)
-    .then(() => {
-      makeSnackbar(true, "green", "Skill Updated!");
-      const index = skills.value.findIndex(skills => skills.id === editedItem.value.id);
-      if (index !== -1) {
-        skills.value[index] = { ...editedItem.value };
-      }
+async function updateEditSkills() {
+  const index = skills.value.findIndex(skills => skills.id === editedItem.value.id);
+  if (index !== -1) {
+    skills.value[index] = { ...editedItem.value };
+  }
 
-    })
-    .catch((error) => {
-      console.log(error);
-      makeSnackbar(true, "error", error.response.data.message);
-    });
-  closeEditSkillsDialog();
 }
 
 
@@ -756,35 +762,10 @@ function navigateToView() {
       @update:editExperienceDialog="updateEditExperienceDialog"></ExperienceEdit>
   </div>
 
-  <v-dialog v-model="editSkillsDialog" persistent>
-    <v-card>
-      <v-card-title>
-        <span class="headline">Edit Item</span>
-      </v-card-title>
-      <v-card-text>
-
-
-        <v-container>
-          <v-row>
-            <v-col>
-              <v-text-field v-model="editedItem.title" label="Skill"></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-textarea v-model="editedItem.description" </v-textarea>
-            </v-col>
-          </v-row>
-
-        </v-container>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" text @click="closeEditSkillsDialog">Cancel</v-btn>
-        <v-btn color="blue darken-1" text @click="saveEditSkills">Save</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+  <div v-if="editSkillsDialog">
+    <SkillsEdit :editingItem="editedItem" :editSkillsDialog="editSkillsDialog" :skillAiAssist="skillAiAssist"
+      :isRequestingAiAssist="isRequestingAiAssist" @update:editSkillsDialog="updateEditSkillsDialog"></SkillsEdit>
+  </div>
 
 
 

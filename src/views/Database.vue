@@ -11,6 +11,7 @@ import LinksEdit from "../components/LinksEdit.vue";
 import EducationEdit from "../components/EducationEdit.vue";
 import ExperienceEdit from "../components/ExperienceEdit.vue";
 import GoalsEdit from "../components/GoalsEdit.vue";
+import SkillsEdit from "../components/SkillsEdit.vue";
 
 const account = ref();
 //Snackbar to display errors
@@ -760,22 +761,10 @@ function openEditSkillsDialog(item) {
     editSkillsDialog.value = true;
 }
 
-function closeEditSkillsDialog() {
+function updateEditSkillsDialog() {
     skillHistory = []
     editSkillsDialog.value = false;
-}
-
-async function saveEditSkills() {
-    await SkillServices.updateSkill(editedItem.value.id, editedItem.value.title, editedItem.value.description, editedItem.value.chatHistory, account.value.id)
-        .then(() => {
-            makeSnackbar("green", "Skill Updated!");
-        })
-        .catch((error) => {
-            console.log(error);
-            makeSnackbar("error", error.response.data.message);
-        });
     getSkills();
-    closeEditSkillsDialog();
 }
 
 // delete dialog stuff
@@ -1763,47 +1752,6 @@ export default {
                                     </v-btn>
                                 </v-container>
 
-                                <v-dialog v-model="editSkillsDialog" persistent>
-                                    <v-card>
-                                        <v-card-title>
-                                            <span class="headline">Edit Item</span>
-                                        </v-card-title>
-                                        <v-card-text>
-
-
-                                            <v-container>
-                                                <v-row>
-                                                    <v-col>
-                                                        <v-text-field v-model="editedItem.title"
-                                                            label="Skill"></v-text-field>
-                                                    </v-col>
-                                                </v-row>
-                                                <v-skeleton-loader v-if="isRequestingAiAssist" type="card"></v-skeleton-loader>
-                                                <v-row>
-                                                    <v-col>
-                                                        <v-textarea v-if="!isRequestingAiAssist" v-model="editedItem.description"
-                                                            label="Brief Description/Proficientcy Level, click AI assist button along with your input to help create a better description">
-                                                            <template #append-inner>
-                                                                <v-btn color="secondary" rounded="xl" value="Ai Assist"
-                                                                    @click="skillAiAssist(true)">
-                                                                    AI Assist
-                                                                </v-btn>
-                                                            </template>
-                                                        </v-textarea>
-                                                    </v-col>
-                                                </v-row>
-
-                                            </v-container>
-                                        </v-card-text>
-                                        <v-card-actions>
-                                            <v-spacer></v-spacer>
-                                            <v-btn v-if="!isRequestingAiAssist" color="blue darken-1" text
-                                                @click="closeEditSkillsDialog">Cancel</v-btn>
-                                            <v-btn v-if="!isRequestingAiAssist" color="blue darken-1" text @click="saveEditSkills">Save</v-btn>
-                                        </v-card-actions>
-                                    </v-card>
-                                </v-dialog>
-
                                 <div align="right">
 
                                     <v-btn variant="tonal" @click="navigateNextTab(8)">
@@ -2103,6 +2051,16 @@ export default {
                                                 :isRequestingAiAssist="isRequestingAiAssist"
                                                 @update:editExperienceDialog="updateEditExperienceDialog"
                                 ></ExperienceEdit>
+                            </div>
+
+                            <!-- SKILLS DIALOG-->
+                            <div v-if="editSkillsDialog">
+                                <SkillsEdit :editingItem="editedItem"
+                                            :editSkillsDialog="editSkillsDialog"
+                                            :skillAiAssist="skillAiAssist"
+                                            :isRequestingAiAssist="isRequestingAiAssist"
+                                            @update:editSkillsDialog="updateEditSkillsDialog"
+                                ></SkillsEdit>
                             </div>
 
 

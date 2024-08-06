@@ -9,7 +9,7 @@ import ExperienceServices from "../services/ExperienceServices.js";
 import { useRoute } from 'vue-router';
 
 const props = defineProps({isDeleted: Boolean,
-                            tab: Number,
+                            tab: String,
                             deleteItemId: Number,
                             account: Object,
                             makeSnackbar: Function,
@@ -112,8 +112,8 @@ async function deleting(deleteItem) {
     <v-dialog persistent v-model="props.isDeleted" width="800">
         <v-card class="rounded-lg elevation-5">
             <v-card-title class="text-center headline mb-2">Delete Item?</v-card-title>
-            <v-text align="center">You will be unable to retrieve this item once
-                deleted!</v-text>
+            <p align="center">You will be unable to retrieve this item once
+                deleted!</p>
 
             <v-card-actions>
                 <v-btn variant="flat" color="primary" @click="deleteItem()">Delete</v-btn>

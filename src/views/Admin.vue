@@ -172,7 +172,7 @@ function closeDelete() {
       <v-dialog persistent v-model="isDeleted" width="800">
         <v-card class="rounded-lg elevation-5">
           <v-card-title class="text-center headline mb-2">Delete User?</v-card-title>
-          <v-text align="center">This user and all of their content will be deleted!</v-text>
+          <v-card-text align="center">This user and all of their content will be deleted!</v-card-text>
 
           <v-card-actions>
             <v-btn variant="flat" color="primary" @click="deleteUser()">Delete</v-btn>

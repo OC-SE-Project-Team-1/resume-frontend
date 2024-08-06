@@ -1020,6 +1020,7 @@ export default {
                                         <v-card-title align="LEFT">Links</v-card-title>
                                     </v-col>
                                 </v-row>
+                                <v-card-text class="headline mb-2" align="left">Select Link(s): </v-card-text>
 
                                 <v-data-table v-model="selectedLinks" :items="links" item-value="id" :headers="[{ title: 'Description', value: 'type' },
                                 { title: 'URL', value: 'url' }, { title: 'Delete', value: 'delete' }]" show-select hide-default-footer>
@@ -1030,6 +1031,7 @@ export default {
                                     </template>
 
                                 </v-data-table>
+                                
 
                                 <v-dialog v-model="editDialog" persistent>
                                     <v-card>
@@ -1071,7 +1073,7 @@ export default {
                             <v-tabs-window-item value="2" style="padding: 50px">
 
                                 <div align="left">
-                                    <v-text class="headline mb-2">Select Summary: </v-text>
+                                    <v-card-text class="headline mb-2">Select Summary: </v-card-text>
                                     <v-data-table v-model="selectedGoals" :items="goals" item-value="id" :headers="[{ title: 'Title', value: 'title' },
                                     { title: 'Summary', value: 'description' }, { title: 'Delete', value: 'delete' }]" show-select
                                         hide-default-footer select-strategy="single">
@@ -1189,7 +1191,7 @@ export default {
                             <v-tabs-window-item value="3" style="padding: 50px">
 
                                 <div align="left">
-                                    <v-text class="headline mb-2">Select Education: </v-text>
+                                    <v-card-text class="headline mb-2">Select Education: </v-card-text>
 
                                     <v-container>
                                         <v-data-table v-model="selectedEducation" :items="educationInfo" item-value="id"
@@ -1411,7 +1413,7 @@ export default {
                             <!-- Experience -->
                             <v-tabs-window-item value="4" style="padding: 50px">
                                 <div align="left">
-                                    <v-text class="headline mb-2">Select Work Experiences: </v-text>
+                                    <v-card-text class="headline mb-2">Select Work Experiences: </v-card-text>
                                     <v-container>
                                         <v-data-table v-model="selectedWorkExperience" :items="experiences"
                                             item-value="id" :search="'1'" :custom-filter="filterPerfectMatch"
@@ -1510,7 +1512,7 @@ export default {
 
 
                                 <div align="left">
-                                    <v-text class="headline mb-2">Select Leadership Experience: </v-text>
+                                    <v-card-text class="headline mb-2">Select Leadership Experience: </v-card-text>
 
                                     <v-container>
                                         <v-data-table v-model="selectedLeadershipExperience" :items="experiences"
@@ -1610,7 +1612,7 @@ export default {
 
 
                                 <div align="left">
-                                    <v-text class="headline mb-2">Select Activities: </v-text>
+                                    <v-card-text class="headline mb-2">Select Activities: </v-card-text>
 
                                     <v-container>
                                         <v-data-table v-model="selectedActivitiesExperience" :items="experiences"
@@ -1710,7 +1712,7 @@ export default {
 
 
                                 <div align="left">
-                                    <v-text class="headline mb-2">Select Volunteer Work: </v-text>
+                                    <v-card-text class="headline mb-2">Select Volunteer Work: </v-card-text>
 
                                     <v-container>
                                         <v-data-table v-model="selectedVolunteerExperience" :items="experiences"
@@ -1812,7 +1814,7 @@ export default {
                             <!-- Skills -->
                             <v-tabs-window-item value="5" style="padding: 50px">
                                 <div align="left">
-                                    <v-text class="headline mb-2">Select Skill(s): </v-text>
+                                    <v-card-text class="headline mb-2">Select Skill(s): </v-card-text>
                                     <v-container>
                                         <v-data-table v-model="selectedSkills" :items="skills" item-value="id"
                                             :headers="[{ title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Delete', value: 'delete' }]"
@@ -1895,7 +1897,7 @@ export default {
                                 Other Resume Parts
 
                                 <div align="left">
-                                    <v-text class="headline mb-2">Select Honors: </v-text>
+                                    <v-card-text class="headline mb-2">Select Honors: </v-card-text>
                                     <v-container>
                                         <v-data-table v-model="selectedHonorExperience" :items="experiences"
                                             item-value="id" :search="'5'" :custom-filter="filterPerfectMatch"
@@ -1966,7 +1968,7 @@ export default {
                                     <v-spacer></v-spacer>
                                 </div>
                                 <div align="left">
-                                    <v-text class="headline mb-2">Select Awards: </v-text>
+                                    <v-card-text class="headline mb-2">Select Awards: </v-card-text>
                                     <v-container>
                                         <v-data-table v-model="selectedAwardExperience" :items="experiences"
                                             item-value="id" :search="'6'" :custom-filter="filterPerfectMatch"
@@ -2037,7 +2039,7 @@ export default {
                                     <v-spacer></v-spacer>
                                 </div>
                                 <div align="left">
-                                    <v-text class="headline mb-2">Select Projects: </v-text>
+                                    <v-card-text class="headline mb-2">Select Projects: </v-card-text>
                                     <v-container>
                                         <v-data-table v-model="selectedProjectExperience" :items="experiences"
                                             item-value="id" :search="'7'" :custom-filter="filterPerfectMatch"

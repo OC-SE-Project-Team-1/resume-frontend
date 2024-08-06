@@ -199,7 +199,7 @@ export default {
 
           <v-row>
             <v-col cols="2">
-              <v-text for="character" class="headline mb-2">Username: </v-text>
+              <v-card-text for="character" class="headline mb-2">Username: </v-card-text>
             </v-col>
             <v-col>
               <v-text-field v-model="newUsername" :readonly="!isAccountEditable"></v-text-field>
@@ -207,7 +207,7 @@ export default {
           </v-row>
           <v-row>
             <v-col cols="2">
-              <v-text for="character" class="headline mb-2">Password: </v-text>
+              <v-card-text for="character" class="headline mb-2">Password: </v-card-text>
             </v-col>
             <v-col>
               <v-row>
@@ -219,7 +219,7 @@ export default {
           </v-row>
           <v-row>
             <v-col cols="2">
-              <v-text for="character" class="headline mb-2">Email: </v-text>
+              <v-card-text for="character" class="headline mb-2">Email: </v-card-text>
             </v-col>
             <v-col>
               <v-text-field v-model="newEmail" :readonly="!isAccountEditable"></v-text-field>
@@ -227,7 +227,7 @@ export default {
           </v-row>
           <v-row>
             <v-col cols="2">
-              <v-text for="character" class="headline mb-2">First Name: </v-text>
+              <v-card-text for="character" class="headline mb-2">First Name: </v-card-text>
             </v-col>
             <v-col>
               <v-text-field v-model="newFirstName" :readonly="!isAccountEditable"></v-text-field>
@@ -235,7 +235,7 @@ export default {
           </v-row>
           <v-row>
             <v-col cols="2">
-              <v-text for="character" class="headline mb-2">Last Name: </v-text>
+              <v-card-text for="character" class="headline mb-2">Last Name: </v-card-text>
             </v-col>
             <v-col>
               <v-text-field v-model="newLastName" :readonly="!isAccountEditable"></v-text-field>
@@ -243,7 +243,7 @@ export default {
           </v-row>
           <v-row>
             <v-col cols="2">
-              <v-text for="character" class="headline mb-2">Address: </v-text>
+              <v-card-text for="character" class="headline mb-2">Address: </v-card-text>
             </v-col>
             <v-col>
               <v-text-field v-model="newAddress" :readonly="!isAccountEditable"></v-text-field>
@@ -251,7 +251,7 @@ export default {
           </v-row>
           <v-row>
             <v-col cols="2">
-              <v-text for="character" class="headline mb-2">Phone Number: </v-text>
+              <v-card-text for="character" class="headline mb-2">Phone Number: </v-card-text>
             </v-col>
             <v-col>
               <v-text-field v-model="newPhoneNumber" :readonly="!isAccountEditable"></v-text-field>

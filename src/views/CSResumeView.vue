@@ -19,15 +19,14 @@ const resumeData = ref(null);
 const isDownloaded = ref(false);
 const selectedUser = ref();
 
-const snackbar = ref({
-  value: false,
-  color: "",
-  text: "",
-});
+const snackbarValue = ref(false);
+const snackbarColor = ref("");
+const snackbarText = ref("");
+
 function makeSnackbar(color, text){
-    snackbar.value.value = true;
-    snackbar.value.color = color;
-    snackbar.value.text = text;
+  snackbarValue.value = true;
+  snackbarColor.value = color;
+  snackbarText.value = text;
 }
 
 onMounted(async () => {
@@ -90,10 +89,6 @@ function openExport() {
 
 function closeExport() {
   isExport.value = false;
-}
-
-function closeSnackBar() {
-  snackbar.value.value = false;
 }
 
 function refreshPage(){
@@ -165,15 +160,9 @@ function refreshPage(){
       </v-dialog>
 
 
-      <v-snackbar v-model="snackbar.value" rounded="pill">
-        {{ snackbar.text }}
+      <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
+      @update:show="value => snackbarValue = value"></Snackbar>
 
-        <template v-slot:actions>
-          <v-btn :color="snackbar.color" variant="text" @click="closeSnackBar()">
-            Close
-          </v-btn>
-        </template>
-      </v-snackbar>
     </div>
 
   </v-container>

@@ -13,15 +13,14 @@ const router = useRouter();
 const isRequestingFeedback = ref(false);
 
 // Snackbar
-const snackbar = ref({
-    value: false,
-    color: "",
-    text: "",
-});
+const snackbarValue = ref(false);
+const snackbarColor = ref("");
+const snackbarText = ref("");
+
 function makeSnackbar(color, text){
-    snackbar.value.value = true;
-    snackbar.value.color = color;
-    snackbar.value.text = text;
+  snackbarValue.value = true;
+  snackbarColor.value = color;
+  snackbarText.value = text;
 }
 // Resume variables
 const resumeId = ref();
@@ -242,17 +241,8 @@ export default {
             </v-col>
         </v-row>
 
+        <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
+        @update:show="value => snackbarValue = value"></Snackbar>
 
-
-
-
-        <v-snackbar v-model="snackbar.value" rounded="pill">
-            {{ snackbar.text }}
-            <template v-slot:actions>
-                <v-btn :color="snackbar.color" variant="text" @click="closeSnackBar()">
-                    Close
-                </v-btn>
-            </template>
-        </v-snackbar>
     </v-container>
 </template>

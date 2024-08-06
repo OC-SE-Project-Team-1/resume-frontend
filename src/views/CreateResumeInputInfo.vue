@@ -20,11 +20,15 @@ import PreviewTemplate4 from "../components/PreviewTemplate4.vue";
 const account = ref();
 const title = ref("");
 //Snackbar to display errors
-const snackbar = ref({
-    value: false,
-    color: "",
-    text: "",
-});
+const snackbarValue = ref(false);
+const snackbarColor = ref("");
+const snackbarText = ref("");
+
+function makeSnackbar(color, text){
+  snackbarValue.value = true;
+  snackbarColor.value = color;
+  snackbarText.value = text;
+}
 const isNewLinkVisible = ref(false);
 const isNewEduVisible = ref(false);
 const tabs = ref();
@@ -324,16 +328,6 @@ onMounted(() => {
     localStorage.removeItem("resumeTemplate");
     getPersonalInfo();
 });
-
-function makeSnackbar(color, text){
-    snackbar.value.value = true;
-    snackbar.value.color = color;
-    snackbar.value.text = text;
-}
-
-function closeSnackBar() {
-    snackbar.value.value = false;
-}
 
 async function setNewLinkVisible() {
     isNewLinkVisible.value = true;
@@ -2256,15 +2250,9 @@ export default {
 
         </v-row>
 
-        <v-snackbar v-model="snackbar.value" rounded="pill">
-        {{ snackbar.text }}
+        <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
+        @update:show="value => snackbarValue = value"></Snackbar>
 
-        <template v-slot:actions>
-          <v-btn :color="snackbar.color" variant="text" @click="closeSnackBar()">
-            Close
-          </v-btn>
-        </template>
-      </v-snackbar>
     </v-container>
 
 

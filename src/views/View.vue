@@ -21,24 +21,15 @@ const isFeedback = ref(false);
 const feedback = ref("");
 const rating = ref("");
 const templateId = ref(0);
-const snackbar = ref({
-  value: false,
-  color: "",
-  text: "",
-});
 
-var snackbarValue = false;
-var snackbarColor = "";
-var snackbarText = "";
-
-const testValue = ref(false);
-const testColor = ref("Blue");
-const testText = ref("Something idk");
+const snackbarValue = ref(false);
+const snackbarColor = ref("");
+const snackbarText = ref("");
 
 function makeSnackbar(color, text){
-  testValue.value = true;
-  testColor.value = color;
-  testText.value = text;
+  snackbarValue.value = true;
+  snackbarColor.value = color;
+  snackbarText.value = text;
 }
 
 const showFeedback = computed(() => {
@@ -118,10 +109,6 @@ function toggleFeedback() {
 
 function closeExport() {
   isExport.value = false;
-}
-
-function closeSnackBar() {
-  snackbar.value.value = false;
 }
 
 async function updateEditing(){
@@ -216,8 +203,8 @@ function refreshPage(){
         </v-card>
       </v-dialog>
 
-      <Snackbar :show="testValue" :color="testColor" :message="testText"
-      @update:show="value => testValue = value"></Snackbar>
+      <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
+      @update:show="value => snackbarValue = value"></Snackbar>
 
       
     </div>

@@ -21,11 +21,15 @@ const resumeData = ref(null);
 const templateId = ref(0);
 const isAttending = ref(false);
 const feedback = ref("");
-const snackbar = ref({
-  value: false,
-  color: "",
-  text: "",
-});
+const snackbarValue = ref(false);
+const snackbarColor = ref("");
+const snackbarText = ref("");
+
+function makeSnackbar(color, text){
+  snackbarValue.value = true;
+  snackbarColor.value = color;
+  snackbarText.value = text;
+}
 
 const links = ref([]);
 const goal = ref([]);
@@ -89,16 +93,8 @@ async function getResume() {
     })
     .catch((error) => {
       console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
+      makeSnackbar("error", error.response.data.message)
     });
-}
-
-function makeSnackbar(value, color, text) {
-  snackbar.value.value = value;
-  snackbar.value.color = color;
-  snackbar.value.text = text;
 }
 
 async function sortData() {
@@ -477,9 +473,6 @@ async function saveEditExperience() {
         }
       }
 
-
-
-
       makeSnackbar(true, "green", "Experience Updated!");
     })
     .catch((error) => {
@@ -519,7 +512,6 @@ async function saveEditSkills() {
     });
   closeEditSkillsDialog();
 }
-
 
 function navigateToView() {
   router.push({ name: "view" });
@@ -993,9 +985,7 @@ function navigateToView() {
     </v-card>
   </v-dialog>
 
-
-
-
-
+  <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
+  @update:show="value => snackbarValue = value"></Snackbar>
 
 </template>

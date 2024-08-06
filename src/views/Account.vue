@@ -6,11 +6,15 @@ import UserServices from "../services/UserServices";
 
 const account = ref(null);
 const valid = ref(false);
-const snackbar = ref({
-  value: false,
-  color: "",
-  text: "",
-});
+const snackbarValue = ref(false);
+const snackbarColor = ref("");
+const snackbarText = ref("");
+
+function makeSnackbar(color, text){
+  snackbarValue.value = true;
+  snackbarColor.value = color;
+  snackbarText.value = text;
+}
 
 const isAccountEditable = ref(false);
 
@@ -27,12 +31,6 @@ onMounted(async () => {
 
 
 });
-
-function makeSnackbar(color, text){
-    snackbar.value.value = true;
-    snackbar.value.color = color;
-    snackbar.value.text = text;
-}
 
 async function populateAccount(){
   newUsername.value = accountData.value.userName;
@@ -53,10 +51,6 @@ async function getAccount() {
       console.log(error);
       makeSnackbar(true, "error", error.response.data.message)
     });
-}
-
-function closeSnackBar() {
-  snackbar.value.value = false;
 }
 
 //Edit Account Name or Email
@@ -271,15 +265,8 @@ export default {
 
   </div>
 
-  <v-snackbar v-model="snackbar.value" rounded="pill">
-    {{ snackbar.text }}
-
-    <template v-slot:actions>
-      <v-btn :color="snackbar.color" variant="text" @click="closeSnackBar()">
-        Close
-      </v-btn>
-    </template>
-  </v-snackbar>
+  <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
+  @update:show="value => snackbarValue = value"></Snackbar>
 
   <v-dialog v-model="changePasswordDialog" persistent>
 <v-form ref="form" v-model="valid">

@@ -141,8 +141,6 @@ const displayLinks = computed(() => {
     if (selectedLinks.value !== null) {
         for (let [key, value] of Object.entries(links.value)) {
             for (let [key2, value2] of Object.entries(selectedLinks.value)) {
-                // console.log("Link Key: " + key + " Value: " + value.id);
-                // console.log("Selected Link Key: " + key2 + " Selected Value: " + value2);
                 if (value.id == value2) {
                     linkArr.push(value);
                 }
@@ -159,8 +157,6 @@ const displayGoal = computed(() => {
     if (selectedGoals.value !== null) {
         for (let [key, value] of Object.entries(goals.value)) {
             for (let [key2, value2] of Object.entries(selectedGoals.value)) {
-                console.log("Link Key: " + key + " Value: " + value.id);
-                console.log("Selected Link Key: " + key2 + " Selected Value: " + value2);
                 if (value.id == value2) {
                     goalArr.push(value.description);
                     break;
@@ -178,8 +174,6 @@ const displayEducation = computed(() => {
     if (selectedEducation.value !== null) {
         for (let [key, value] of Object.entries(educationInfo.value)) {
             for (let [key2, value2] of Object.entries(selectedEducation.value)) {
-                // console.log("Link Key: " + key + " Value: " + value.id);
-                // console.log("Selected Link Key: " + key2 + " Selected Value: " + value2);
                 if (value.id == value2) {
                     eduArr.push(value);
                 }
@@ -321,9 +315,6 @@ async function navigateNextTab(value) {
 async function resetNewInput() {
     clearExperienceData();
     closeNewSkill();
-    closeNewHonor();
-    closeNewAward();
-    closeNewProject();
 }
 
 async function selectedTemplate(value) {
@@ -396,7 +387,7 @@ function toggleExperience(value) {
     else if (value == 5) {
         isHonorExperience.value = !isHonorExperience.value;
         if (isHonorExperience.value == false) {
-            closeNewHonor();
+            clearExperienceData();
         }
         if (isHonorExperience.value == true) {
             clearExperienceData();
@@ -407,7 +398,7 @@ function toggleExperience(value) {
     else if (value == 6) {
         isAwardExperience.value = !isAwardExperience.value;
         if (isAwardExperience.value == false) {
-            closeNewAward();
+            clearExperienceData();
         }
         if (isAwardExperience.value == true) {
             clearExperienceData();
@@ -418,7 +409,7 @@ function toggleExperience(value) {
     else if (value == 7) {
         isProjectExperience.value = !isProjectExperience.value;
         if (isProjectExperience.value == false) {
-            closeNewProject();
+            clearExperienceData();
         }
         if (isProjectExperience.value == true) {
             clearExperienceData();
@@ -610,7 +601,6 @@ async function addResume() {
             expArr.push(value);
         }
     }
-    console.log(expArr);
 
     if (selectedSkills.value !== null) {
         for (let [key, value] of Object.entries(selectedSkills.value)) {

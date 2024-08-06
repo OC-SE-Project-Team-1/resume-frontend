@@ -178,9 +178,6 @@ async function navigateNextTab(value) {
 async function resetNewInput() {
     clearExperienceData();
     closeNewSkill();
-    closeNewHonor();
-    closeNewAward();
-    closeNewProject();
 }
 
 function toggleIsAttending() {
@@ -243,7 +240,7 @@ function toggleExperience(value) {
     else if (value == 5) {
         isHonorExperience.value = !isHonorExperience.value;
         if (isHonorExperience.value == false) {
-            closeNewHonor();
+            clearExperienceData();
         }
         if (isHonorExperience.value == true) {
             clearExperienceData();
@@ -254,7 +251,7 @@ function toggleExperience(value) {
     else if (value == 6) {
         isAwardExperience.value = !isAwardExperience.value;
         if (isAwardExperience.value == false) {
-            closeNewAward();
+            clearExperienceData();
         }
         if (isAwardExperience.value == true) {
             clearExperienceData();
@@ -265,7 +262,7 @@ function toggleExperience(value) {
     else if (value == 7) {
         isProjectExperience.value = !isProjectExperience.value;
         if (isProjectExperience.value == false) {
-            closeNewProject();
+            clearExperienceData();
         }
         if (isProjectExperience.value == true) {
             clearExperienceData();

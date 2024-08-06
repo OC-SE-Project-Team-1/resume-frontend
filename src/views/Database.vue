@@ -178,8 +178,8 @@ function closeSnackBar() {
     snackbar.value.value = false;
 }
 
-function makeSnackbar(value, color, text) {
-    snackbar.value.value = value;
+function makeSnackbar( color, text) {
+    snackbar.value.value = true;
     snackbar.value.color = color;
     snackbar.value.text = text;
 }

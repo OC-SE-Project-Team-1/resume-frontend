@@ -8,6 +8,7 @@ import template3 from "../components/Template3.vue";
 import template4 from "../components/Template4.vue";
 import ResumeServices from "../services/ResumeServices";
 import ResumeExport from "../reports/ResumeExport";
+import Snackbar from "../components/Snackbar.vue";
 
 const router = useRouter();
 const account = ref(null);
@@ -25,10 +26,15 @@ const snackbar = ref({
   color: "",
   text: "",
 });
+
+var snackbarValue = false;
+var snackbarColor = "";
+var snackbarText = ""
+
 function makeSnackbar(color, text){
-    snackbar.value.value = true;
-    snackbar.value.color = color;
-    snackbar.value.text = text;
+  snackbarValue = true;
+  snackbarColor = color;
+  snackbarText = text;
 }
 
 const showFeedback = computed(() => {
@@ -205,16 +211,11 @@ function refreshPage(){
           
         </v-card>
       </v-dialog>
-
-      <v-snackbar v-model="snackbar.value" rounded="pill">
-        {{ snackbar.text }}
-
-        <template v-slot:actions>
-          <v-btn :color="snackbar.color" variant="text" @click="closeSnackBar()">
-            Close
-          </v-btn>
-        </template>
-      </v-snackbar>
+      
+      <Snackbar 
+        :show="snackbarValue" :color="snackbarColor" :message="snackbarText" v-on:update="alert = $event"
+      ></Snackbar>
+      
     </div>
   </v-container>
 </template>

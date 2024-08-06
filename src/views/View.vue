@@ -16,7 +16,6 @@ const resumeData = ref(null);
 const resumeId = ref(null);
 const isExport = ref(false);
 const isEdit = ref(false);;
-const isDownloaded = ref(false);
 const isFeedback = ref(false);
 const feedback = ref("");
 const rating = ref("");
@@ -89,7 +88,6 @@ async function exportResume() {
     const html = document.getElementsByClassName("resume")
     await ResumeExport.exportResume(html[0])
     .then(() => {
-      isDownloaded.value = true;
       closeExport();
       makeSnackbar("green", "Resume Exported!")
     })
@@ -116,9 +114,7 @@ async function updateEditing(){
   await ResumeServices.updateResumeEditing(resumeId.value, isEdit.value, account.value.id )
 }
 
-function refreshPage(){
-  isDownloaded.value = false;
-}
+
 </script>
 
 <template>
@@ -191,15 +187,6 @@ function refreshPage(){
             <v-spacer></v-spacer>
             <v-btn variant="flat" color="secondary" @click="closeExport()">Close</v-btn>
           </v-card-actions>
-        </v-card>
-      </v-dialog>
-
-      <v-dialog persistent v-model="isDownloaded" width="400">
-        <v-card class="rounded-lg elevation-5">
-          <v-card-title class="text-center headline mb-2">Finish Download?</v-card-title>
-          
-            <v-btn variant="flat" color="primary" @click="refreshPage()">confirm</v-btn>
-          
         </v-card>
       </v-dialog>
 

@@ -225,8 +225,8 @@ async function saveEditEducation() {
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="closeEditEducationDialog">Cancel</v-btn>
-          <v-btn color="blue darken-1" text @click="saveEditEducation">Save</v-btn>
+          <v-btn color="accent" text @click="closeEditEducationDialog">Cancel</v-btn>
+          <v-btn color="accent" text @click="saveEditEducation">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

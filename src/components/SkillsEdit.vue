@@ -97,8 +97,8 @@ async function saveEditSkills() {
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn v-if="!isRequestingAiAssist" color="blue darken-1" text @click="closeEditSkillsDialog">Cancel</v-btn>
-          <v-btn v-if="!isRequestingAiAssist" color="blue darken-1" text @click="saveEditSkills">Save</v-btn>
+          <v-btn v-if="!isRequestingAiAssist" color="accent" text @click="closeEditSkillsDialog">Cancel</v-btn>
+          <v-btn v-if="!isRequestingAiAssist" color="accent" text @click="saveEditSkills">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

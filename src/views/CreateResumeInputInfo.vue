@@ -675,7 +675,7 @@ export default {
 
                                 <!-- LINK INFO -->
                                 <v-data-table v-model="selectedLinks" :items="links" item-value="id" :headers="[{ title: 'Description', value: 'type' },
-                                { title: 'URL', value: 'url' }, { title: 'Delete', value: 'delete' }]" show-select
+                                { title: 'URL', value: 'url', align: 'center'  }, { title: 'Delete', value: 'delete', align: 'end'  }]" show-select
                                     hide-default-footer>
                                     <template v-slot:item.delete="{ item }">
                                         <v-btn variant="text" @click="openDelete(item)" icon>
@@ -684,8 +684,8 @@ export default {
                                     </template>
                                 </v-data-table>
 
-                                <v-btn variant="text" @click="setNewLinkVisible()">
-                                    + Add New link
+                                <v-btn variant="tonal" @click="setNewLinkVisible()">
+                                    Add New link
                                 </v-btn>
 
                                 <NewLink v-if="isNewLinkVisible" :isNewLinkVisible="isNewLinkVisible"
@@ -705,7 +705,7 @@ export default {
                                 <div align="left">
                                     <v-card-text class="headline mb-2">Select Summary: </v-card-text>
                                     <v-data-table v-model="selectedGoals" :items="goals" item-value="id" :headers="[{ title: 'Title', value: 'title' },
-                                    { title: 'Summary', value: 'description' }, { title: 'Delete', value: 'delete' }]"
+                                    { title: 'Summary', value: 'description' }, { title: 'Delete', value: 'delete', align: 'end'  }]"
                                         show-select hide-default-footer select-strategy="single">
                                         <template v-slot:item.delete="{ item }">
                                             <v-btn variant="text" @click="openDelete(item)" icon>
@@ -743,7 +743,7 @@ export default {
                                     <v-container>
                                         <v-data-table v-model="selectedEducation" :items="educationInfo" item-value="id"
                                             :headers="[{ title: 'Organization', value: 'organization' }, { title: 'Degree', value: 'description' },
-                                            { title: 'Start Date', value: 'startDate' }, { title: 'End Date', value: 'endDate' }, { title: 'Delete', value: 'delete' }]"
+                                            { title: 'Start Date', value: 'startDate' }, { title: 'End Date', value: 'endDate' }, { title: 'Delete', value: 'delete', align: 'end'  }]"
                                             show-select hide-default-footer>
                                             <template v-slot:item.delete="{ item }">
                                                 <v-btn variant="text" @click="openDelete(item)" icon>
@@ -790,7 +790,7 @@ export default {
                                     <v-container>
                                         <v-data-table v-model="selectedWorkExperience" :items="experiences"
                                             item-value="id" :search="'1'" :custom-filter="filterPerfectMatch"
-                                            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Delete', value: 'delete' }]"
+                                            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Delete', value: 'delete', align: 'end'  }]"
                                             show-select hide-default-footer>
                                             <template v-slot:item.delete="{ item }">
                                                 <v-btn variant="text" @click="openDelete(item)" icon>
@@ -840,7 +840,7 @@ export default {
                                     <v-container>
                                         <v-data-table v-model="selectedLeadershipExperience" :items="experiences"
                                             item-value="id" :search="'2'" :custom-filter="filterPerfectMatch"
-                                            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Delete', value: 'delete' }]"
+                                            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Delete', value: 'delete', align: 'end'  }]"
                                             show-select hide-default-footer>
                                             <template v-slot:item.delete="{ item }">
                                                 <v-btn variant="text" @click="openDelete(item)" icon>
@@ -892,7 +892,7 @@ export default {
                                     <v-container>
                                         <v-data-table v-model="selectedActivitiesExperience" :items="experiences"
                                             item-value="id" :search="'3'" :custom-filter="filterPerfectMatch"
-                                            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Delete', value: 'delete' }]"
+                                            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Delete', value: 'delete', align: 'end'  }]"
                                             show-select hide-default-footer>
                                             <template v-slot:item.delete="{ item }">
                                                 <v-btn variant="text" @click="openDelete(item)" icon>
@@ -943,7 +943,7 @@ export default {
                                     <v-container>
                                         <v-data-table v-model="selectedVolunteerExperience" :items="experiences"
                                             item-value="id" :search="'4'" :custom-filter="filterPerfectMatch"
-                                            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Delete', value: 'delete' }]"
+                                            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Organization', value: 'organization' }, { title: 'Title', value: 'title' }, { title: 'Delete', value: 'delete', align: 'end'  }]"
                                             show-select hide-default-footer>
                                             <template v-slot:item.delete="{ item }">
                                                 <v-btn variant="text" @click="openDelete(item)" icon>
@@ -990,7 +990,7 @@ export default {
                                     <v-card-text class="headline mb-2">Select Skill(s): </v-card-text>
                                     <v-container>
                                         <v-data-table v-model="selectedSkills" :items="skills" item-value="id"
-                                            :headers="[{ title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Delete', value: 'delete' }]"
+                                            :headers="[{ title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Delete', value: 'delete', align: 'end'  }]"
                                             show-select hide-default-footer>
                                             <template v-slot:item.delete="{ item }">
                                                 <v-btn variant="text" @click="openDelete(item)" icon>
@@ -1011,8 +1011,8 @@ export default {
                                     <v-spacer></v-spacer>
                                 </div>
 
-                                <v-btn variant="text" @click="setNewskillVisible()">
-                                    + Add New Skill
+                                <v-btn variant="tonal" @click="setNewskillVisible()">
+                                    Add New Skill
                                 </v-btn>
 
                                 <NewSkill v-if="isNewSkillVisible" :isNewSkillVisible="isNewSkillVisible"
@@ -1036,7 +1036,6 @@ export default {
 
                             <!-- Others -->
                             <v-tabs-window-item value="6" style="padding: 50px">
-                                Other Resume Parts
 
                                 <!-- Honors Experience -->
                                 <div align="left">
@@ -1044,7 +1043,7 @@ export default {
                                     <v-container>
                                         <v-data-table v-model="selectedHonorExperience" :items="experiences"
                                             item-value="id" :search="'5'" :custom-filter="filterPerfectMatch"
-                                            :headers="[{ title: 'experienceTypeId', text: 'experienceTypeId', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Delete', value: 'delete' }]"
+                                            :headers="[{ title: 'experienceTypeId', text: 'experienceTypeId', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Delete', value: 'delete', align: 'end'  }]"
                                             show-select hide-default-footer>
                                             <template v-slot:item.delete="{ item }">
                                                 <v-btn variant="text" @click="openDelete(item)" icon>
@@ -1093,7 +1092,7 @@ export default {
                                     <v-container>
                                         <v-data-table v-model="selectedAwardExperience" :items="experiences"
                                             item-value="id" :search="'6'" :custom-filter="filterPerfectMatch"
-                                            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Delete', value: 'delete' }]"
+                                            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Delete', value: 'delete', align: 'end'  }]"
                                             show-select hide-default-footer>
                                             <template v-slot:item.delete="{ item }">
                                                 <v-btn variant="text" @click="openDelete(item)" icon>
@@ -1142,7 +1141,7 @@ export default {
                                     <v-container>
                                         <v-data-table v-model="selectedProjectExperience" :items="experiences"
                                             item-value="id" :search="'7'" :custom-filter="filterPerfectMatch"
-                                            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Delete', value: 'delete' }]"
+                                            :headers="[{ title: 'Experience', value: 'experienceTypeId', align: ' d-none' }, { title: 'Title', value: 'title' }, { title: 'Description', value: 'description' }, { title: 'Delete', value: 'delete', align: 'end'  }]"
                                             show-select hide-default-footer>
                                             <template v-slot:item.delete="{ item }">
                                                 <v-btn variant="text" @click="openDelete(item)" icon>
@@ -1267,7 +1266,7 @@ export default {
                     <v-spacer></v-spacer>
                 </div>
                 <div align="center">
-                    <v-btn :disabled="!isGenerated" @click="addResume()">Generate Resume</v-btn>
+                    <v-btn :disabled="!isGenerated" @click="addResume()" color="primary">Generate Resume</v-btn>
                 </div>
                 <div align="center">
                     <v-btn class="mx-2 my-2" :to="{ name: 'library' }">Go To Library</v-btn>

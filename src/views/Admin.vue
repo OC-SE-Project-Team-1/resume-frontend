@@ -156,8 +156,8 @@ function closeDelete() {
       </v-table>
 
       <v-dialog persistent v-model="isUserUpdate" width="800">
-        <v-card class="rounded-lg elevation-5">
-          <v-card-title class="text-center headline mb-2">Change User Role?</v-card-title>
+        <v-card class="rounded-lg elevation-5" style="margin: 10%; padding-top: 1%; padding-bottom: 1%; padding-left:2%; padding-right:2%">
+          <v-card-title class="text-center headline mb-2" >Change User Role?</v-card-title>
           <div class="d-flex align-center flex-column pa-6">
             <v-btn-toggle v-model="userRole" variant="outlined" divided>
               <v-btn value="3">Student</v-btn>
@@ -166,23 +166,25 @@ function closeDelete() {
             </v-btn-toggle>
           </div>
           <v-card-actions>
+            
+            <v-btn variant="text" color="accent" @click="closeUserUpdate()">Cancel</v-btn>
+            <v-spacer></v-spacer>
             <v-btn variant="flat" color="primary" :disabled="userRole === currentRole"
               @click="changeUserRole()">Confirm</v-btn>
-            <v-spacer></v-spacer>
-            <v-btn variant="flat" color="secondary" @click="closeUserUpdate()">Close</v-btn>
+
           </v-card-actions>
         </v-card>
       </v-dialog>
 
       <v-dialog persistent v-model="isDeleted" width="800">
-        <v-card class="rounded-lg elevation-5">
+        <v-card class="rounded-lg elevation-5" style="margin: 20%; padding-top: 1%; padding-bottom: 1%; padding-left:2%; padding-right:2%">
           <v-card-title class="text-center headline mb-2">Delete User?</v-card-title>
           <v-card-text align="center">This user and all of their content will be deleted!</v-card-text>
 
-          <v-card-actions>
-            <v-btn variant="flat" color="primary" @click="deleteUser()">Delete</v-btn>
+          <v-card-actions >
+            <v-btn variant="text" color="accent" @click="closeDelete()">Close</v-btn>            
             <v-spacer></v-spacer>
-            <v-btn variant="flat" color="secondary" @click="closeDelete()">Close</v-btn>
+            <v-btn variant="flat" color="primary" @click="deleteUser()">Delete</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>

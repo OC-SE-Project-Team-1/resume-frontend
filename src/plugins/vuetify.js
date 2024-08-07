@@ -27,7 +27,7 @@ const DarkTheme = {
     background: '#180c18',
     primary: '#4b2331',
     secondary: '#632c43',
-    accent: '#7f3948',
+    accent: '#9A4C5D',
     success: '#47121D',
     error: '#EE5044',
     teal: '#63BAC0',

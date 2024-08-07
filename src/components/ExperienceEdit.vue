@@ -129,9 +129,9 @@ async function saveEditExperience() {
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn v-if="!isRequestingAiAssist" color="blue darken-1" text
+          <v-btn v-if="!isRequestingAiAssist" color="accent" text
             @click="closeEditExperienceDialog">Cancel</v-btn>
-          <v-btn v-if="!isRequestingAiAssist" color="blue darken-1" text @click="saveEditExperience">Save</v-btn>
+          <v-btn v-if="!isRequestingAiAssist" color="accent" text @click="saveEditExperience">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

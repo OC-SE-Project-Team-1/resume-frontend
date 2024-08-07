@@ -58,10 +58,6 @@ function navigateToAccountSettings() {
   router.push({ name: "account" });
 }
 
-function navigateToDatabase() {
-  router.push({ name: "database" });
-}
-
 function logout() {
   UserServices.logoutUser()
     .then(() => {
@@ -144,8 +140,7 @@ async function updateDarkMode() {
               <v-divider class="my-3"></v-divider>
               <v-btn rounded variant="text" @click="navigateToAccountSettings()"> Account Settings </v-btn>
               <v-divider class="my-3"></v-divider>
-              <v-btn rounded variant="text" @click="navigateToDatabase()"> Manage Database </v-btn>
-              <v-divider class="my-3"></v-divider>
+              
               <v-btn rounded variant="text" @click="logout()"> Logout </v-btn>
             </div>
           </v-card-text>
@@ -163,6 +158,8 @@ async function updateDarkMode() {
       </v-btn>
       <v-btn v-if="account !== null" class="mx-2" :to="{ name: 'createResume' }">
         Create Resume
+      </v-btn>
+      <v-btn v-if="account !== null" class="mx-2" :to="{name: 'database'}"> Manage Database 
       </v-btn>
       <v-btn v-if="account !== null && parseInt(account.roleId) !== 3" class="mx-2" :to="{ name: 'cslibrary' }">
         Student Library

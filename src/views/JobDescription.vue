@@ -9,6 +9,7 @@ import template2 from "../components/Template2.vue";
 import template3 from "../components/Template3.vue";
 import template4 from "../components/Template4.vue";
 import Snackbar from "../components/Snackbar.vue";
+
 const router = useRouter();
 const isRequestingFeedback = ref(false);
 
@@ -17,11 +18,12 @@ const snackbarValue = ref(false);
 const snackbarColor = ref("");
 const snackbarText = ref("");
 
-function makeSnackbar(color, text){
-  snackbarValue.value = true;
-  snackbarColor.value = color;
-  snackbarText.value = text;
+function makeSnackbar(color, text) {
+    snackbarValue.value = true;
+    snackbarColor.value = color;
+    snackbarText.value = text;
 }
+
 // Resume variables
 const resumeId = ref();
 const resumeData = ref(null);
@@ -41,12 +43,7 @@ onMounted(async () => {
     resumeId.value = JSON.parse(localStorage.getItem("resumeId"));
     getJobDescInfo();
     await getResume();
-    closeSnackBar();
 });
-
-function closeSnackBar() {
-    snackbar.value.value = false;
-}
 
 async function getResume() {
     await ResumeServices.getResume(resumeId.value)
@@ -99,7 +96,6 @@ async function requestFeedback() {
         isRequestingFeedback.value = true;
         await ResumeServices.getFeedback(resumeId.value, selectedJobDescription.value[0])
             .then((response) => {
-                console.log(response.data);
                 feedback.value = response.data.response;
                 isRequestingFeedback.value = false;
                 ResumeServices.updateResumeFeedback(resumeId.value, feedback.value, account.value.id);
@@ -130,56 +126,22 @@ export default {
 
 <template>
     <v-container>
-            <v-col class="text-right">
-                <v-btn class="ml-auto" variant="flat" color="secondary" @click="navigateToLibrary()"> Back </v-btn>
-            </v-col>
+        <v-col class="text-right">
+            <v-btn class="ml-auto" variant="flat" color="secondary" @click="navigateToLibrary()"> Back </v-btn>
+        </v-col>
 
-            <v-card-title class="pl-0 text-h5 font-weight-bold" align="center">AI Feedback</v-card-title>
+        <v-card-title class="pl-0 text-h5 font-weight-bold" align="center">AI Feedback</v-card-title>
         <v-row>
             <v-col>
                 <v-container>
                     <div>
                         <v-container>
-                        <v-data-table v-model="selectedJobDescription" :items="jobDescriptionInfo" item-value="id"
-                            :headers="[{ title: 'Job Name', value: 'title' }, { title: 'Description', value: 'description' }]"
-                            show-select hide-default-footer select-strategy="single">
-                        </v-data-table>
-                    </v-container>
+                            <v-data-table v-model="selectedJobDescription" :items="jobDescriptionInfo" item-value="id"
+                                :headers="[{ title: 'Job Name', value: 'title' }, { title: 'Description', value: 'description' }]"
+                                show-select hide-default-footer select-strategy="single">
+                            </v-data-table>
+                        </v-container>
                     </div>
-                    <div class="mb-10">
-                    <v-spacer></v-spacer>
-                </div>
-                <v-divider></v-divider>
-                <div class="mb-10">
-                    <v-spacer></v-spacer>
-                </div>
-                <!-- Add New Job Description -->
-                <v-row class="text-right">
-                    <v-container  align="center">
-                        <v-btn variant="tonal" @click="setNewJobDescVisible" >
-                            Add New Job Description
-                        </v-btn>
-                    </v-container>
-                    <v-container v-if="isNewJobDescVisible">
-                        <v-row>
-                            <v-col>
-                                <v-text-field v-model="jobDescriptionTitle" label="Job Title"></v-text-field>
-                            </v-col>
-                        </v-row>
-                        <v-row>
-                            <v-col>
-                                <v-textarea auto-grow v-model="jobDescription" label="Description"></v-textarea>
-                            </v-col>
-                        </v-row>
-                        <v-col></v-col>
-                        <v-btn variant="tonal" @click="closeNewJobDesc()">
-                            Cancel
-                        </v-btn>
-                        &nbsp;&nbsp;&nbsp;
-                        <v-btn variant="tonal" @click="addNewJobDesc()">
-                            Submit
-                        </v-btn>
-                    </v-container>
                     <div class="mb-10">
                         <v-spacer></v-spacer>
                     </div>
@@ -188,9 +150,44 @@ export default {
                         <v-spacer></v-spacer>
                     </div>
 
-                </v-row>
+                    <!-- Add New Job Description -->
+                    <v-row class="text-right">
+                        <v-container align="center">
+                            <v-btn variant="tonal" @click="setNewJobDescVisible">
+                                Add New Job Description
+                            </v-btn>
+                        </v-container>
+                        <v-container v-if="isNewJobDescVisible">
+                            <v-row>
+                                <v-col>
+                                    <v-text-field v-model="jobDescriptionTitle" label="Job Title"></v-text-field>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col>
+                                    <v-textarea auto-grow v-model="jobDescription" label="Description"></v-textarea>
+                                </v-col>
+                            </v-row>
+                            <v-col></v-col>
+                            <v-btn variant="tonal" @click="closeNewJobDesc()">
+                                Cancel
+                            </v-btn>
+                            &nbsp;&nbsp;&nbsp;
+                            <v-btn variant="tonal" @click="addNewJobDesc()">
+                                Submit
+                            </v-btn>
+                        </v-container>
+                        <div class="mb-10">
+                            <v-spacer></v-spacer>
+                        </div>
+                        <v-divider></v-divider>
+                        <div class="mb-10">
+                            <v-spacer></v-spacer>
+                        </div>
 
-                <v-card class="rounded-lg elevation-5 my-8" >
+                    </v-row>
+
+                    <v-card class="rounded-lg elevation-5 my-8">
                         <v-card-title class="text-center headline mb-2">Feedback</v-card-title>
                         <v-card-text>
                             <v-skeleton-loader v-if="isRequestingFeedback" type="card"></v-skeleton-loader>
@@ -199,24 +196,19 @@ export default {
                         </v-card-text>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn :disabled="selectedJobDescription.length == 0" variant="flat" color="primary" @click="requestFeedback()">Request Feedback</v-btn>
+                            <v-btn :disabled="selectedJobDescription.length == 0" variant="flat" color="primary"
+                                @click="requestFeedback()">Request Feedback</v-btn>
                         </v-card-actions>
                     </v-card>
-                
-
-            </v-container>
-
+                </v-container>
             </v-col>
 
-
             <v-col>
-
                 <div id="body">
                     <v-card class="rounded-lg elevation-5 my-8">
-                        
-                <div class="mb-10">
-                    <v-spacer></v-spacer>
-                </div>
+                        <div class="mb-10">
+                            <v-spacer></v-spacer>
+                        </div>
                         <v-card-title class="text-center headline mb-2">Resume </v-card-title>
                         <div>
                             <v-row>
@@ -242,7 +234,7 @@ export default {
         </v-row>
 
         <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
-        @update:show="value => snackbarValue = value"></Snackbar>
+            @update:show="value => snackbarValue = value"></Snackbar>
 
     </v-container>
 </template>

@@ -763,9 +763,8 @@ export default {
                                 </v-btn>
 
                                 <NewEducation v-if="isNewEduVisible" :isNewEduVisible="isNewEduVisible"
-                                        @update:isNewEduVisible="value => isNewEduVisible = value" :account="account"
-                                        :makeSnackbar="makeSnackbar" :getEducationInfo="getEducationInfo"
-                                ></NewEducation>
+                                    @update:isNewEduVisible="value => isNewEduVisible = value" :account="account"
+                                    :makeSnackbar="makeSnackbar" :getEducationInfo="getEducationInfo"></NewEducation>
 
                                 <div align="right">
                                     <div class="mb-10">
@@ -810,13 +809,13 @@ export default {
                                     Add New Job Experience
                                 </v-btn>
 
-                                <NewExperience v-if="isJobExperience"  :isJobExperience="isJobExperience"
+                                <NewExperience v-if="isJobExperience" :isJobExperience="isJobExperience"
                                     @update:isJobExperience="value => isJobExperience = value" :account="account"
                                     :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
-                                    :toggleExperience="toggleExperience" :whichExperience="1" :experienceAIAssist="experienceAIAssist"
+                                    :toggleExperience="toggleExperience" :whichExperience="1"
+                                    :experienceAIAssist="experienceAIAssist"
                                     :isRequestingAiAssist="isRequestingAiAssist" :jobDescription="jobDescription"
-                                    @update:jobDescription="value => jobDescription = value"
-                                ></NewExperience>
+                                    @update:jobDescription="value => jobDescription = value"></NewExperience>
 
                                 <div class="mb-10">
                                     <v-spacer></v-spacer>
@@ -861,13 +860,14 @@ export default {
                                     Add New Leadership Experience
                                 </v-btn>
 
-                                <NewExperience v-if="isLeadershipExperience"  :isLeadershipExperience="isLeadershipExperience"
-                                    @update:isLeadershipExperience="value => isLeadershipExperience = value" :account="account"
-                                    :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
-                                    :toggleExperience="toggleExperience" :whichExperience="2" :experienceAIAssist="experienceAIAssist"
+                                <NewExperience v-if="isLeadershipExperience"
+                                    :isLeadershipExperience="isLeadershipExperience"
+                                    @update:isLeadershipExperience="value => isLeadershipExperience = value"
+                                    :account="account" :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
+                                    :toggleExperience="toggleExperience" :whichExperience="2"
+                                    :experienceAIAssist="experienceAIAssist"
                                     :isRequestingAiAssist="isRequestingAiAssist" :jobDescription="jobDescription"
-                                    @update:jobDescription="value => jobDescription = value"
-                                ></NewExperience>
+                                    @update:jobDescription="value => jobDescription = value"></NewExperience>
 
                                 <div class="mb-10">
                                     <v-spacer></v-spacer>
@@ -911,13 +911,14 @@ export default {
                                     Add New Activities
                                 </v-btn>
 
-                                <NewExperience v-if="isActivitiesExperience"  :isActivitiesExperience="isActivitiesExperience"
-                                    @update:isActivitiesExperience="value => isActivitiesExperience = value" :account="account"
-                                    :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
-                                    :toggleExperience="toggleExperience" :whichExperience="3" :experienceAIAssist="experienceAIAssist"
+                                <NewExperience v-if="isActivitiesExperience"
+                                    :isActivitiesExperience="isActivitiesExperience"
+                                    @update:isActivitiesExperience="value => isActivitiesExperience = value"
+                                    :account="account" :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
+                                    :toggleExperience="toggleExperience" :whichExperience="3"
+                                    :experienceAIAssist="experienceAIAssist"
                                     :isRequestingAiAssist="isRequestingAiAssist" :jobDescription="jobDescription"
-                                    @update:jobDescription="value => jobDescription = value"
-                                ></NewExperience>
+                                    @update:jobDescription="value => jobDescription = value"></NewExperience>
 
                                 <div class="mb-10">
                                     <v-spacer></v-spacer>
@@ -961,13 +962,14 @@ export default {
                                     Add New Volunteer
                                 </v-btn>
 
-                                <NewExperience v-if="isVolunteerExperience"  :isVolunteerExperience="isVolunteerExperience"
-                                    @update:isVolunteerExperience="value => isVolunteerExperience = value" :account="account"
-                                    :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
-                                    :toggleExperience="toggleExperience" :whichExperience="4" :experienceAIAssist="experienceAIAssist"
+                                <NewExperience v-if="isVolunteerExperience"
+                                    :isVolunteerExperience="isVolunteerExperience"
+                                    @update:isVolunteerExperience="value => isVolunteerExperience = value"
+                                    :account="account" :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
+                                    :toggleExperience="toggleExperience" :whichExperience="4"
+                                    :experienceAIAssist="experienceAIAssist"
                                     :isRequestingAiAssist="isRequestingAiAssist" :jobDescription="jobDescription"
-                                    @update:jobDescription="value => jobDescription = value"
-                                ></NewExperience>
+                                    @update:jobDescription="value => jobDescription = value"></NewExperience>
 
                                 <div align="right">
                                     <v-btn variant="tonal" @click="navigateNextTab(4)">
@@ -1010,11 +1012,10 @@ export default {
                                 <NewSkill v-if="isNewSkillVisible" :isNewSkillVisible="isNewSkillVisible"
                                     @update:isNewSkillVisible="value => isNewSkillVisible = value" :account="account"
                                     :makeSnackbar="makeSnackbar" :getSkills="getSkills" :skillAiAssist="skillAiAssist"
-                                    :isRequestingAiAssist="isRequestingAiAssist" 
-                                    :skillDescription="skillDescription" :skillHistory="skillHistory"
-                                    @update:skillDescription="value => skillDescription = value" 
-                                    @update:skillHistory="value => skillHistory = value" 
-                                ></NewSkill>
+                                    :isRequestingAiAssist="isRequestingAiAssist" :skillDescription="skillDescription"
+                                    :skillHistory="skillHistory"
+                                    @update:skillDescription="value => skillDescription = value"
+                                    @update:skillHistory="value => skillHistory = value"></NewSkill>
 
                                 <div class="mb-10">
                                     <v-spacer></v-spacer>
@@ -1062,13 +1063,13 @@ export default {
                                     Add New Honor
                                 </v-btn>
 
-                                <NewExperience v-if="isHonorExperience"  :isHonorExperience="isHonorExperience"
+                                <NewExperience v-if="isHonorExperience" :isHonorExperience="isHonorExperience"
                                     @update:isHonorExperience="value => isHonorExperience = value" :account="account"
                                     :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
-                                    :toggleExperience="toggleExperience" :whichExperience="5" :experienceAIAssist="experienceAIAssist"
+                                    :toggleExperience="toggleExperience" :whichExperience="5"
+                                    :experienceAIAssist="experienceAIAssist"
                                     :isRequestingAiAssist="isRequestingAiAssist" :jobDescription="jobDescription"
-                                    @update:jobDescription="value => jobDescription = value"
-                                ></NewExperience>
+                                    @update:jobDescription="value => jobDescription = value"></NewExperience>
 
                                 <div class="mb-10">
                                     <v-spacer></v-spacer>
@@ -1111,13 +1112,13 @@ export default {
                                     Add New Award
                                 </v-btn>
 
-                                <NewExperience v-if="isAwardExperience"  :isAwardExperience="isAwardExperience"
+                                <NewExperience v-if="isAwardExperience" :isAwardExperience="isAwardExperience"
                                     @update:isAwardExperience="value => isAwardExperience = value" :account="account"
                                     :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
-                                    :toggleExperience="toggleExperience" :whichExperience="6" :experienceAIAssist="experienceAIAssist"
+                                    :toggleExperience="toggleExperience" :whichExperience="6"
+                                    :experienceAIAssist="experienceAIAssist"
                                     :isRequestingAiAssist="isRequestingAiAssist" :jobDescription="jobDescription"
-                                    @update:jobDescription="value => jobDescription = value"
-                                ></NewExperience>
+                                    @update:jobDescription="value => jobDescription = value"></NewExperience>
 
                                 <div class="mb-10">
                                     <v-spacer></v-spacer>
@@ -1160,13 +1161,13 @@ export default {
                                     Add New Project
                                 </v-btn>
 
-                                <NewExperience v-if="isProjectExperience"  :isProjectExperience="isProjectExperience"
-                                    @update:isProjectExperience="value => isProjectExperience = value" :account="account"
-                                    :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
-                                    :toggleExperience="toggleExperience" :whichExperience="7" :experienceAIAssist="experienceAIAssist"
+                                <NewExperience v-if="isProjectExperience" :isProjectExperience="isProjectExperience"
+                                    @update:isProjectExperience="value => isProjectExperience = value"
+                                    :account="account" :makeSnackbar="makeSnackbar" :getExperiences="getExperiences"
+                                    :toggleExperience="toggleExperience" :whichExperience="7"
+                                    :experienceAIAssist="experienceAIAssist"
                                     :isRequestingAiAssist="isRequestingAiAssist" :jobDescription="jobDescription"
-                                    @update:jobDescription="value => jobDescription = value"
-                                ></NewExperience>
+                                    @update:jobDescription="value => jobDescription = value"></NewExperience>
 
                                 <div class="mb-10">
                                     <v-spacer></v-spacer>
@@ -1267,12 +1268,12 @@ export default {
                 </div>
             </v-col>
         </v-row>
-        
-        <DeleteDialog v-model="isDeleted" :isDeleted="isDeleted"
-            @update:isDeleted="value => isDeleted = value" :tab="tab" :deleteItemId="deleteItemId"
-            :account="account" :makeSnackbar="makeSnackbar" :getLinks="getLinks"
-            :getGoals="getGoals" :getEducationInfo="getEducationInfo"
-            :getExperiences="getExperiences" :getSkills="getSkills"></DeleteDialog>
+
+        <DeleteDialog v-model="isDeleted" :isDeleted="isDeleted" @update:isDeleted="value => isDeleted = value"
+            :tab="tab" :deleteItemId="deleteItemId" :account="account" :makeSnackbar="makeSnackbar" :getLinks="getLinks"
+            :getGoals="getGoals" :getEducationInfo="getEducationInfo" :getExperiences="getExperiences"
+            :getSkills="getSkills">
+        </DeleteDialog>
 
         <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
             @update:show="value => snackbarValue = value"></Snackbar>

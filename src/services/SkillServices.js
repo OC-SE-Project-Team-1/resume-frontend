@@ -7,14 +7,14 @@ export default {
   getSkill(id) {
     return apiClient.get("skill/" + id);
   },
-  getSkillsForUser(userID){
+  getSkillsForUser(userID) {
     return apiClient.get("skill/user/" + userID);
   },
   addSkill(skill, skillDescription, chatHistory, accountID) {
     return apiClient.post("/skill/", {
       "title": String(skill),
       "description": String(skillDescription),
-      "chatHistory" : chatHistory,
+      "chatHistory": chatHistory,
       "userId": accountID
     });
   },
@@ -22,23 +22,20 @@ export default {
     return apiClient.put("skill/" + skillId, {
       "title": title,
       "description": String(skill),
-      "chatHistory" : chatHistory,
+      "chatHistory": chatHistory,
       "userId": accountID
     });
   },
   deleteSkill(skillId, accountID) {
     return apiClient.delete("skill/" + skillId, {
-      data: {"userId": parseInt(accountID)}
-  });
+      data: { "userId": parseInt(accountID) }
+    });
   },
-
-  skillAiAssist(skill, chatHistory){
-
+  skillAiAssist(skill, chatHistory) {
     return apiClient.post("skill/assist", {
-      
-        "chatHistory": chatHistory,
-        "description" : String(skill), 
-      
-  });
+      "chatHistory": chatHistory,
+      "description": String(skill),
+
+    });
   }
 };

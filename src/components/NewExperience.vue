@@ -1,8 +1,6 @@
 <script setup>
-
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import ExperienceServices from "../services/ExperienceServices.js";
-
 
 const props = defineProps({
     isJobExperience: Boolean,
@@ -19,10 +17,7 @@ const props = defineProps({
     isVolunteerExperience: Boolean,
     isHonorExperience: Boolean,
     isAwardExperience: Boolean,
-    isProjectExperience: Boolean,
-
-
-
+    isProjectExperience: Boolean
 });
 
 const jobExperienceTitle = ref(null);
@@ -33,8 +28,6 @@ const jobStart = ref(null);
 const jobEnd = ref(null);
 const jobDescription = ref(props.jobDescription);
 const localisRequestingAiAssist = ref(props.isRequestingAiAssist);
-
-
 
 const isCurrent = ref(false);
 let experienceChatHistory = [];
@@ -151,13 +144,9 @@ async function closeNewJobExperience() {
     emit('update:isProjectExperience', false);
 
 }
-
-
-
 </script>
 
 <template>
-
     <v-container>
         <v-row>
             <v-col>
@@ -180,7 +169,8 @@ async function closeNewJobExperience() {
                 <v-text-field v-model="jobStart" label="Start Date" hint="Ex: Aug 2024"></v-text-field>
             </v-col>
             <v-col v-if="props.whichExperience !== 5 && props.whichExperience !== 6">
-                <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date" hint="Ex: Aug 2024"></v-text-field>
+                <v-text-field :disabled="isCurrent" v-model="jobEnd" label="End Date"
+                    hint="Ex: Aug 2024"></v-text-field>
                 <v-switch v-model="isCurrent" label="Present Job" color="primary"></v-switch>
             </v-col>
         </v-row>
@@ -193,14 +183,10 @@ async function closeNewJobExperience() {
                             AI Assist
                         </v-btn>
                     </div>
-
                 </template>
             </v-textarea>
         </v-row>
 
-        <v-col>
-
-        </v-col>
         <div v-if="props.whichExperience !== 5 && props.whichExperience !== 6">
             <v-btn v-if="!isRequestingAiAssist" variant="tonal" @click="props.toggleExperience(props.whichExperience)">
                 Cancel
@@ -221,8 +207,5 @@ async function closeNewJobExperience() {
                 Submit
             </v-btn>
         </div>
-
     </v-container>
-
-
 </template>

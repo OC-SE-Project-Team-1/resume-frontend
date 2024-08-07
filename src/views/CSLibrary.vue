@@ -13,7 +13,7 @@ const snackbarValue = ref(false);
 const snackbarColor = ref("");
 const snackbarText = ref("");
 
-function makeSnackbar(color, text){
+function makeSnackbar(color, text) {
   snackbarValue.value = true;
   snackbarColor.value = color;
   snackbarText.value = text;
@@ -87,7 +87,7 @@ export default {
       </v-table>
 
       <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
-      @update:show="value => snackbarValue = value"></Snackbar>
+        @update:show="value => snackbarValue = value"></Snackbar>
 
     </div>
   </v-container>

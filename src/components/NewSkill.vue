@@ -1,9 +1,6 @@
 <script setup>
-
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import SkillServices from "../services/SkillServices.js";
-
-
 
 const props = defineProps({
     isNewSkillVisible: Boolean,
@@ -11,11 +8,9 @@ const props = defineProps({
     makeSnackbar: Function,
     getSkills: Function,
     skillAiAssist: Function,
-    isRequestingAiAssist:Boolean,
+    isRequestingAiAssist: Boolean,
     skillDescription: String,
-    skillHistory: Array,
-
-
+    skillHistory: Array
 });
 
 const isSkilled = computed(() => {
@@ -28,19 +23,12 @@ const isSkilled = computed(() => {
 
 const skillTitle = ref("");
 const skillDescription = ref("");
-const skills = ref();
 let skillHistory = [];
-const selectedSkills = ref(null);
 
 const isRequestingAiAssist = ref(props.isRequestingAiAssist);
-
-const localisRequestingAiAssist = ref(props.isRequestingAiAssist);
-
-
+const isNewSkillVisible = ref(props.isNewSkillVisible);
 
 const emit = defineEmits(['update:isNewSkillVisible', 'update:skillDescription', 'update:skillHistory']);
-
-const isNewSkillVisible = ref(props.isNewSkillVisible);
 
 watch(() => props.isNewSkillVisible, (newVal) => {
     isNewSkillVisible.value = newVal;
@@ -56,8 +44,6 @@ watch(() => props.isRequestingAiAssist, (newValue) => {
     isRequestingAiAssist.value = newValue;
 });
 
-
-
 async function addNewSkill() {
     await SkillServices.addSkill(skillTitle.value, skillDescription.value, skillHistory, parseInt(props.account.id))
         .then(() => {
@@ -71,7 +57,6 @@ async function addNewSkill() {
         });
 }
 
-
 async function closeNewSkill() {
     isNewSkillVisible.value = false;
     skillTitle.value = "";
@@ -79,11 +64,10 @@ async function closeNewSkill() {
     skillHistory = [];
     emit('update:isNewSkillVisible', false);
 }
-
 </script>
 
 <template>
-    <v-container >
+    <v-container>
         <v-skeleton-loader v-if="isRequestingAiAssist" type="paragraph"></v-skeleton-loader>
         <v-row>
             <v-col>

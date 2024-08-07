@@ -1,14 +1,12 @@
 <script setup>
-
-import { computed, onMounted, ref, watch } from "vue";
-
+import { computed, ref, watch } from "vue";
 import LinkServices from "../services/LinkServices.js";
 
-
-const props = defineProps({isNewLinkVisible: Boolean,
-                            account: Object,
-                            makeSnackbar: Function,
-                            getLinks: Function,
+const props = defineProps({
+    isNewLinkVisible: Boolean,
+    account: Object,
+    makeSnackbar: Function,
+    getLinks: Function,
 });
 
 const isLinked = computed(() => {
@@ -21,9 +19,6 @@ const isLinked = computed(() => {
 
 const linkDescription = ref("");
 const link = ref("");
-const links = ref();
-const selectedLinks = ref(null);
-
 
 const emit = defineEmits(['update:isNewLinkVisible']);
 
@@ -52,30 +47,27 @@ async function addNewLink() {
             props.makeSnackbar("error", props.error.response.data.message)
         });
 }
-
 </script>
 
 <template>
+    <v-container>
+        <v-row>
+            <v-col>
+                <v-text-field v-model="linkDescription" label="Description"></v-text-field>
+            </v-col>
+            <v-col>
+                <v-text-field v-model="link" label="Link"></v-text-field>
+            </v-col>
+        </v-row>
+        <v-col>
 
-<v-container >
-                <v-row>
-                    <v-col>
-                        <v-text-field v-model="linkDescription" label="Description"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="link" label="Link"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-col>
-
-                </v-col>
-                <v-btn variant="tonal" @click="closeNewLink()">
-                    Cancel
-                </v-btn>
-                &nbsp;&nbsp;&nbsp;
-                <v-btn variant="tonal" :disabled="!isLinked" @click="addNewLink()">
-                    Submit
-                </v-btn>
-</v-container>
-
+        </v-col>
+        <v-btn variant="tonal" @click="closeNewLink()">
+            Cancel
+        </v-btn>
+        &nbsp;&nbsp;&nbsp;
+        <v-btn variant="tonal" :disabled="!isLinked" @click="addNewLink()">
+            Submit
+        </v-btn>
+    </v-container>
 </template>

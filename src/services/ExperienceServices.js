@@ -10,7 +10,7 @@ export default {
     getExperiencesForUser(userID) {
         return apiClient.get("/experience/user/" + userID);
     },
-    addExperience(title, description, startDate, endDate, isCurrent, userID, 
+    addExperience(title, description, startDate, endDate, isCurrent, userID,
         experienceTypeID, city, state, organization, chatHistory) {
         return apiClient.post("/experience/", {
             "title": String(title),
@@ -19,7 +19,7 @@ export default {
             "endDate": endDate,
             "current": isCurrent,
             "userId": userID,
-            "experienceTypeId" : experienceTypeID,
+            "experienceTypeId": experienceTypeID,
             "city": city,
             "state": state,
             "organization": organization,
@@ -27,34 +27,30 @@ export default {
         })
     },
     updateExperience(title, description, startDate, endDate, isCurrent,
-                city, state, organization, chatHistory, userID, id ) {
-            return apiClient.put("/experience/" + id, {
-                "title": String(title),
-                "description": String(description),
-                "startDate": String(startDate),
-                "endDate": endDate,
-                "current": isCurrent,
-                "userId": userID,
-                "city": city,
-                "state": state,
-                "organization": organization,
-                "chatHistory": chatHistory,
-            })
+        city, state, organization, chatHistory, userID, id) {
+        return apiClient.put("/experience/" + id, {
+            "title": String(title),
+            "description": String(description),
+            "startDate": String(startDate),
+            "endDate": endDate,
+            "current": isCurrent,
+            "userId": userID,
+            "city": city,
+            "state": state,
+            "organization": organization,
+            "chatHistory": chatHistory,
+        })
     },
     deleteExperience(experienceID, accountID) {
         return apiClient.delete("experience/" + experienceID, {
-            data: {"userId": parseInt(accountID)}
+            data: { "userId": parseInt(accountID) }
         })
     },
-
-    experienceAiAssist(experience, chatHistory){
-        console.log(chatHistory);
-        console.log(experience);
+    experienceAiAssist(experience, chatHistory) {
         return apiClient.post("experience/assist", {
-            "title" : "",
+            "title": "",
             "chatHistory": chatHistory,
-            "experience" : String(experience), 
-          
-      });
+            "experience": String(experience)
+        });
     }
 }

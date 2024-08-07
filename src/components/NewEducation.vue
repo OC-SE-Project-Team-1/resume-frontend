@@ -1,13 +1,13 @@
 <script setup>
-
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import EducationServices from "../services/EducationServices.js";
 
 
-const props = defineProps({isNewEduVisible: Boolean,
-                            account: Object,
-                            makeSnackbar: Function,
-                            getEducationInfo: Function,
+const props = defineProps({
+    isNewEduVisible: Boolean,
+    account: Object,
+    makeSnackbar: Function,
+    getEducationInfo: Function,
 });
 
 const isEducationFilled = computed(() => {
@@ -30,9 +30,7 @@ const isMinors = ref(false);
 const isCourses = ref(false);
 const isStudyAbroad = ref(false);
 const isAwards = ref(false);
-
 const isAttending = ref(false);
-
 
 function toggleIsAttending() {
     isAttending.value = !isAttending.value;
@@ -174,177 +172,158 @@ function showAwards() {
 </script>
 
 <template>
+    <v-container v-if="isNewEduVisible">
+        <v-row>
+            <v-col>
+                <v-text-field v-model="schoolName" label="School Name"></v-text-field>
+            </v-col>
 
-<v-container v-if="isNewEduVisible">
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="schoolName" label="School Name"></v-text-field>
-                                        </v-col>
+        </v-row>
+        <v-row>
+            <v-col>
+                <v-text-field v-model="schoolCity" label="City"></v-text-field>
+            </v-col>
+            <v-col>
+                <v-text-field v-model="schoolState" label="State" hint="Two letters for State"></v-text-field>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col>
+                <v-text-field v-model="gpa" label="GPA" hint="Ex: 3.67"></v-text-field>
+            </v-col>
+            <v-col>
+                <v-text-field v-model="maxGpa" label="Max GPA" hint="Ex: 3.67"></v-text-field>
+            </v-col>
+        </v-row>
+        <v-row class="mb-1" v-if="degreeTitle != ''">
 
-                                    </v-row>
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="schoolCity" label="City"></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field v-model="schoolState" label="State" hint="Two letters for State"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="gpa" label="GPA" hint="Ex: 3.67"></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field v-model="maxGpa" label="Max GPA" hint="Ex: 3.67"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row class="mb-1" v-if="degreeTitle != ''">
-
-                                        <v-card-subtitle align="center"
-                                            v-if="degreeTitle != 'High School Diploma'">Displayed as: {{ degreeTitle }}
-                                            of {{ degreeType }} in {{ degree }}</v-card-subtitle>
-                                    </v-row>
-                                    <v-row>
-                                        <v-col>
-                                            <v-combobox v-model="degreeTitle" label="Title of Degree"
-                                                :items="['Bachelor', 'Masters', 'Associates', 'PhD', 'Certificate', 'High School Diploma']"></v-combobox>
-                                        </v-col>
-                                        <v-col>
-                                            <v-combobox v-model="degreeType" label="Degree Type"
-                                                :items="['Science', 'Arts', 'Fine Arts', 'Architecture']"
-                                                :disabled="degreeTitle == 'High School Diploma'"></v-combobox>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field v-model="degree" label="Degree"
-                                                :disabled="degreeTitle == 'High School Diploma'"></v-text-field>
-                                        </v-col>
-                                    </v-row>
+            <v-card-subtitle align="center" v-if="degreeTitle != 'High School Diploma'">Displayed as: {{ degreeTitle }}
+                of {{ degreeType }} in {{ degree }}</v-card-subtitle>
+        </v-row>
+        <v-row>
+            <v-col>
+                <v-combobox v-model="degreeTitle" label="Title of Degree"
+                    :items="['Bachelor', 'Masters', 'Associates', 'PhD', 'Certificate', 'High School Diploma']"></v-combobox>
+            </v-col>
+            <v-col>
+                <v-combobox v-model="degreeType" label="Degree Type"
+                    :items="['Science', 'Arts', 'Fine Arts', 'Architecture']"
+                    :disabled="degreeTitle == 'High School Diploma'"></v-combobox>
+            </v-col>
+            <v-col>
+                <v-text-field v-model="degree" label="Degree"
+                    :disabled="degreeTitle == 'High School Diploma'"></v-text-field>
+            </v-col>
+        </v-row>
 
 
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field v-model="schoolStart" label="Start Date"
-                                                hint="Ex: Aug 2024"></v-text-field>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field v-model="schoolEnd" v-if="!isAttending" label="End Date"
-                                                hint="Ex: Aug 2024"></v-text-field>
-                                            <v-text-field v-model="schoolGrad" v-if="isAttending" label="Grad Date"
-                                                hint="Ex: Aug 2024"></v-text-field>
-                                            <v-switch v-model="attending" label="Still Attending" color="primary"
-                                                @click="toggleIsAttending()"></v-switch>
-                                        </v-col>
-                                    </v-row>
+        <v-row>
+            <v-col>
+                <v-text-field v-model="schoolStart" label="Start Date" hint="Ex: Aug 2024"></v-text-field>
+            </v-col>
+            <v-col>
+                <v-text-field v-model="schoolEnd" v-if="!isAttending" label="End Date"
+                    hint="Ex: Aug 2024"></v-text-field>
+                <v-text-field v-model="schoolGrad" v-if="isAttending" label="Grad Date"
+                    hint="Ex: Aug 2024"></v-text-field>
+                <v-switch v-model="attending" label="Still Attending" color="primary"
+                    @click="toggleIsAttending()"></v-switch>
+            </v-col>
+        </v-row>
 
-                                    <v-row>
-                                        <v-container align="center">
-                                            <v-btn variant="text" @click="showMinors">
-                                                Add Minor
-                                            </v-btn>
-                                            <div class="mb-6">
-                                                <v-spacer></v-spacer>
-                                            </div>
+        <v-row>
+            <v-container align="center">
+                <v-btn variant="text" @click="showMinors">
+                    Add Minor
+                </v-btn>
+                <div class="mb-6">
+                    <v-spacer></v-spacer>
+                </div>
 
-                                            <div v-if="isMinors">
-
-
-                                                <v-text-field label=" Minor(s)" v-model="minors"
-                                                    hint="If multiple, format as: Minor #1, Minor #2">
-
-                                                </v-text-field>
-
-                                            </div>
-
-                                            <v-btn variant="text" @click="showCourses">
-                                                Add Courses
-                                            </v-btn>
-
-                                            <div class="mb-6">
-                                                <v-spacer></v-spacer>
-                                            </div>
-                                            <div v-if="isCourses">
+                <div v-if="isMinors">
 
 
-                                                <v-text-field label="Course(s)" v-model="courses"
-                                                    hint="If multiple, format as: Course name, Course name">
+                    <v-text-field label=" Minor(s)" v-model="minors" hint="If multiple, format as: Minor #1, Minor #2">
 
-                                                </v-text-field>
+                    </v-text-field>
 
-                                            </div>
+                </div>
 
-                                            <v-btn variant="text" @click="showAwards">
-                                                Add Awards
-                                            </v-btn>
+                <v-btn variant="text" @click="showCourses">
+                    Add Courses
+                </v-btn>
 
-                                            <div class="mb-6">
-                                                <v-spacer></v-spacer>
-                                            </div>
-                                            <div v-if="isAwards">
-
-
-                                                <v-text-field label="Award(s)" v-model="awards"
-                                                    hint="If multiple, format as: Award, Award">
-
-                                                </v-text-field>
-
-                                            </div>
-
-                                            <v-btn variant="text" @click="showStudyAbroad">
-                                                Add Study Abroad
-                                            </v-btn>
-
-                                            <div class="mb-6">
-                                                <v-spacer></v-spacer>
-                                            </div>
-                                            <div v-if="isStudyAbroad">
-                                                <v-row>
-                                                    <v-text-field label="Title" v-model="studyAbroadTitle"
-                                                        hint="Name of Study Abroad Program">
-                                                    </v-text-field>
-                                                </v-row>
-                                                <v-row>
-                                                    <v-col>
-                                                        <v-text-field v-model="studyAbroadOrganization"
-                                                            label="Organization"
-                                                            hint="Ex) Capital Normal"></v-text-field>
-                                                    </v-col>
-                                                    <v-col>
-                                                        <v-text-field v-model="studyAbroadLocation" label="Location"
-                                                            hint="Ex) Beijing, China"></v-text-field>
-                                                    </v-col>
-                                                </v-row>
-                                                <v-row>
-                                                    <v-col>
-                                                        <v-text-field v-model="studyAbroadTime" label="Term"
-                                                            hint="Ex) Fall Semester"></v-text-field>
-                                                    </v-col>
-                                                    <v-col>
-                                                        <v-text-field v-model="studyAbroadYear" label="Year"
-                                                            hint="Ex) 2018"></v-text-field>
-                                                    </v-col>
-                                                </v-row>
+                <div class="mb-6">
+                    <v-spacer></v-spacer>
+                </div>
+                <div v-if="isCourses">
 
 
+                    <v-text-field label="Course(s)" v-model="courses"
+                        hint="If multiple, format as: Course name, Course name">
 
-                                            </div>
+                    </v-text-field>
 
-                                        </v-container>
+                </div>
+
+                <v-btn variant="text" @click="showAwards">
+                    Add Awards
+                </v-btn>
+
+                <div class="mb-6">
+                    <v-spacer></v-spacer>
+                </div>
+                <div v-if="isAwards">
 
 
+                    <v-text-field label="Award(s)" v-model="awards" hint="If multiple, format as: Award, Award">
 
+                    </v-text-field>
 
-                                    </v-row>
+                </div>
 
-                                    <v-col>
+                <v-btn variant="text" @click="showStudyAbroad">
+                    Add Study Abroad
+                </v-btn>
 
-                                    </v-col>
-                                    <v-btn variant="tonal" @click="closeEducation()">
-                                        Cancel
-                                    </v-btn>
-                                    &nbsp;&nbsp;&nbsp;
-                                    <v-btn variant="tonal" :disabled="!isEducationFilled" @click="addNewEducation()">
-                                        Submit
-                                    </v-btn>
-                                </v-container>
+                <div class="mb-6">
+                    <v-spacer></v-spacer>
+                </div>
+                <div v-if="isStudyAbroad">
+                    <v-row>
+                        <v-text-field label="Title" v-model="studyAbroadTitle" hint="Name of Study Abroad Program">
+                        </v-text-field>
+                    </v-row>
+                    <v-row>
+                        <v-col>
+                            <v-text-field v-model="studyAbroadOrganization" label="Organization"
+                                hint="Ex) Capital Normal"></v-text-field>
+                        </v-col>
+                        <v-col>
+                            <v-text-field v-model="studyAbroadLocation" label="Location"
+                                hint="Ex) Beijing, China"></v-text-field>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col>
+                            <v-text-field v-model="studyAbroadTime" label="Term"
+                                hint="Ex) Fall Semester"></v-text-field>
+                        </v-col>
+                        <v-col>
+                            <v-text-field v-model="studyAbroadYear" label="Year" hint="Ex) 2018"></v-text-field>
+                        </v-col>
+                    </v-row>
+                </div>
+            </v-container>
+        </v-row>
+
+        <v-btn variant="tonal" @click="closeEducation()">
+            Cancel
+        </v-btn>
+        &nbsp;&nbsp;&nbsp;
+        <v-btn variant="tonal" :disabled="!isEducationFilled" @click="addNewEducation()">
+            Submit
+        </v-btn>
+    </v-container>
 
 </template>

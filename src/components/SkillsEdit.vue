@@ -21,7 +21,7 @@ const emit = defineEmits([
 // Local state for editing
 const account = ref(null);
 const editedItem = ref(props.editingItem);
-const localEditSkillsDialog = ref(props.editSkillsDialog );
+const localEditSkillsDialog = ref(props.editSkillsDialog);
 const localisRequestingAiAssist = ref(props.isRequestingAiAssist);
 
 // Watch for changes in props
@@ -51,15 +51,15 @@ function closeEditSkillsDialog() {
 }
 
 async function saveEditSkills() {
-    await SkillServices.updateSkill(editedItem.value.id, editedItem.value.title, editedItem.value.description, editedItem.value.chatHistory, account.value.id)
-        .then(() => {
-          props.makeSnackbar("green", "Skill Updated!");
-        })
-        .catch((error) => {
-            console.log(error);
-            props.makeSnackbar("error", props.error.response.data.message);
-        });
-    closeEditSkillsDialog();
+  await SkillServices.updateSkill(editedItem.value.id, editedItem.value.title, editedItem.value.description, editedItem.value.chatHistory, account.value.id)
+    .then(() => {
+      props.makeSnackbar("green", "Skill Updated!");
+    })
+    .catch((error) => {
+      console.log(error);
+      props.makeSnackbar("error", props.error.response.data.message);
+    });
+  closeEditSkillsDialog();
 }
 
 </script>
@@ -72,7 +72,6 @@ async function saveEditSkills() {
           <span class="headline">Edit Item</span>
         </v-card-title>
         <v-card-text>
-
 
           <v-container>
             <v-row>
@@ -93,8 +92,8 @@ async function saveEditSkills() {
                 </v-textarea>
               </v-col>
             </v-row>
-
           </v-container>
+
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>

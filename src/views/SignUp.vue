@@ -15,7 +15,7 @@ const snackbarValue = ref(false);
 const snackbarColor = ref("");
 const snackbarText = ref("");
 
-function makeSnackbar(color, text){
+function makeSnackbar(color, text) {
   snackbarValue.value = true;
   snackbarColor.value = color;
   snackbarText.value = text;
@@ -34,10 +34,6 @@ const account = ref({
 });
 
 const allFilled = computed(() => {
-  console.log(allFilled);
-  console.log(account);
-  console.log(userRole.value);
-  console.log(verifyRoleCode.value);
   return (
     account.value.address !== "" &&
     account.value.userName !== "" &&
@@ -46,13 +42,13 @@ const allFilled = computed(() => {
     account.value.firstName !== "" &&
     account.value.lastName !== "" &&
     account.value.phoneNumber !== "" &&
-    account.value.darkMode !== ""  &&
+    account.value.darkMode !== "" &&
     valid.value === true &&
-    (userRole.value === '3' || 
-    (userRole.value === '2' && 
-      verifyRoleCode.value === "services")|| 
-    (userRole.value === '1' && 
-      verifyRoleCode.value === "admin")) 
+    (userRole.value === '3' ||
+      (userRole.value === '2' &&
+        verifyRoleCode.value === "services") ||
+      (userRole.value === '1' &&
+        verifyRoleCode.value === "admin"))
   )
 })
 
@@ -83,22 +79,20 @@ async function createAccount() {
   console.log(account.value);
 
   if (account.value.password !== confirmPassword.value) {
-    console.log(message);
-      makeSnackbar("error", "Passwords do not match")
+    makeSnackbar("error", "Passwords do not match")
   } else {
-  await UserServices.addUser(account.value)
-    .then((data) => {
-      window.localStorage.setItem("account", JSON.stringify(data.data));
-      makeSnackbar("green", "Account created successfully!")
-      router.push({ name: "home" });
-    })
-    .catch((error) => {
-      console.log(error);
-      makeSnackbar("error", error.response.data.message)
-    });
+    await UserServices.addUser(account.value)
+      .then((data) => {
+        window.localStorage.setItem("account", JSON.stringify(data.data));
+        makeSnackbar("green", "Account created successfully!")
+        router.push({ name: "home" });
+      })
+      .catch((error) => {
+        console.log(error);
+        makeSnackbar("error", error.response.data.message)
+      });
   }
 }
-
 </script>
 
 <script>
@@ -148,13 +142,15 @@ export default {
 
           <div class="mb-3">
             <label for="phonenumber">Phone Number: </label>
-            <v-text-field v-model="account.phoneNumber" label="555-555-5555" required hint="Input Phone Number as Shown">
+            <v-text-field v-model="account.phoneNumber" label="555-555-5555" required
+              hint="Input Phone Number as Shown">
             </v-text-field>
           </div>
 
           <div class="mb-3">
             <label for="address">Address: </label>
-            <v-text-field v-model="account.address" label="555 W. Street, Oklahoma City, OK 55555" required hint="Input Address as Shown">
+            <v-text-field v-model="account.address" label="555 W. Street, Oklahoma City, OK 55555" required
+              hint="Input Address as Shown">
             </v-text-field>
           </div>
 
@@ -185,13 +181,13 @@ export default {
 
           <div class="mb-3">
             <label for="userRole">Role: </label>
-            <v-radio-group inline v-model="userRole" >
-            <v-radio label="Student" value="3"></v-radio>
-            <v-radio label="Career Service" value="2"></v-radio>
-            <v-radio label="Admin" value="1"></v-radio>
-          </v-radio-group>
+            <v-radio-group inline v-model="userRole">
+              <v-radio label="Student" value="3"></v-radio>
+              <v-radio label="Career Service" value="2"></v-radio>
+              <v-radio label="Admin" value="1"></v-radio>
+            </v-radio-group>
           </div>
-          
+
           <div class="mb-3" v-if="userRole !== '3' && userRole !== null">
             <label for="confirmRole">Enter Code: </label>
             <v-text-field v-model="verifyRoleCode" label="Code"></v-text-field>
@@ -208,7 +204,7 @@ export default {
         </form>
 
         <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
-        @update:show="value => snackbarValue = value"></Snackbar>
+          @update:show="value => snackbarValue = value"></Snackbar>
 
       </div>
     </v-form>

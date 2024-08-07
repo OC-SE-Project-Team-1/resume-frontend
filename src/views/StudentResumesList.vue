@@ -13,7 +13,7 @@ const snackbarValue = ref(false);
 const snackbarColor = ref("");
 const snackbarText = ref("");
 
-function makeSnackbar(color, text){
+function makeSnackbar(color, text) {
   snackbarValue.value = true;
   snackbarColor.value = color;
   snackbarText.value = text;
@@ -54,7 +54,6 @@ function navigateBack() {
     router.push({ name: "cslibrary" });
   }
 }
-
 </script>
 
 <template>
@@ -62,7 +61,7 @@ function navigateBack() {
     <div id="body">
       <v-card-title class="text-center headline mb-2">{{ name }}</v-card-title>
       <v-col class="text-right">
-              <v-btn color="secondary" @click="navigateBack()"> Back </v-btn>
+        <v-btn color="secondary" @click="navigateBack()"> Back </v-btn>
       </v-col>
       <v-table fixed-header>
         <thead>
@@ -73,7 +72,7 @@ function navigateBack() {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in titles" :key="item.id" >
+          <tr v-for="item in titles" :key="item.id">
             <td v-if="item.editing" class="text-left">{{ item.title }}</td>
             <td v-if="item.editing" class="text-right">
               <v-btn v-if="item.editing" rounded variant="text" @click="navigateToView(item.id)"> View </v-btn>
@@ -83,7 +82,7 @@ function navigateBack() {
       </v-table>
 
       <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
-      @update:show="value => snackbarValue = value"></Snackbar>
+        @update:show="value => snackbarValue = value"></Snackbar>
 
     </div>
   </v-container>

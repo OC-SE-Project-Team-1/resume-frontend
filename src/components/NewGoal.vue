@@ -1,10 +1,6 @@
 <script setup>
-
-import { computed, onMounted, ref, watch } from "vue";
-
+import { computed, ref, watch } from "vue";
 import GoalServices from "../services/GoalServices.js";
-
-
 
 const props = defineProps({
     isNewGoalVisible: Boolean,
@@ -21,22 +17,15 @@ const isGoals = computed(() => {
     )
 });
 
-
-
 const goalTitle = ref("");
 const goalDescription = ref("");
-const goals = ref();
-const selectedGoals = ref(null);
 const aiGoalExperiences = ref();
 const aiGoalAchievements = ref();
 const aiGoalTitle = ref();
 let goalChatHistory = [];
 
 const dialog = ref(false);
-
 const isRequestingAiAssist = ref(false);
-
-
 
 const emit = defineEmits(['update:isNewGoalVisible']);
 
@@ -46,14 +35,12 @@ watch(() => props.isNewGoalVisible, (newVal) => {
     isNewGoalVisible.value = newVal;
 });
 
-
 async function closeNewGoal() {
     isNewGoalVisible.value = false;
     goalTitle.value = "";
     goalDescription.value = "";
     emit('update:isNewGoalVisible', false);
 }
-
 
 async function addNewGoal() {
     await GoalServices.addGoal(goalTitle.value, goalDescription.value, parseInt(props.account.id), goalChatHistory)
@@ -77,7 +64,6 @@ async function aiGoalAssist() {
             goalChatHistory.push(response.data.chatHistory[1])
             clearGoalAiAssist();
         })
-
 }
 
 function clearGoalAiAssist() {
@@ -86,7 +72,6 @@ function clearGoalAiAssist() {
     aiGoalTitle.value = null;
     isRequestingAiAssist.value = false;
 }
-
 </script>
 
 <template>
@@ -117,7 +102,6 @@ function clearGoalAiAssist() {
                                 <template v-slot:actions>
                                     <v-spacer></v-spacer>
                                     <v-container>
-
                                         <v-row>
                                             <v-text-field label="Experiences" v-model="aiGoalExperiences"
                                                 variant="outlined" style="width: 30%;">
@@ -131,7 +115,6 @@ function clearGoalAiAssist() {
                                         <v-row>
                                             <v-text-field label="Professional title" v-model="aiGoalTitle"
                                                 variant="outlined" style="width: 30%;">
-
                                             </v-text-field>
                                         </v-row>
                                         <div align="center">
@@ -144,16 +127,13 @@ function clearGoalAiAssist() {
                                                     <v-btn @click="aiGoalAssist(), dialog = false">
                                                         Confirm </v-btn>
                                                 </v-col>
-
                                             </v-row>
                                         </div>
-
                                     </v-container>
                                 </template>
                             </v-card>
                         </v-dialog>
                     </div>
-
                 </template>
             </v-textarea>
         </v-row>
@@ -165,5 +145,4 @@ function clearGoalAiAssist() {
             Submit
         </v-btn>
     </v-container>
-
 </template>

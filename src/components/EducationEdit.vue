@@ -130,9 +130,7 @@ async function saveEditEducation() {
       props.makeSnackbar("error", props.error.response.data.message);
     });
   closeEditEducationDialog();
-
 }
-
 </script>
 
 <template>

@@ -7,7 +7,7 @@ export default {
   getGoal(id) {
     return apiClient.get("goal/" + id);
   },
-  getGoalsForUser(userID){
+  getGoalsForUser(userID) {
     return apiClient.get("goal/user/" + userID);
   },
   addGoal(goal, goalDescription, accountID, history) {
@@ -20,23 +20,22 @@ export default {
   },
   updateGoal(goalId, title, description, accountID) {
     return apiClient.put("goal/" + goalId, {
-      "title" : String(title),
+      "title": String(title),
       "description": String(description),
       "userId": accountID
     });
   },
   deleteGoal(goalId, accountID) {
     return apiClient.delete("goal/" + goalId, {
-      data: {"userId": parseInt(accountID)}
-  });
+      data: { "userId": parseInt(accountID) }
+    });
   },
-
-  goalAiAssist(title, experiences, achievements, chatHistory){
+  goalAiAssist(title, experiences, achievements, chatHistory) {
     return apiClient.post("goal/assist", {
       "chatHistory": chatHistory,
-      "title" : title, 
-      "experiences" : experiences, 
-      "achievements" : achievements, 
+      "title": title,
+      "experiences": experiences,
+      "achievements": achievements,
     });
   }
 };

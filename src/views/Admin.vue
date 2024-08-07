@@ -16,7 +16,7 @@ const snackbarValue = ref(false);
 const snackbarColor = ref("");
 const snackbarText = ref("");
 
-function makeSnackbar(color, text){
+function makeSnackbar(color, text) {
   snackbarValue.value = true;
   snackbarColor.value = color;
   snackbarText.value = text;
@@ -58,7 +58,7 @@ function navigateToView(itemId) {
 //Delete Story
 async function deleteUser() {
   await UserServices.deleteAccount(userId.value, account.value.id)
-  .then(() => {
+    .then(() => {
       getUsers();
       localStorage.removeItem("userId");
       isDeleted.value = false;
@@ -71,6 +71,7 @@ async function deleteUser() {
     });
   isDeleted.value = false;
 }
+
 //Change User Role
 async function changeUserRole() {
   await UserServices.updateAccountRole(account.value.id, userId.value, parseInt(userRole.value))
@@ -155,14 +156,15 @@ function closeDelete() {
         <v-card class="rounded-lg elevation-5">
           <v-card-title class="text-center headline mb-2">Change User Role?</v-card-title>
           <div class="d-flex align-center flex-column pa-6">
-          <v-btn-toggle v-model="userRole" variant="outlined" divided>
-            <v-btn value="3">Student</v-btn>
-            <v-btn value="2">Career Services</v-btn>
-            <v-btn value="1">Admin</v-btn>
-          </v-btn-toggle>
-        </div>
+            <v-btn-toggle v-model="userRole" variant="outlined" divided>
+              <v-btn value="3">Student</v-btn>
+              <v-btn value="2">Career Services</v-btn>
+              <v-btn value="1">Admin</v-btn>
+            </v-btn-toggle>
+          </div>
           <v-card-actions>
-            <v-btn variant="flat" color="primary" :disabled="userRole === currentRole" @click="changeUserRole()">Confirm</v-btn>
+            <v-btn variant="flat" color="primary" :disabled="userRole === currentRole"
+              @click="changeUserRole()">Confirm</v-btn>
             <v-spacer></v-spacer>
             <v-btn variant="flat" color="secondary" @click="closeUserUpdate()">Close</v-btn>
           </v-card-actions>
@@ -183,7 +185,7 @@ function closeDelete() {
       </v-dialog>
 
       <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
-      @update:show="value => snackbarValue = value"></Snackbar>
+        @update:show="value => snackbarValue = value"></Snackbar>
     </div>
   </v-container>
 </template>

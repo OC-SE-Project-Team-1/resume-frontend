@@ -80,7 +80,6 @@ async function saveEditExperience() {
         </v-card-title>
         <v-card-text>
 
-
           <v-container>
             <v-row>
               <v-col>
@@ -103,15 +102,16 @@ async function saveEditExperience() {
                 <v-text-field v-model="editedItem.startDate" label="Start Date" hint="Ex: Aug 2024"></v-text-field>
               </v-col>
               <v-col v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">
-                <v-text-field :disabled="editedItem.current" v-model="editedItem.endDate"
-                  label="End Date" hint="Ex: Aug 2024"></v-text-field>
+                <v-text-field :disabled="editedItem.current" v-model="editedItem.endDate" label="End Date"
+                  hint="Ex: Aug 2024"></v-text-field>
                 <v-switch v-model="editedItem.current" label="Present Job" color="primary"></v-switch>
               </v-col>
             </v-row>
             <v-skeleton-loader v-if="localisRequestingAiAssist" type="card"></v-skeleton-loader>
             <v-row>
 
-              <v-textarea v-if="!localisRequestingAiAssist" v-model="editedItem.description" label="Summary/Description">
+              <v-textarea v-if="!localisRequestingAiAssist" v-model="editedItem.description"
+                label="Summary/Description">
 
                 <template #append-inner>
                   <div v-if="editedItem.experienceTypeId !== 5 && editedItem.experienceTypeId !== 6">

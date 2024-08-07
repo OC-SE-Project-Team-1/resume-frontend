@@ -1,5 +1,4 @@
 <script setup>
-import { computed, onMounted } from "vue";
 import { ref, watch } from "vue";
 import LinkServices from "../services/LinkServices.js";
 import GoalServices from "../services/GoalServices.js";
@@ -8,89 +7,81 @@ import EducationServices from "../services/EducationServices.js";
 import ExperienceServices from "../services/ExperienceServices.js";
 import { useRoute } from 'vue-router';
 
-const props = defineProps({isDeleted: Boolean,
-                            tab: String,
-                            deleteItemId: Number,
-                            account: Object,
-                            makeSnackbar: Function,
-                            getLinks: Function,
-                            getGoals: Function,
-                            getEducationInfo: Function,
-                            getExperiences: Function,
-                            getSkills: Function,
+const props = defineProps({
+    isDeleted: Boolean,
+    tab: String,
+    deleteItemId: Number,
+    account: Object,
+    makeSnackbar: Function,
+    getLinks: Function,
+    getGoals: Function,
+    getEducationInfo: Function,
+    getExperiences: Function,
+    getSkills: Function,
 });
 
 
 const route = useRoute();
-console.log("Current route path:", route.path); // Example usage of route information
-
 const emit = defineEmits(['update:isDeleted']);
-
 const isDeleted = ref(props.isDeleted);
 
 watch(() => props.isDeleted, (newVal) => {
     isDeleted.value = newVal;
 });
 
-
 function closeDelete() {
-isDeleted.value = false;
-emit('update:isDeleted', false);
+    isDeleted.value = false;
+    emit('update:isDeleted', false);
 }
 
 async function deleteItem() {
-
-    if (route.path.includes('/database') ) {
-
+    if (route.path.includes('/database')) {
         switch (parseInt(props.tab)) {
-        case 1:
-            await deleting(LinkServices.deleteLink);
-            props.getLinks();
-            break;
-        case 2:
-            await deleting(GoalServices.deleteGoal);
-            props.getGoals();
-            break;
-        case 3:
-            await deleting(EducationServices.deleteEducation);
-            props. getEducationInfo();
-            break;
-        case 4: case 5: case 6: case 7: case 9: case 10: case 11:
-            await deleting(ExperienceServices.deleteExperience);
-            props.getExperiences();
-            break;
-        case 8:
-            await deleting(SkillServices.deleteSkill);
-            props.getSkills();
-            break;
+            case 1:
+                await deleting(LinkServices.deleteLink);
+                props.getLinks();
+                break;
+            case 2:
+                await deleting(GoalServices.deleteGoal);
+                props.getGoals();
+                break;
+            case 3:
+                await deleting(EducationServices.deleteEducation);
+                props.getEducationInfo();
+                break;
+            case 4: case 5: case 6: case 7: case 9: case 10: case 11:
+                await deleting(ExperienceServices.deleteExperience);
+                props.getExperiences();
+                break;
+            case 8:
+                await deleting(SkillServices.deleteSkill);
+                props.getSkills();
+                break;
+        }
+    } else if (route.path.includes('/createResume')) {
+        switch (parseInt(props.tab)) {
+            case 1:
+                await deleting(LinkServices.deleteLink);
+                props.getLinks();
+                break;
+            case 2:
+                await deleting(GoalServices.deleteGoal);
+                props.getGoals();
+                break;
+            case 3:
+                await deleting(EducationServices.deleteEducation);
+                props.getEducationInfo();
+                break;
+            case 4: case 6:
+                await deleting(ExperienceServices.deleteExperience);
+                props.getExperiences();
+                break;
+            case 5:
+                await deleting(SkillServices.deleteSkill);
+                props.getSkills();
+                break;
+        }
     }
-    }
-    else if (route.path.includes('/createResume')) {
-        switch(parseInt(props.tab)){
-        case 1: 
-            await deleting(LinkServices.deleteLink);
-            props.getLinks();
-            break;
-        case 2: 
-            await deleting(GoalServices.deleteGoal);
-            props.getGoals();
-            break;
-        case 3: 
-            await deleting(EducationServices.deleteEducation);
-            props.getEducationInfo();
-            break;
-        case 4:  case 6:  
-            await deleting(ExperienceServices.deleteExperience);
-            props.getExperiences();
-            break;
-        case 5: 
-            await deleting(SkillServices.deleteSkill);
-            props.getSkills();
-            break;
-    }
-    }
-
-
     closeDelete();
 }
 

@@ -7,7 +7,7 @@ export default {
   getLink(id) {
     return apiClient.get("link/" + id);
   },
-  getLinksForUser(userID){
+  getLinksForUser(userID) {
     return apiClient.get("link/user/" + userID);
   },
   addLink(link, linkDescription, accountID) {
@@ -17,16 +17,16 @@ export default {
       "userId": accountID
     });
   },
-  updateLink(linkId,type, link, accountID) {
+  updateLink(linkId, type, link, accountID) {
     return apiClient.put("link/" + linkId, {
-      "type" : String(type),
+      "type": String(type),
       "url": String(link),
       "userId": accountID
     });
   },
   deleteLink(linkId, accountID) {
     return apiClient.delete("link/" + linkId, {
-      data: {"userId": parseInt(accountID)}
-  });
+      data: { "userId": parseInt(accountID) }
+    });
   },
 };

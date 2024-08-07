@@ -7,7 +7,7 @@ export default {
   getResume(id) {
     return apiClient.get("resumes/" + id);
   },
-  getResumesForUser(userID){
+  getResumesForUser(userID) {
     return apiClient.get("resumes/user/" + userID);
   },
   addResume(title, goalArr, exArr, skillArr, eduArr, linkArr, isEdit, template, accountID) {
@@ -51,8 +51,8 @@ export default {
   },
   deleteResume(resumeId, accountID) {
     return apiClient.delete("resumes/" + resumeId, {
-      data: {"userId": parseInt(accountID)}
-  });
+      data: { "userId": parseInt(accountID) }
+    });
   },
   getFeedback(resumeId, jobDescriptionId) {
     return apiClient.post("/resumes/jobFeedback", {

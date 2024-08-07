@@ -51,7 +51,7 @@ async function saveEditProfSum() {
       console.log(error);
       props.makeSnackbar("error", props.error.response.data.message);
     });
-    closeEditProfSumDialog();
+  closeEditProfSumDialog();
 }
 
 </script>

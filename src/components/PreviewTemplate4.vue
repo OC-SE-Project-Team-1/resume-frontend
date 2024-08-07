@@ -18,11 +18,13 @@ const user = ref({
   roleId: ""
 });
 
-const props = defineProps({links: Array, 
-                          goal: String, 
-                          education: Array, 
-                          experience: Array, 
-                          skills: Array});
+const props = defineProps({
+  links: Array,
+  goal: String,
+  education: Array,
+  experience: Array,
+  skills: Array
+});
 
 
 const isExists = computed(() => {
@@ -34,11 +36,12 @@ const isExists = computed(() => {
         temp = true;
         break;
       }
-    }}
+    }
+  }
 
-    return (
-        temp
-    )
+  return (
+    temp
+  )
 })
 onMounted(async () => {
   account.value = JSON.parse(localStorage.getItem("account"));
@@ -66,7 +69,8 @@ async function getUser() {
         <header>
           <h1>{{ user.firstName }} {{ user.lastName }}</h1>
           <p>{{ user.address }} ♦ {{ user.phoneNumber }} ♦ {{ user.email }}
-            <a v-if="props.links && props.links.length > 0"> ♦ </a><a v-if="props.links && props.links.length > 0" v-for="(link, index) in links">
+            <a v-if="props.links && props.links.length > 0"> ♦ </a><a v-if="props.links && props.links.length > 0"
+              v-for="(link, index) in links">
               {{ link.type }}: {{ link.url }}<a v-if="index !== links.length - 1"> ♦ </a></a>
           </p>
         </header>
@@ -96,7 +100,7 @@ async function getUser() {
             <p v-if="edu.courses !== 'null'">Coursework: {{ edu.courses }}</p>
           </div>
         </section>
-        
+
         <section v-if="props.experience && experience.some(e => e.experienceTypeId == 2)">
           <h2>LEADERSHIP</h2>
           <div v-for="(exp, index) in props.experience" :key="index">
@@ -162,7 +166,7 @@ async function getUser() {
           </div>
         </section>
 
-        <section v-if="props.experience  && experience.some(e => e.experienceTypeId == 4)">
+        <section v-if="props.experience && experience.some(e => e.experienceTypeId == 4)">
           <h2>VOLUNTEER WORK</h2>
           <div v-for="(exp, index) in experience" :key="index">
             <div v-if="exp.experienceTypeId == 4">
@@ -205,105 +209,15 @@ async function getUser() {
         <section>
           <h2>SKILLS</h2>
           <ul style="padding-left: 0%;">
-            <li style="list-style-type: none;" v-if="props.skills" v-for="skill in skills" :key="skill">{{ skill.title }}: {{
-              skill.description }}</li>
+            <li style="list-style-type: none;" v-if="props.skills" v-for="skill in skills" :key="skill">{{ skill.title
+              }}: {{
+                skill.description }}</li>
           </ul>
         </section>
       </div>
     </v-sheet>
   </v-container>
-
-
 </template>
-
-<script>
-export default {
-  data() {
-    return {
-      name: "Ike T. Eagle",
-      city: "City",
-      state: "State",
-      phone: "Phone Number",
-      email: "Email Address",
-      linkedin: "LinkedIn or Website URL",
-      objective: "Recent graduate with a degree in marketing seeking an entry-level position in digital marketing. Experienced in creating social media campaigns and analyzing data to drive engagement and sales.",
-      educations: {
-        institution: "Oklahoma Christian University",
-        location: "Oklahoma City, OK",
-        startDate: "Start Month, Year",
-        endDate: "Projected Month, Year",
-        degree: "Bachelor of Arts /Bachelor of Science in XX /B.B.A in XX",
-        minor: "Minor(s) in…. (if applicable)",
-        majorGPA: "#.##",
-        cumulativeGPA: "#.##",
-        coursework: ["Course 1", "Course 2", "Course 3"]
-      },
-      leadership: {
-        title: "LEADERSHIP (or WORK EXPERIENCE, ACTIVITIES, VOLUNTEER WORK)",
-        organization: "Organization Name",
-        dateRange: "Month Year – Month Year",
-        items: [
-          {
-            dateRange: "Month Year – Month Year",
-            positions: [
-              {
-                title: "Position Title",
-                dateRange: "Month Year – Month Year",
-                duties: [
-                  "Action Verb, followed by description of most relevant or important duties and accomplishments"
-                ]
-              }
-            ]
-          },
-          {
-            dateRange: "Month Year – Month Year",
-            positions: [
-              {
-                title: "Position Title",
-                dateRange: "Month Year – Month Year",
-                duties: [
-                  "Action Verb, followed by description of most relevant or important duties and accomplishments"
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      workExperience: {
-        title: "WORK EXPERIENCE (or LEADERSHIP, ACTIVITIES, VOLUNTEER WORK)",
-        items: [
-          {
-            company: "Company Name",
-            location: "City, State",
-            dateRange: "Month Year – Month Year",
-            title: "Job Title",
-            duties: [
-              "Action Verb, followed by description of most relevant or important duties and accomplishments",
-              "Action Verb, followed by description of most relevant or important duties and accomplishments"
-            ]
-          }
-        ]
-      },
-      honors: {
-        title: "HONORS (and/or AWARDS)",
-        items: [
-          {
-            name: "Honor/Award/Organization",
-            dateRange: "Month Year – Month Year",
-            details: [
-              "Action Verb, followed by criteria for selection or explanation of involvement"
-            ]
-          }
-        ]
-      },
-      allSkills: [
-        "List language skills and declare fluency (if applicable)",
-        "List relevant computer skills"
-      ]
-    };
-  }
-};
-</script>
 
 <style scoped>
 .resume {

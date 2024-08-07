@@ -25,31 +25,31 @@ const snackbarValue = ref(false);
 const snackbarColor = ref("");
 const snackbarText = ref("");
 
-function makeSnackbar(color, text){
+function makeSnackbar(color, text) {
   snackbarValue.value = true;
   snackbarColor.value = color;
   snackbarText.value = text;
 }
 
 const showFeedback = computed(() => {
-    if (isFeedback.value) {
-      return "Hide Feedback"
-    }
-    else {
-      return "Show Feedback"
-    }
+  if (isFeedback.value) {
+    return "Hide Feedback"
+  }
+  else {
+    return "Show Feedback"
+  }
 });
 
 const anyFeedback = computed(() => {
-    if (rating.value !== "") {
-      return true
-    }
-    else if (isEdit.value == false) {
-      return false
-    }
-    else {
-      return true
-    }
+  if (rating.value !== "") {
+    return true
+  }
+  else if (isEdit.value == false) {
+    return false
+  }
+  else {
+    return true
+  }
 });
 
 onMounted(async () => {
@@ -62,7 +62,7 @@ async function getResume() {
   await ResumeServices.getResume(resumeId.value)
     .then((response) => {
       resumeData.value = response.data;
-      isEdit.value = response.data.editing; 
+      isEdit.value = response.data.editing;
       templateId.value = resumeData.value.template;
       feedback.value = resumeData.value.comments;
       rating.value = resumeData.value.rating;
@@ -84,9 +84,8 @@ function navigateToLibrary() {
 
 //Export Resume
 async function exportResume() {
-  
-    const html = document.getElementsByClassName("resume")
-    await ResumeExport.exportResume(html[0])
+  const html = document.getElementsByClassName("resume")
+  await ResumeExport.exportResume(html[0])
     .then(() => {
       closeExport();
       makeSnackbar("green", "Resume Exported!")
@@ -95,7 +94,7 @@ async function exportResume() {
       console.log(error);
       makeSnackbar("error", error.response.data.message)
     });
-  }
+}
 
 function openExport() {
   isExport.value = true;
@@ -109,12 +108,10 @@ function closeExport() {
   isExport.value = false;
 }
 
-async function updateEditing(){
+async function updateEditing() {
   isEdit.value = !isEdit.value
-  await ResumeServices.updateResumeEditing(resumeId.value, isEdit.value, account.value.id )
+  await ResumeServices.updateResumeEditing(resumeId.value, isEdit.value, account.value.id)
 }
-
-
 </script>
 
 <template>
@@ -124,12 +121,13 @@ async function updateEditing(){
         <v-card-actions>
           <v-btn variant="flat" color="secondary" @click="navigateToEdit()">Edit</v-btn>
           <v-btn variant="flat" color="secondary" @click="openExport()">Export</v-btn>
-          <v-btn v-show="anyFeedback" variant="flat" color="secondary" @click="toggleFeedback()">{{ showFeedback }}</v-btn>
+          <v-btn v-show="anyFeedback" variant="flat" color="secondary" @click="toggleFeedback()">
+            {{ showFeedback }}</v-btn>
           <v-btn class="ml-auto" variant="flat" color="secondary" @click="navigateToLibrary()"> Back </v-btn>
         </v-card-actions>
 
-        <v-checkbox  id="editingCheckBox" v-model="isEdit" :label="'Allow Feedback on this resume'"
-                        @click = "updateEditing()"></v-checkbox>
+        <v-checkbox id="editingCheckBox" v-model="isEdit" :label="'Allow Feedback on this resume'"
+          @click="updateEditing()"></v-checkbox>
       </v-card>
       <v-card-title class="text-center headline mb-2">View</v-card-title>
 
@@ -164,6 +162,7 @@ async function updateEditing(){
               <template4></template4>
             </div>
           </v-col>
+
           <v-col>
             <v-card v-show="isEdit || rating !== ''" class="rounded-lg elevation-5 my-8">
               <v-card-title class="text-center headline mb-2">Feedback</v-card-title>
@@ -191,7 +190,7 @@ async function updateEditing(){
       </v-dialog>
 
       <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
-      @update:show="value => snackbarValue = value"></Snackbar>
+        @update:show="value => snackbarValue = value"></Snackbar>
 
     </div>
   </v-container>

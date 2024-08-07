@@ -96,29 +96,27 @@ function clearGoalAiAssist() {
                                 </v-btn>
                             </template>
 
-                            <v-card
+                            <v-card 
                                 text="Please list your Experiences and Achievements that you want to include in the summary, separated by commas(,) ."
-                                title="Goal Ai Assist">
-                                <template v-slot:actions>
+                                title="Goal AI Assist">
                                     <v-spacer></v-spacer>
-                                    <v-container>
-                                        <v-row>
+                                        <v-row class="px-10 pt-4">
                                             <v-text-field label="Experiences" v-model="aiGoalExperiences"
-                                                variant="outlined" style="width: 30%;">
+                                                variant="outlined" style="width: 30%;"> 
                                             </v-text-field>
                                         </v-row>
-                                        <v-row>
+                                        <v-row class="px-10">
                                             <v-text-field label="Achievements" v-model="aiGoalAchievements"
                                                 variant="outlined" style="width: 30%;">
                                             </v-text-field>
                                         </v-row>
-                                        <v-row>
+                                        <v-row class="px-10">
                                             <v-text-field label="Professional title" v-model="aiGoalTitle"
                                                 variant="outlined" style="width: 30%;">
                                             </v-text-field>
                                         </v-row>
                                         <div align="center">
-                                            <v-row style="width:50%">
+                                            <v-row style="width:50%" class="my-2">
                                                 <v-col>
                                                     <v-btn @click="clearGoalAiAssist(), dialog = false">
                                                         Cancel </v-btn>
@@ -129,8 +127,6 @@ function clearGoalAiAssist() {
                                                 </v-col>
                                             </v-row>
                                         </div>
-                                    </v-container>
-                                </template>
                             </v-card>
                         </v-dialog>
                     </div>

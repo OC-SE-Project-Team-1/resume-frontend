@@ -535,8 +535,8 @@ export default {
                                     </div>
 
                                     <div align="center">
-                                        <v-btn variant="text" @click="setNewGoalVisible()">
-                                            + Add New Summary
+                                        <v-btn variant="tonal" @click="setNewGoalVisible()">
+                                            Add New Summary
                                         </v-btn>
                                     </div>
 

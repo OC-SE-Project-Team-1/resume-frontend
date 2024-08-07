@@ -8,6 +8,7 @@ import template3 from "../components/Template3.vue";
 import template4 from "../components/Template4.vue";
 import ResumeServices from "../services/ResumeServices";
 import ResumeExport from "../reports/ResumeExport";
+import Snackbar from "../components/Snackbar.vue";
 
 const router = useRouter();
 const account = ref(null);
@@ -16,18 +17,16 @@ const isExport = ref(false);
 const feedback = ref(null);
 const templateId = ref(0);
 const resumeData = ref(null);
-const isDownloaded = ref(false);
 const selectedUser = ref();
 
-const snackbar = ref({
-  value: false,
-  color: "",
-  text: "",
-});
-function makeSnackbar(color, text){
-    snackbar.value.value = true;
-    snackbar.value.color = color;
-    snackbar.value.text = text;
+const snackbarValue = ref(false);
+const snackbarColor = ref("");
+const snackbarText = ref("");
+
+function makeSnackbar(color, text) {
+  snackbarValue.value = true;
+  snackbarColor.value = color;
+  snackbarText.value = text;
 }
 
 onMounted(async () => {
@@ -56,26 +55,22 @@ function navigateToStudentResumes() {
 
 //Export Resume
 async function exportResume() {
-
-const html = document.getElementsByClassName("resume")
-await ResumeExport.exportResume(html[0])
-.then(() => {
-  isDownloaded.value = true;
-  closeExport();
-  makeSnackbar("green", "Resume Exported!")
-})
-.catch((error) => {
-  console.log(error);
-  makeSnackbar("error", error.response.data.message)
-});
+  const html = document.getElementsByClassName("resume")
+  await ResumeExport.exportResume(html[0])
+    .then(() => {
+      closeExport();
+      makeSnackbar("green", "Resume Exported!")
+    })
+    .catch((error) => {
+      console.log(error);
+      makeSnackbar("error", error.response.data.message)
+    });
 }
 
 //Submit Feedback
 async function submitFeedback() {
-  console.log()
   await ResumeServices.inputCSFeedback(resumeId.value, feedback.value, selectedUser.value.id)
     .then(() => {
-      console.log("Feedback Submitted!")
       makeSnackbar("green", "Feedback Submitted!")
     })
     .catch((error) => {
@@ -92,59 +87,52 @@ function closeExport() {
   isExport.value = false;
 }
 
-function closeSnackBar() {
-  snackbar.value.value = false;
-}
-
-function refreshPage(){
-  isDownloaded.value = false;
-}
 </script>
 
 <template>
   <v-container>
     <div id="body">
       <v-card flat color="transparent">
-          <v-card-actions>
-            <v-btn variant="flat" color="secondary" @click="openExport()">Export</v-btn>
-            <v-btn class="ml-auto" variant="flat" color="secondary" @click="navigateToStudentResumes()"> Back </v-btn>
-          </v-card-actions>
+        <v-card-actions>
+          <v-btn variant="flat" color="secondary" @click="openExport()">Export</v-btn>
+          <v-btn class="ml-auto" variant="flat" color="secondary" @click="navigateToStudentResumes()"> Back </v-btn>
+        </v-card-actions>
           
       <v-card-title class="text-center headline mb-2">View</v-card-title>
-        </v-card>
+      </v-card>
       <v-row>
         <v-col>
-      <v-card class="rounded-lg elevation-5 my-8">
-        <v-card-title class="text-center headline mb-2">Resume</v-card-title>
-        <div v-if="templateId == 1">
-          <template1></template1>
-        </div>
-        <div v-if="templateId == 2">
-          <template2></template2>
-        </div>
-        <div v-if="templateId == 3">
-          <template3></template3>
-        </div>
-        <div v-if="templateId == 4">
-          <template4></template4>
-        </div>
-      </v-card>
-    </v-col>
-  <v-col>
-      <v-card class="rounded-lg elevation-5 my-8">
-        <v-card-title class="text-center headline mb-2">Feedback</v-card-title>
-        <v-card-text>
-          <v-textarea v-model="feedback" label="Input Feedback" auto-grow ></v-textarea>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn variant="flat" color="primary" @click="submitFeedback()">Submit</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-    </v-row>
+          <v-card class="rounded-lg elevation-5 my-8">
+            <v-card-title class="text-center headline mb-2">Resume</v-card-title>
+            <div v-if="templateId == 1">
+              <template1></template1>
+            </div>
+            <div v-if="templateId == 2">
+              <template2></template2>
+            </div>
+            <div v-if="templateId == 3">
+              <template3></template3>
+            </div>
+            <div v-if="templateId == 4">
+              <template4></template4>
+            </div>
+          </v-card>
+        </v-col>
+        <v-col>
+          <v-card class="rounded-lg elevation-5 my-8">
+            <v-card-title class="text-center headline mb-2">Feedback</v-card-title>
+            <v-card-text>
+              <v-textarea v-model="feedback" label="Input Feedback" auto-grow></v-textarea>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn variant="flat" color="primary" @click="submitFeedback()">Submit</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
 
-    <v-dialog persistent v-model="isExport" width="800">
+      <v-dialog persistent v-model="isExport" width="800">
         <v-card class="rounded-lg elevation-5">
           <v-card-title class="text-center headline mb-2">Export Resume?</v-card-title>
 
@@ -156,27 +144,9 @@ function refreshPage(){
         </v-card>
       </v-dialog>
 
-      <v-dialog persistent v-model="isDownloaded" width="400">
-        <v-card class="rounded-lg elevation-5">
-          <v-card-title class="text-center headline mb-2">Finish Download?</v-card-title>
-          
-            <v-btn variant="flat" color="primary" @click="refreshPage()">Confirm</v-btn>
-          
-        </v-card>
-      </v-dialog>
+      <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
+        @update:show="value => snackbarValue = value"></Snackbar>
 
-
-      <v-snackbar v-model="snackbar.value" rounded="pill">
-        {{ snackbar.text }}
-
-        <template v-slot:actions>
-          <v-btn :color="snackbar.color" variant="text" @click="closeSnackBar()">
-            Close
-          </v-btn>
-        </template>
-      </v-snackbar>
     </div>
-
   </v-container>
-  
 </template>

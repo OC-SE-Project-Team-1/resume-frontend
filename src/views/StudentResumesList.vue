@@ -3,16 +3,21 @@ import { onMounted } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import ResumeServices from "../services/ResumeServices";
+import Snackbar from "../components/Snackbar.vue";
 
 const router = useRouter();
 const account = ref(null);
 const titles = ref(null);
 const selectedUser = ref(null);
-const snackbar = ref({
-  value: false,
-  color: "",
-  text: "",
-});
+const snackbarValue = ref(false);
+const snackbarColor = ref("");
+const snackbarText = ref("");
+
+function makeSnackbar(color, text) {
+  snackbarValue.value = true;
+  snackbarColor.value = color;
+  snackbarText.value = text;
+}
 
 const name = ref("");
 
@@ -31,9 +36,7 @@ async function getResumes() {
     })
     .catch((error) => {
       console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
+      makeSnackbar("error", error.response.data.message)
     });
 }
 
@@ -51,10 +54,6 @@ function navigateBack() {
     router.push({ name: "cslibrary" });
   }
 }
-
-function closeSnackBar() {
-  snackbar.value.value = false;
-}
 </script>
 
 <template>
@@ -66,7 +65,7 @@ function closeSnackBar() {
         </v-col>
       </v-row>
       <v-col class="text-right">
-              <v-btn color="secondary" @click="navigateBack()"> Back </v-btn>
+        <v-btn color="secondary" @click="navigateBack()"> Back </v-btn>
       </v-col>
       <v-table fixed-header>
         <thead>
@@ -77,7 +76,7 @@ function closeSnackBar() {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in titles" :key="item.id" >
+          <tr v-for="item in titles" :key="item.id">
             <td v-if="item.editing" class="text-left">{{ item.title }}</td>
             <td v-if="item.editing" class="text-right">
               <v-btn v-if="item.editing" rounded variant="text" @click="navigateToView(item.id)"> View </v-btn>
@@ -86,16 +85,9 @@ function closeSnackBar() {
         </tbody>
       </v-table>
 
+      <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
+        @update:show="value => snackbarValue = value"></Snackbar>
 
-      <v-snackbar v-model="snackbar.value" rounded="pill">
-        {{ snackbar.text }}
-
-        <template v-slot:actions>
-          <v-btn :color="snackbar.color" variant="text" @click="closeSnackBar()">
-            Close
-          </v-btn>
-        </template>
-      </v-snackbar>
     </div>
   </v-container>
 </template>

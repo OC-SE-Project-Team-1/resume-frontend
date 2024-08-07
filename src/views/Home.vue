@@ -22,8 +22,9 @@ function navigateToCreateResume() {
         <v-col cols="10">
           <v-card-title class="pl-0 text-h4 font-weight-bold">Welcome to The R.A.I.N.!
           </v-card-title>
-          <v-card-title class="pl-0 text-h6 font-weight-bold">Here to help you easily create resume with a little help from AI.
-          </v-card-title>
+          <v-card-text class="pl-0 text-h6 font-weight-bold">We at the Resume Artificial Intelligence Network are here
+            to help you easily create a resume with a little help from AI!
+          </v-card-text>
         </v-col>
       </v-row>
     </div>
@@ -31,7 +32,8 @@ function navigateToCreateResume() {
     <div>
       <v-row align="center">
         <v-col align="center">
-          <v-btn  v-if="account !== null" variant="flat" color="secondary" @click="navigateToCreateResume()">Create a Resume</v-btn>
+          <v-btn v-if="account !== null" variant="flat" color="secondary" @click="navigateToCreateResume()">Create a
+            Resume</v-btn>
           <div class="mb-10">
             <v-spacer></v-spacer>
           </div>

@@ -26,7 +26,6 @@ export default {
   logoutUser() {
     return apiClient.post("logout");
   },
-
   updateAccount(accountID, username, email, firstName, lastName, address, phoneNumber) {
     return apiClient.put("account/" + accountID, {
       "userName": String(username),
@@ -44,14 +43,12 @@ export default {
       "userId": accountID
     });
   },
-
   updatePassword(accountID, password) {
     return apiClient.put("account/" + accountID, {
       "password": String(password),
       "userId": parseInt(accountID)
     });
   },
-
   updateAccountRole(accountID, userId, role) {
     return apiClient.put("account/" + userId, {
       "roleId": parseInt(role),
@@ -60,7 +57,7 @@ export default {
   },
   deleteAccount(userId, accountID) {
     return apiClient.delete("account/" + userId, {
-      data: {"userId": parseInt(accountID)}
+      data: { "userId": parseInt(accountID) }
     });
   },
 };

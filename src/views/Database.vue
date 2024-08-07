@@ -496,8 +496,8 @@ export default {
                                     </template>
                                 </v-data-table>
 
-                                <v-btn variant="text" @click="setNewLinkVisible()">
-                                    + Add New link
+                                <v-btn variant="tonal" @click="setNewLinkVisible()">
+                                    Add New link
                                 </v-btn>
 
                                 <NewLink v-if="isNewLinkVisible" :isNewLinkVisible="isNewLinkVisible"
@@ -853,8 +853,8 @@ export default {
                                     <v-spacer></v-spacer>
                                 </div>
 
-                                <v-btn variant="text" @click="setNewskillVisible()">
-                                    + Add New Skill
+                                <v-btn variant="tonal" @click="setNewskillVisible()">
+                                    Add New Skill
                                 </v-btn>
 
                                 <NewSkill v-if="isNewSkillVisible" :isNewSkillVisible="isNewSkillVisible"

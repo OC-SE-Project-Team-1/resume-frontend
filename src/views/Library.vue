@@ -118,14 +118,14 @@ export default {
       </v-table>
 
       <v-dialog persistent v-model="isDeleted" width="800">
-        <v-card class="rounded-lg elevation-5">
+        <v-card class="rounded-lg elevation-5" style="margin: 20%; padding-top: 1%; padding-bottom: 1%; padding-left:2%; padding-right:2%">
           <v-card-title class="text-center headline mb-2">Delete Resume?</v-card-title>
           <v-card-text align="center">You will be unable to retrieve this resume once deleted!</v-card-text>
 
           <v-card-actions>
-            <v-btn variant="flat" color="primary" @click="deleteResume()">Delete</v-btn>
+            <v-btn variant="text" color="accent" @click="closeDelete()">Cancel</v-btn>
             <v-spacer></v-spacer>
-            <v-btn variant="flat" color="secondary" @click="closeDelete()">Close</v-btn>
+            <v-btn variant="flat" color="primary" @click="deleteResume()">Delete</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>

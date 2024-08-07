@@ -59,7 +59,11 @@ function navigateBack() {
 <template>
   <v-container>
     <div id="body">
-      <v-card-title class="text-center headline mb-2">{{ name }}</v-card-title>
+      <v-row align="center" class="mb-4">
+        <v-col cols="10"><v-card-title class="pl-0 text-h4 font-weight-bold">{{ name }}
+          </v-card-title>
+        </v-col>
+      </v-row>
       <v-col class="text-right">
         <v-btn color="secondary" @click="navigateBack()"> Back </v-btn>
       </v-col>

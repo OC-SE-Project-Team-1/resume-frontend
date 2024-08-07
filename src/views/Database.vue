@@ -451,13 +451,19 @@ export default {
 
 <template>
     <v-container>
+        <div id="body">
+      <v-row align="center" class="mb-4">
+        <v-col cols="10"><v-card-title class="pl-0 text-h4 font-weight-bold">Database
+          </v-card-title>
+        </v-col>
+      </v-row>
         <v-row>
             <v-col style="width: 50%;">
 
                 <v-card>
                     <!-- TAB HEADER -->
                     <v-sheet elevation="3" rounded="lg" align="center">
-                        <v-tabs v-model="tab" :items="tabs" align-tabs="center" height="60" slider-color="#f78166">
+                        <v-tabs v-model="tab" :items="tabs" align-tabs="center" height="60" slider-color="secondary">
                             <v-tab value="1" @click="getPersonalInfo()">Links</v-tab>
                             <v-tab value="2" @click="getGoals()">Professional Summary</v-tab>
                             <v-tab value="3" @click="getEducationInfo()">Education</v-tab>
@@ -490,8 +496,8 @@ export default {
                                     </template>
                                 </v-data-table>
 
-                                <v-btn variant="text" @click="setNewLinkVisible()">
-                                    + Add New link
+                                <v-btn variant="tonal" @click="setNewLinkVisible()">
+                                    Add New link
                                 </v-btn>
 
                                 <NewLink v-if="isNewLinkVisible" :isNewLinkVisible="isNewLinkVisible"
@@ -847,8 +853,8 @@ export default {
                                     <v-spacer></v-spacer>
                                 </div>
 
-                                <v-btn variant="text" @click="setNewskillVisible()">
-                                    + Add New Skill
+                                <v-btn variant="tonal" @click="setNewskillVisible()">
+                                    Add New Skill
                                 </v-btn>
 
                                 <NewSkill v-if="isNewSkillVisible" :isNewSkillVisible="isNewSkillVisible"
@@ -1064,5 +1070,6 @@ export default {
 
         <Snackbar :show="snackbarValue" :color="snackbarColor" :message="snackbarText"
             @update:show="value => snackbarValue = value"></Snackbar>
+        </div>
     </v-container>
 </template>

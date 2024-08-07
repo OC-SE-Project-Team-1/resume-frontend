@@ -100,16 +100,17 @@ async function deleting(deleteItem) {
 </script>
 
 <template>
-    <v-dialog persistent v-model="props.isDeleted" width="800">
-        <v-card class="rounded-lg elevation-5">
+    <v-dialog  persistent v-model="props.isDeleted" width="800" >
+        <v-card class="rounded-lg elevation-5" style="margin: 20%; padding-top: 1%; padding-bottom: 1%; padding-left:2%; padding-right:2%">
             <v-card-title class="text-center headline mb-2">Delete Item?</v-card-title>
             <p align="center">You will be unable to retrieve this item once
                 deleted!</p>
 
-            <v-card-actions>
-                <v-btn variant="flat" color="primary" @click="deleteItem()">Delete</v-btn>
+            <v-card-actions style="padding-top: 5%;">
+                <v-btn variant="text" color="accent" @click="closeDelete()">Cancel</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn variant="flat" color="secondary" @click="closeDelete()">Close</v-btn>
+                <v-btn variant="flat" color="primary" @click="deleteItem()">Delete</v-btn>
+
             </v-card-actions>
         </v-card>
     </v-dialog>

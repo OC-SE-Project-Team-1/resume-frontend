@@ -13,22 +13,14 @@ const theme = useTheme();
 const accountData = ref(null);
 const isDark = ref(null);
 
-const snackbar = ref({
-  value: false,
-  color: "",
-  text: "",
-});
-
 onMounted(async () => {
   logoURL.value = ftLogo;
   account.value = JSON.parse(localStorage.getItem("account"));
-  
+
 
   if (account.value !== null) {
     await getAccount();
     console.log("Account is logged in");
-    console.log(accountData.value);
-    console.log(isDark.value);
 
     if (accountData.value.darkMode === true) {
       theme.global.name.value = 'DarkTheme';
@@ -38,13 +30,11 @@ onMounted(async () => {
     }
   }
   else {
-    
     console.log("Account isn't logged in");
-    console.log(accountData.value);
 
     if (JSON.parse(localStorage.getItem("darkMode") === null)) {
-    theme.global.name.value = 'LightTheme';
-    window.localStorage.setItem("darkMode", JSON.stringify(theme.global.name.value));
+      theme.global.name.value = 'LightTheme';
+      window.localStorage.setItem("darkMode", JSON.stringify(theme.global.name.value));
     }
     else {
       theme.global.name.value = JSON.parse(localStorage.getItem("darkMode"));
@@ -55,15 +45,12 @@ onMounted(async () => {
 
 async function getAccount() {
   await UserServices.getUser(account.value.id)
-  .then((response) => {
+    .then((response) => {
       accountData.value = response.data;
-      isDark.value = response.data.darkMode; 
+      isDark.value = response.data.darkMode;
     })
     .catch((error) => {
       console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
     });
 }
 
@@ -71,14 +58,9 @@ function navigateToAccountSettings() {
   router.push({ name: "account" });
 }
 
-function navigateToDatabase() {
-  router.push({ name: "database" });
-}
-
 function logout() {
   UserServices.logoutUser()
-    .then((data) => {
-      console.log(data);
+    .then(() => {
       router.push({ name: "home" });
     })
     .catch((error) => {
@@ -105,27 +87,19 @@ function toggleTheme() {
     else {
       isDark.value = true;
     }
-
     updateDarkMode();
-
-  }
-  else {
-  
+  } else {
     window.localStorage.setItem("darkMode", JSON.stringify(theme.global.name.value));
-
   }
 
 }
 
 async function updateDarkMode() {
   await UserServices.updateDarkMode(account.value.id, isDark.value)
-  .then ((response) => {
+    .then((response) => {
     })
     .catch((error) => {
-      console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
+      console.log(error)
     });
 }
 
@@ -166,8 +140,7 @@ async function updateDarkMode() {
               <v-divider class="my-3"></v-divider>
               <v-btn rounded variant="text" @click="navigateToAccountSettings()"> Account Settings </v-btn>
               <v-divider class="my-3"></v-divider>
-              <v-btn rounded variant="text" @click="navigateToDatabase()"> Manage Database </v-btn>
-              <v-divider class="my-3"></v-divider>
+              
               <v-btn rounded variant="text" @click="logout()"> Logout </v-btn>
             </div>
           </v-card-text>
@@ -180,12 +153,13 @@ async function updateDarkMode() {
       <v-btn class="mx-2" :to="{ name: 'home' }">
         Home
       </v-btn>
-      <!-- v-if="account !== null" -->
       <v-btn v-if="account !== null" class="mx-2" :to="{ name: 'library' }">
         Library
       </v-btn>
       <v-btn v-if="account !== null" class="mx-2" :to="{ name: 'createResume' }">
         Create Resume
+      </v-btn>
+      <v-btn v-if="account !== null" class="mx-2" :to="{name: 'database'}"> Manage Database 
       </v-btn>
       <v-btn v-if="account !== null && parseInt(account.roleId) !== 3" class="mx-2" :to="{ name: 'cslibrary' }">
         Student Library

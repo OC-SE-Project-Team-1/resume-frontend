@@ -7,7 +7,7 @@ export default {
   getJobDescription(id) {
     return apiClient.get("jobDescription/" + id);
   },
-  getJobDescriptionsForUser(userID){
+  getJobDescriptionsForUser(userID) {
     return apiClient.get("jobDescription/user/" + userID);
   },
   addJobDescription(jobDescriptionTitle, jobDescription, accountID) {
@@ -25,7 +25,7 @@ export default {
   },
   deleteJobDescription(jobDescriptionId, accountID) {
     return apiClient.delete("jobDescription/" + jobDescriptionId, {
-      data: {"userId": parseInt(accountID)}
-  });
+      data: { "userId": parseInt(accountID) }
+    });
   }
 };

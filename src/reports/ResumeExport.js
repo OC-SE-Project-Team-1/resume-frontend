@@ -1,13 +1,13 @@
 import jsPDF from "jspdf";
 
-export default{
-    async exportResume(html){
-       
+export default {
+    async exportResume(html) {
+
         //create document
         //W: 8.25     H: 11.25
         const doc = new jsPDF('a4')
-          doc.html(html, {
-            callback: function(doc) {
+        doc.html(html, {
+            callback: function (doc) {
                 // Save the PDF
                 doc.save('document-html.pdf');
             },

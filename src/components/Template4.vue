@@ -50,9 +50,6 @@ async function getResume() {
     })
     .catch((error) => {
       console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
     });
 }
 async function getUser() {
@@ -62,9 +59,6 @@ async function getUser() {
     })
     .catch((error) => {
       console.log(error);
-      snackbar.value.value = true;
-      snackbar.value.color = "error";
-      snackbar.value.text = error.response.data.message;
     });
 }
 
@@ -75,22 +69,22 @@ async function sortData() {
   experience.value = resumeData.value.Experience;
 
   console.log(experience.value);
-   for ( let [key, value] of Object.entries(experience.value)) {
-    
-    if (value.experienceTypeId == 1){
+  for (let [key, value] of Object.entries(experience.value)) {
+
+    if (value.experienceTypeId == 1) {
       work.value.push(value);
     }
-    else if (value.experienceTypeId == 2){
+    else if (value.experienceTypeId == 2) {
       leadership.value.push(value);
     }
-    else if (value.experienceTypeId == 3){
+    else if (value.experienceTypeId == 3) {
       activities.value.push(value);
     }
-    else if (value.experienceTypeId == 4){
+    else if (value.experienceTypeId == 4) {
       volunteer.value.push(value);
     }
 
-    }
+  }
 
   skills.value = resumeData.value.Skill;
 }
@@ -111,7 +105,6 @@ async function sortData() {
               {{ link.type }}: {{ link.url }}<a v-if="index !== links.length - 1"> ♦ </a></a>
           </p>
         </header>
-
 
         <section>
           <h2>OBJECTIVE</h2>
@@ -254,98 +247,7 @@ async function sortData() {
       </div>
     </v-sheet>
   </v-container>
-
-
 </template>
-
-<script>
-export default {
-  data() {
-    return {
-      name: "Ike T. Eagle",
-      city: "City",
-      state: "State",
-      phone: "Phone Number",
-      email: "Email Address",
-      linkedin: "LinkedIn or Website URL",
-      objective: "Recent graduate with a degree in marketing seeking an entry-level position in digital marketing. Experienced in creating social media campaigns and analyzing data to drive engagement and sales.",
-      educations: {
-        institution: "Oklahoma Christian University",
-        location: "Oklahoma City, OK",
-        startDate: "Start Month, Year",
-        endDate: "Projected Month, Year",
-        degree: "Bachelor of Arts /Bachelor of Science in XX /B.B.A in XX",
-        minor: "Minor(s) in…. (if applicable)",
-        majorGPA: "#.##",
-        cumulativeGPA: "#.##",
-        coursework: ["Course 1", "Course 2", "Course 3"]
-      },
-      leadership: {
-        title: "LEADERSHIP (or WORK EXPERIENCE, ACTIVITIES, VOLUNTEER WORK)",
-        organization: "Organization Name",
-        dateRange: "Month Year – Month Year",
-        items: [
-          {
-            dateRange: "Month Year – Month Year",
-            positions: [
-              {
-                title: "Position Title",
-                dateRange: "Month Year – Month Year",
-                duties: [
-                  "Action Verb, followed by description of most relevant or important duties and accomplishments"
-                ]
-              }
-            ]
-          },
-          {
-            dateRange: "Month Year – Month Year",
-            positions: [
-              {
-                title: "Position Title",
-                dateRange: "Month Year – Month Year",
-                duties: [
-                  "Action Verb, followed by description of most relevant or important duties and accomplishments"
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      workExperience: {
-        title: "WORK EXPERIENCE (or LEADERSHIP, ACTIVITIES, VOLUNTEER WORK)",
-        items: [
-          {
-            company: "Company Name",
-            location: "City, State",
-            dateRange: "Month Year – Month Year",
-            title: "Job Title",
-            duties: [
-              "Action Verb, followed by description of most relevant or important duties and accomplishments",
-              "Action Verb, followed by description of most relevant or important duties and accomplishments"
-            ]
-          }
-        ]
-      },
-      honors: {
-        title: "HONORS (and/or AWARDS)",
-        items: [
-          {
-            name: "Honor/Award/Organization",
-            dateRange: "Month Year – Month Year",
-            details: [
-              "Action Verb, followed by criteria for selection or explanation of involvement"
-            ]
-          }
-        ]
-      },
-      allSkills: [
-        "List language skills and declare fluency (if applicable)",
-        "List relevant computer skills"
-      ]
-    };
-  }
-};
-</script>
 
 <style scoped>
 .resume {
